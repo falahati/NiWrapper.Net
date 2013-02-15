@@ -9,6 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "ConsoleTest\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiViewer.Net", "NiViewer.Net\NiViewer.Net.csproj", "{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Packages", "Packages", "{265FBF19-1441-41D6-AA6D-389262B76E7E}"
+	ProjectSection(SolutionItems) = preProject
+		Packages\OpenNI 2.1.0.4 .Net Wrapper x64.zip = Packages\OpenNI 2.1.0.4 .Net Wrapper x64.zip
+		Packages\OpenNI 2.1.0.4 .Net Wrapper x86.zip = Packages\OpenNI 2.1.0.4 .Net Wrapper x86.zip
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
