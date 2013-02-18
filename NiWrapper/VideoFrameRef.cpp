@@ -184,7 +184,7 @@ extern "C"
 								if (invert)
 									depthValue = (char)((1 - ((float)depthHistogram[*srcPixel]  / numberOfPoints)) * 255);
 								else
-									depthValue = (char)((float)depthHistogram[*srcPixel]  / numberOfPoints) * 255;
+									depthValue = (char)(((float)depthHistogram[*srcPixel]  / numberOfPoints) * 255);
 							else
 								if (invert)
 									depthValue = (char)((maxDepth - *srcPixel) * pixelRate);
@@ -224,7 +224,7 @@ extern "C"
 								if (invert)
 									depthValue = (uint16_t)((1 - ((float)depthHistogram[*srcPixel]  / numberOfPoints)) * 65535);
 								else
-									depthValue = (uint16_t)((float)depthHistogram[*srcPixel]  / numberOfPoints) * 65535;
+									depthValue = (uint16_t)(((float)depthHistogram[*srcPixel]  / numberOfPoints) * 65535);
 							else
 								if (invert)
 									depthValue = (uint16_t)((maxDepth - *srcPixel) * pixelRate);
