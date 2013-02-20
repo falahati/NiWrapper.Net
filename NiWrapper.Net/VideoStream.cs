@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace OpenNIWrapper
 {
-    public class VideoStream : OpenNIBase, IDisposable
+    public class VideoStream : OpenNIBase
     {
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void videoStreamNewFrame(IntPtr vStream);
@@ -21,24 +21,14 @@ namespace OpenNIWrapper
             this.internal_NewFrame = new videoStreamNewFrame(this.Internal_NewFrame);
         }
 
-        ~VideoStream()
-        {
-            try
-            {
-                this.Destroy();
-                //Common.DeleteObject(this);
-            }
-            catch (Exception)
-            { }
-        }
-
         public Device ParentDevice { get; private set; }
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void VideoStream_destroy(IntPtr objectHandler);
-        public void Destroy()
+        internal void Destroy()
         {
             VideoStream_destroy(this.Handle);
+            Common.DeleteObject(this);
         }
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -47,7 +37,7 @@ namespace OpenNIWrapper
         static extern IntPtr VideoStream_RegisterListener(
             IntPtr objectHandler, [MarshalAs(UnmanagedType.FunctionPtr)]videoStreamNewFrame newFrame);
         IntPtr handler_events;
-        public static VideoStream Create(Device device, Device.SensorType sensorType)
+        internal static VideoStream Private_Create(Device device, Device.SensorType sensorType)
         {
             IntPtr handle;
             OpenNI.throwIfError(VideoStream_create(out handle, device.Handle, sensorType));
@@ -55,6 +45,11 @@ namespace OpenNIWrapper
             vs.ParentDevice = device;
             vs.handler_events = VideoStream_RegisterListener(handle, vs.internal_NewFrame);
             return vs;
+        }
+
+        public static VideoStream Create(Device device, Device.SensorType sensorType)
+        {
+            return device.CreateVideoStream(sensorType);
         }
 
         private void Internal_NewFrame(IntPtr vStream)
@@ -277,23 +272,6 @@ namespace OpenNIWrapper
             return (OpenNI.WaitForStream(this, OpenNI.TIMEOUT_NONE) == OpenNI.Status.OK);
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        private bool _disposed = false;
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing && this.isValid)
-                    this.Destroy();
-
-                this.Handle = IntPtr.Zero;
-                _disposed = true;
-            }
-        }
         public override string ToString()
         {
             return this.SensorInfo.getSensorType().ToString();

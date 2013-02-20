@@ -9,6 +9,7 @@ namespace OpenNIWrapper
     {
         public const string ANY_DEVICE = null;
 
+        private Dictionary<SensorType, VideoStream> VideoStreams_Cache = new Dictionary<SensorType, VideoStream>();
         public enum ImageRegistrationMode
         {
             OFF = 0,
@@ -42,13 +43,18 @@ namespace OpenNIWrapper
         {
             if (!this.isValid)
                 return null;
-            return VideoStream.Create(this, sensorType);
+            if (!VideoStreams_Cache.ContainsKey(sensorType))
+                VideoStreams_Cache[sensorType] = VideoStream.Private_Create(this, sensorType);
+            return VideoStreams_Cache[sensorType];
         }
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void Device_close(IntPtr objectHandler);
         public void Close()
         {
+            if (this.isValid)
+                foreach (VideoStream stream in VideoStreams_Cache.Values)
+                    stream.Destroy();
             Device_close(this.Handle);
         }
 
