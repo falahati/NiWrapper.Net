@@ -101,6 +101,7 @@
     <Compile Include="SkeletonJoint.cs" />
     <Compile Include="UserData.cs" />
     <Compile Include="UserMap.cs" />
+    <Compile Include="UserTracker.cs" />
     <Compile Include="UserTrackerFrameRef.cs" />
   </ItemGroup>
   <ItemGroup>

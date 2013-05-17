@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
+using OpenNIWrapper;
 
 namespace NiTEWrapper
 {
@@ -48,6 +50,21 @@ namespace NiTEWrapper
         public static void Shutdown()
         {
             NiTE_shutdown();
+        }
+
+        [DebuggerStepThrough()]
+        internal static void throwIfError(Status status)
+        {
+            switch (status)
+            {
+                case Status.ERROR:
+                    throw new Exception(OpenNI.LastError);
+                case Status.BAD_USER_ID:
+                    throw new ArgumentOutOfRangeException(OpenNI.LastError,
+                        new Exception("NiTE: Bad User ID"));
+                default:
+                    return;
+            }
         }
     }
 }
