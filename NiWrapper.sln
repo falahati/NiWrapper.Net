@@ -2,18 +2,50 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiWrapper.Net", "NiWrapper.Net\NiWrapper.Net.csproj", "{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0C040035-BC37-4BC6-A26C-CB5D66AF0915} = {0C040035-BC37-4BC6-A26C-CB5D66AF0915}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NiWrapper", "NiWrapper\NiWrapper.vcxproj", "{0C040035-BC37-4BC6-A26C-CB5D66AF0915}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "ConsoleTest\ConsoleTest.csproj", "{9B5B364D-26C4-4FE8-914A-5DFA95BC1379}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "Samples\ConsoleTest\ConsoleTest.csproj", "{9B5B364D-26C4-4FE8-914A-5DFA95BC1379}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0C040035-BC37-4BC6-A26C-CB5D66AF0915} = {0C040035-BC37-4BC6-A26C-CB5D66AF0915}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiViewer.Net", "NiViewer.Net\NiViewer.Net.csproj", "{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiViewer.Net", "Samples\NiViewer.Net\NiViewer.Net.csproj", "{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0C040035-BC37-4BC6-A26C-CB5D66AF0915} = {0C040035-BC37-4BC6-A26C-CB5D66AF0915}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Packages", "Packages", "{265FBF19-1441-41D6-AA6D-389262B76E7E}"
 	ProjectSection(SolutionItems) = preProject
-		Packages\OpenNI 2.1.0.4 .Net Wrapper x64.zip = Packages\OpenNI 2.1.0.4 .Net Wrapper x64.zip
-		Packages\OpenNI 2.1.0.4 .Net Wrapper x86.zip = Packages\OpenNI 2.1.0.4 .Net Wrapper x86.zip
+		Packages\NiWrapper.Net x64.zip = Packages\NiWrapper.Net x64.zip
+		Packages\NiWrapper.Net x86.zip = Packages\NiWrapper.Net x86.zip
+		Packages\NiWrapper.NiTE.Net x64.zip = Packages\NiWrapper.NiTE.Net x64.zip
+		Packages\NiWrapper.NiTE.Net x86.zip = Packages\NiWrapper.NiTE.Net x86.zip
 	EndProjectSection
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CustomBitmapCopyVB", "Samples\CustomBitmapCopyVB\CustomBitmapCopyVB.vbproj", "{965C2EC2-85DC-4403-A6E1-DBC92C1847D7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0C040035-BC37-4BC6-A26C-CB5D66AF0915} = {0C040035-BC37-4BC6-A26C-CB5D66AF0915}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NiWrapper.NiTE", "NiWrapper.NiTE\NiWrapper.NiTE.vcxproj", "{0C040035-BC37-4BC6-A26C-CB5D66AF0916}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiWrapper.NiTE.Net", "NiWrapper.NiTE.Net\NiWrapper.NiTE.Net.csproj", "{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0C040035-BC37-4BC6-A26C-CB5D66AF0916} = {0C040035-BC37-4BC6-A26C-CB5D66AF0916}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{3FA3A9E0-90F1-4E2D-95E4-7339C10777A2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BA2DAFFC-2EA3-4C01-9E4E-AF7E6A9DE3E2}"
+	ProjectSection(SolutionItems) = preProject
+		Solution Items\7za.exe = Solution Items\7za.exe
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiTE.HandTracker", "NiTE.HandTracker\NiTE.HandTracker.csproj", "{CB65AD59-F818-4FB3-9962-CEBA0B99F0FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,32 +81,84 @@ Global
 		{0C040035-BC37-4BC6-A26C-CB5D66AF0915}.Release|x64.Build.0 = Release|x64
 		{0C040035-BC37-4BC6-A26C-CB5D66AF0915}.Release|x86.ActiveCfg = Release|Win32
 		{0C040035-BC37-4BC6-A26C-CB5D66AF0915}.Release|x86.Build.0 = Release|Win32
-		{9B5B364D-26C4-4FE8-914A-5DFA95BC1379}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
-		{9B5B364D-26C4-4FE8-914A-5DFA95BC1379}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{9B5B364D-26C4-4FE8-914A-5DFA95BC1379}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{9B5B364D-26C4-4FE8-914A-5DFA95BC1379}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{9B5B364D-26C4-4FE8-914A-5DFA95BC1379}.Debug|x64.ActiveCfg = Debug|x64
 		{9B5B364D-26C4-4FE8-914A-5DFA95BC1379}.Debug|x64.Build.0 = Debug|x64
 		{9B5B364D-26C4-4FE8-914A-5DFA95BC1379}.Debug|x86.ActiveCfg = Debug|x86
 		{9B5B364D-26C4-4FE8-914A-5DFA95BC1379}.Debug|x86.Build.0 = Debug|x86
-		{9B5B364D-26C4-4FE8-914A-5DFA95BC1379}.Release|Mixed Platforms.ActiveCfg = Release|x64
-		{9B5B364D-26C4-4FE8-914A-5DFA95BC1379}.Release|Mixed Platforms.Build.0 = Release|x64
+		{9B5B364D-26C4-4FE8-914A-5DFA95BC1379}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{9B5B364D-26C4-4FE8-914A-5DFA95BC1379}.Release|Mixed Platforms.Build.0 = Release|x86
 		{9B5B364D-26C4-4FE8-914A-5DFA95BC1379}.Release|x64.ActiveCfg = Release|x64
 		{9B5B364D-26C4-4FE8-914A-5DFA95BC1379}.Release|x64.Build.0 = Release|x64
 		{9B5B364D-26C4-4FE8-914A-5DFA95BC1379}.Release|x86.ActiveCfg = Release|x86
 		{9B5B364D-26C4-4FE8-914A-5DFA95BC1379}.Release|x86.Build.0 = Release|x86
-		{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}.Debug|Mixed Platforms.Build.0 = Debug|x64
 		{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}.Debug|x64.ActiveCfg = Debug|x64
 		{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}.Debug|x64.Build.0 = Debug|x64
 		{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}.Debug|x86.ActiveCfg = Debug|x86
 		{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}.Debug|x86.Build.0 = Debug|x86
-		{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}.Release|Mixed Platforms.Build.0 = Release|x86
+		{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}.Release|Mixed Platforms.Build.0 = Release|x64
 		{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}.Release|x64.ActiveCfg = Release|x64
 		{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}.Release|x64.Build.0 = Release|x64
 		{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}.Release|x86.ActiveCfg = Release|x86
 		{7D8F048D-E1F2-4248-8453-7CEFD3C4C660}.Release|x86.Build.0 = Release|x86
+		{965C2EC2-85DC-4403-A6E1-DBC92C1847D7}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{965C2EC2-85DC-4403-A6E1-DBC92C1847D7}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{965C2EC2-85DC-4403-A6E1-DBC92C1847D7}.Debug|x64.ActiveCfg = Debug|x64
+		{965C2EC2-85DC-4403-A6E1-DBC92C1847D7}.Debug|x64.Build.0 = Debug|x64
+		{965C2EC2-85DC-4403-A6E1-DBC92C1847D7}.Debug|x86.ActiveCfg = Debug|x86
+		{965C2EC2-85DC-4403-A6E1-DBC92C1847D7}.Debug|x86.Build.0 = Debug|x86
+		{965C2EC2-85DC-4403-A6E1-DBC92C1847D7}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{965C2EC2-85DC-4403-A6E1-DBC92C1847D7}.Release|Mixed Platforms.Build.0 = Release|x64
+		{965C2EC2-85DC-4403-A6E1-DBC92C1847D7}.Release|x64.ActiveCfg = Release|x64
+		{965C2EC2-85DC-4403-A6E1-DBC92C1847D7}.Release|x64.Build.0 = Release|x64
+		{965C2EC2-85DC-4403-A6E1-DBC92C1847D7}.Release|x86.ActiveCfg = Release|x86
+		{965C2EC2-85DC-4403-A6E1-DBC92C1847D7}.Release|x86.Build.0 = Release|x86
+		{0C040035-BC37-4BC6-A26C-CB5D66AF0916}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{0C040035-BC37-4BC6-A26C-CB5D66AF0916}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{0C040035-BC37-4BC6-A26C-CB5D66AF0916}.Debug|x64.ActiveCfg = Debug|x64
+		{0C040035-BC37-4BC6-A26C-CB5D66AF0916}.Debug|x64.Build.0 = Debug|x64
+		{0C040035-BC37-4BC6-A26C-CB5D66AF0916}.Debug|x86.ActiveCfg = Debug|Win32
+		{0C040035-BC37-4BC6-A26C-CB5D66AF0916}.Debug|x86.Build.0 = Debug|Win32
+		{0C040035-BC37-4BC6-A26C-CB5D66AF0916}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{0C040035-BC37-4BC6-A26C-CB5D66AF0916}.Release|Mixed Platforms.Build.0 = Release|x64
+		{0C040035-BC37-4BC6-A26C-CB5D66AF0916}.Release|x64.ActiveCfg = Release|x64
+		{0C040035-BC37-4BC6-A26C-CB5D66AF0916}.Release|x64.Build.0 = Release|x64
+		{0C040035-BC37-4BC6-A26C-CB5D66AF0916}.Release|x86.ActiveCfg = Release|Win32
+		{0C040035-BC37-4BC6-A26C-CB5D66AF0916}.Release|x86.Build.0 = Release|Win32
+		{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFD}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFD}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFD}.Debug|x64.ActiveCfg = Debug|x64
+		{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFD}.Debug|x64.Build.0 = Debug|x64
+		{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFD}.Debug|x86.ActiveCfg = Debug|x86
+		{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFD}.Debug|x86.Build.0 = Debug|x86
+		{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFD}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFD}.Release|Mixed Platforms.Build.0 = Release|x64
+		{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFD}.Release|x64.ActiveCfg = Release|x64
+		{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFD}.Release|x64.Build.0 = Release|x64
+		{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFD}.Release|x86.ActiveCfg = Release|x86
+		{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFD}.Release|x86.Build.0 = Release|x86
+		{CB65AD59-F818-4FB3-9962-CEBA0B99F0FF}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{CB65AD59-F818-4FB3-9962-CEBA0B99F0FF}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{CB65AD59-F818-4FB3-9962-CEBA0B99F0FF}.Debug|x64.ActiveCfg = Debug|x86
+		{CB65AD59-F818-4FB3-9962-CEBA0B99F0FF}.Debug|x86.ActiveCfg = Debug|x86
+		{CB65AD59-F818-4FB3-9962-CEBA0B99F0FF}.Debug|x86.Build.0 = Debug|x86
+		{CB65AD59-F818-4FB3-9962-CEBA0B99F0FF}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{CB65AD59-F818-4FB3-9962-CEBA0B99F0FF}.Release|Mixed Platforms.Build.0 = Release|x86
+		{CB65AD59-F818-4FB3-9962-CEBA0B99F0FF}.Release|x64.ActiveCfg = Release|x86
+		{CB65AD59-F818-4FB3-9962-CEBA0B99F0FF}.Release|x86.ActiveCfg = Release|x86
+		{CB65AD59-F818-4FB3-9962-CEBA0B99F0FF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7D8F048D-E1F2-4248-8453-7CEFD3C4C660} = {3FA3A9E0-90F1-4E2D-95E4-7339C10777A2}
+		{965C2EC2-85DC-4403-A6E1-DBC92C1847D7} = {3FA3A9E0-90F1-4E2D-95E4-7339C10777A2}
+		{9B5B364D-26C4-4FE8-914A-5DFA95BC1379} = {3FA3A9E0-90F1-4E2D-95E4-7339C10777A2}
+		{CB65AD59-F818-4FB3-9962-CEBA0B99F0FF} = {3FA3A9E0-90F1-4E2D-95E4-7339C10777A2}
 	EndGlobalSection
 EndGlobal

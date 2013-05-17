@@ -53,5 +53,37 @@ namespace OpenNIWrapper
                 OpenNI.throwIfError(CameraSettings_setAutoWhiteBalanceEnabled(this.Handle, value));
             }
         }
+
+        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        static extern int CameraSettings_getExposure(IntPtr objectHandler);
+        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        static extern OpenNI.Status CameraSettings_setExposure(IntPtr objectHandler, int value);
+        public int Exposure
+        {
+            get
+            {
+                return CameraSettings_getExposure(this.Handle);
+            }
+            set
+            {
+                OpenNI.throwIfError(CameraSettings_setExposure(this.Handle, value));
+            }
+        }
+
+        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        static extern int CameraSettings_getGain(IntPtr objectHandler);
+        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        static extern OpenNI.Status CameraSettings_setGain(IntPtr objectHandler, int value);
+        public int Gain
+        {
+            get
+            {
+                return CameraSettings_getGain(this.Handle);
+            }
+            set
+            {
+                OpenNI.throwIfError(CameraSettings_setGain(this.Handle, value));
+            }
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace ConsoleTest
             DeviceInfo[] devices = OpenNI.EnumerateDevices();
             if (devices.Length == 0)
                 return;
-            using (Device device = devices[0].OpenDevice())
+            using (Device device = Device.Open(null)) //devices[0].OpenDevice())
             {
 
                 if (device.hasSensor(Device.SensorType.DEPTH) &&

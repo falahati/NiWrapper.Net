@@ -29,6 +29,7 @@ namespace OpenNIWrapper
             GRAY8 = 202,
             GRAY16 = 203,
             JPEG = 204,
+            YUYV = 205,
         }
         bool _isConst = false;
         internal VideoMode(IntPtr handle, bool isConst)

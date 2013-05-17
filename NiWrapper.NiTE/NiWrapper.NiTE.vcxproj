@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{0C040035-BC37-4BC6-A26C-CB5D66AF0915}</ProjectGuid>
+    <ProjectGuid>{0C040035-BC37-4BC6-A26C-CB5D66AF0916}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>NiWrapper</RootNamespace>
   </PropertyGroup>
@@ -64,19 +64,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)\bin\x86_$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)\bin\NiTE\x86_$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)\bin\x64_$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)\bin\NiTE\x64_$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\bin\x86_$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)\bin\NiTE\x86_$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\bin\x64_$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)\bin\NiTE\x64_$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -85,16 +85,17 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;NIWRAPPER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(OPENNI2_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(NITE2_INCLUDE);$(OPENNI2_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OPENNI2_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OpenNI2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(NITE2_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>NITE2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "%OPENNI2_REDIST%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt</Command>
+      <Command>xcopy "%OPENNI2_REDIST%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt
+xcopy "%NITE2_REDIST%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -104,16 +105,17 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;NIWRAPPER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(OPENNI2_INCLUDE64);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(NITE2_INCLUDE64);$(OPENNI2_INCLUDE64);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OPENNI2_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OpenNI2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(NITE2_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>NITE2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "%OPENNI2_REDIST64%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt</Command>
+      <Command>xcopy "%OPENNI2_REDIST64%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt
+xcopy "%NITE2_REDIST64%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -125,18 +127,19 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;NIWRAPPER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(OPENNI2_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(NITE2_INCLUDE);$(OPENNI2_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(OPENNI2_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OpenNI2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(NITE2_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>NITE2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "%OPENNI2_REDIST%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt</Command>
+      <Command>xcopy "%OPENNI2_REDIST%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt
+xcopy "%NITE2_REDIST%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -148,42 +151,31 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;NIWRAPPER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(OPENNI2_INCLUDE64);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(NITE2_INCLUDE64);$(OPENNI2_INCLUDE64);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(OPENNI2_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OpenNI2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(NITE2_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>NITE2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "%OPENNI2_REDIST64%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt</Command>
+      <Command>xcopy "%OPENNI2_REDIST64%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt
+xcopy "%NITE2_REDIST64%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Array.cpp" />
-    <ClCompile Include="CameraSettings.cpp" />
     <ClCompile Include="Common.cpp" />
-    <ClCompile Include="CoordinateConverter.cpp" />
-    <ClCompile Include="Device.cpp" />
-    <ClCompile Include="DeviceInfo.cpp" />
-    <ClCompile Include="OpenNI.cpp" />
-    <ClCompile Include="OpenNI_Listener.cpp" />
-    <ClCompile Include="PlaybackControl.cpp" />
-    <ClCompile Include="Recorder.cpp" />
-    <ClCompile Include="SensorInfo.cpp" />
-    <ClCompile Include="VideoFrameRef.cpp" />
-    <ClCompile Include="VideoMode.cpp" />
-    <ClCompile Include="VideoStream.cpp" />
-    <ClCompile Include="VideoStream_Listener.cpp" />
+    <ClCompile Include="NiTE.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="NiWrapper.rc" />
+    <ResourceCompile Include="NiWrapper.NiTE.rc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CopyExcludeList.txt" />

@@ -162,9 +162,15 @@ namespace OpenNIWrapper
         }
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        static extern bool Device_getDepthColorSyncEnabled(IntPtr objectHandler);
+        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern OpenNI.Status Device_setDepthColorSyncEnabled(IntPtr objectHandler, bool enable);
         public bool DepthColorSyncEnabled
         {
+            get
+            {
+                return Device_getDepthColorSyncEnabled(this.Handle);
+            }
             set
             {
                 OpenNI.throwIfError(Device_setDepthColorSyncEnabled(this.Handle, value));
