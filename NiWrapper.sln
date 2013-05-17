@@ -45,7 +45,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Solution Items\7za.exe = Solution Items\7za.exe
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiTE.HandTracker", "NiTE.HandTracker\NiTE.HandTracker.csproj", "{CB65AD59-F818-4FB3-9962-CEBA0B99F0FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiTE.HandTracker", "Samples\NiTE.HandTracker\NiTE.HandTracker.csproj", "{CB65AD59-F818-4FB3-9962-CEBA0B99F0FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
