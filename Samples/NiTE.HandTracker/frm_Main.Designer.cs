@@ -1,6 +1,6 @@
-﻿namespace NiTE.HandTracker
+﻿namespace NiTEHandTracker
 {
-    partial class Form1
+    partial class frm_Main
     {
         /// <summary>
         /// Required designer variable.
@@ -28,9 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // frm_Main
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Text = "Form1";
+            this.ClientSize = new System.Drawing.Size(542, 336);
+            this.Name = "frm_Main";
+            this.Text = "frm_Main";
+            this.Load += new System.EventHandler(this.frm_Main_Load);
+            this.ResumeLayout(false);
+
         }
 
         #endregion

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace NiTE.HandTracker
+namespace NiTEHandTracker
 {
     static class Program
     {
@@ -15,7 +15,7 @@ namespace NiTE.HandTracker
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new frm_Main());
         }
     }
 }

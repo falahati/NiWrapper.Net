@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace NiTEWrapper
 {
-    class NiTE
+    public class NiTE
     {
         [StructLayout(LayoutKind.Sequential)]
         struct OniVersion
@@ -19,9 +19,9 @@ namespace NiTEWrapper
 
         public enum Status
         {
-            STATUS_OK,
-            STATUS_ERROR,
-            STATUS_BAD_USER_ID,
+            OK,
+            ERROR,
+            BAD_USER_ID,
         }
 
         [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -39,6 +39,7 @@ namespace NiTEWrapper
         static extern Status NiTE_initialize();
         public static Status Initialize()
         {
+            
             return NiTE_initialize();
         }
 

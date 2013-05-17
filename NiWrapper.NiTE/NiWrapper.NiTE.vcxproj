@@ -90,8 +90,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(NITE2_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>NITE2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OPENNI2_LIB);$(NITE2_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenNI2.lib;NITE2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "%OPENNI2_REDIST%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt
@@ -110,8 +110,8 @@ xcopy "%NITE2_REDIST%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt<
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(NITE2_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>NITE2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OPENNI2_LIB64);$(NITE2_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenNI2.lib;NITE2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "%OPENNI2_REDIST64%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt
@@ -134,8 +134,8 @@ xcopy "%NITE2_REDIST64%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.tx
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(NITE2_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>NITE2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OPENNI2_LIB);$(NITE2_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenNI2.lib;NITE2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "%OPENNI2_REDIST%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt
@@ -158,8 +158,8 @@ xcopy "%NITE2_REDIST%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt<
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(NITE2_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>NITE2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OPENNI2_LIB64);$(NITE2_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenNI2.lib;NITE2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "%OPENNI2_REDIST64%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt
@@ -170,6 +170,14 @@ xcopy "%NITE2_REDIST64%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.tx
     <ClCompile Include="Array.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="NiTE.cpp" />
+    <ClCompile Include="PoseData.cpp" />
+    <ClCompile Include="Skeleton.cpp" />
+    <ClCompile Include="SkeletonJoint.cpp" />
+    <ClCompile Include="UserData.cpp" />
+    <ClCompile Include="UserMap.cpp" />
+    <ClCompile Include="UserTracker.cpp" />
+    <ClCompile Include="UserTrackerFrameRef.cpp" />
+    <ClCompile Include="UserTracker_Listener.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />

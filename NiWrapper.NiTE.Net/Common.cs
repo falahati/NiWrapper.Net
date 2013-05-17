@@ -14,6 +14,5 @@ namespace NiTEWrapper
         {
             Common_Delete(o.Handle);
         }
-
     }
 }

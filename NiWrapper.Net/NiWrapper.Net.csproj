@@ -8,7 +8,7 @@
     <ProjectGuid>{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NiWrapper.Net</RootNamespace>
+    <RootNamespace>OpenNIWrapper</RootNamespace>
     <AssemblyName>NiWrapper.Net</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

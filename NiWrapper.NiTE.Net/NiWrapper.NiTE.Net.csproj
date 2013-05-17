@@ -8,7 +8,7 @@
     <ProjectGuid>{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NiWrapper.NiTE.Net</RootNamespace>
+    <RootNamespace>NiTEWrapper</RootNamespace>
     <AssemblyName>NiWrapper.NiTE.Net</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -83,6 +83,7 @@
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -93,7 +94,20 @@
     <Compile Include="Common.cs" />
     <Compile Include="NiTE.cs" />
     <Compile Include="NiTEBase.cs" />
+    <Compile Include="Plane.cs" />
+    <Compile Include="PoseData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Skeleton.cs" />
+    <Compile Include="SkeletonJoint.cs" />
+    <Compile Include="UserData.cs" />
+    <Compile Include="UserMap.cs" />
+    <Compile Include="UserTrackerFrameRef.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NiWrapper.Net\NiWrapper.Net.csproj">
+      <Project>{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFC}</Project>
+      <Name>NiWrapper.Net</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
