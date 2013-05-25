@@ -60,14 +60,14 @@ Public Class frm_Main
     End Sub
     Dim bit As Bitmap
     Private Function ToBitmap(depthFrame As VideoFrameRef, colorFrame As VideoFrameRef) As Bitmap
-        Dim imageBytes(depthFrame.FrameSize.Width * depthFrame.FrameSize.Height * 3) As Byte
+        Dim imageBytes(depthFrame.FrameSize.Width * depthFrame.FrameSize.Height * 3 - 1) As Byte
         If (bit Is Nothing OrElse bit.Width <> depthFrame.FrameSize.Width OrElse bit.Height <> depthFrame.FrameSize.Height OrElse bit.PixelFormat <> Imaging.PixelFormat.Format24bppRgb) Then
             bit = New Bitmap(depthFrame.FrameSize.Width, depthFrame.FrameSize.Height, Imaging.PixelFormat.Format24bppRgb)
         End If
         Dim maxDepth As UInt16 = 0
         Dim minDepth As UInt16 = UInt16.MaxValue
         Dim dataPosition As IntPtr = depthFrame.Data
-        For p As Integer = 0 To depthFrame.DataSize - 1
+        For p As Integer = 0 To (depthFrame.DataSize / 2) - 1
             Dim depth As UInt16 = Marshal.ReadInt16(dataPosition)
             If (depth > maxDepth) Then maxDepth = depth
             If (depth < minDepth) Then minDepth = depth
@@ -105,7 +105,7 @@ Public Class frm_Main
         Next
 
         Dim bitData As BitmapData = bit.LockBits(New Rectangle(0, 0, bit.Width, bit.Height), Imaging.ImageLockMode.WriteOnly, Imaging.PixelFormat.Format24bppRgb)
-        Marshal.Copy(imageBytes, 0, bitData.Scan0, imageBytes.Length)
+        Marshal.Copy(imageBytes, 0, bitData.Scan0, imageBytes.Length - 1)
         bit.UnlockBits(bitData)
 
         Return New Bitmap(bit)
