@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 namespace OpenNIWrapper
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct WrapperArray
+    internal struct WrapperArray
     {
         public int Size;
         public IntPtr Data;
