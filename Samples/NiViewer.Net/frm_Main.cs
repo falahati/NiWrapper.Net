@@ -36,10 +36,10 @@ namespace NiViewer.Net
 
         void OpenNI_onDeviceConnectionStateChanged(DeviceInfo Device)
         {
-            this.BeginInvoke((Action)delegate
+            this.BeginInvoke(new MethodInvoker(delegate()
             {
                 UpdateDevicesList();
-            });
+            }));
         }
 
         private void UpdateDevicesList()
@@ -155,7 +155,7 @@ namespace NiViewer.Net
                                 bitmap = frame.toBitmap(options);
                             }
                         }
-                        this.BeginInvoke((Action)delegate
+                        this.BeginInvoke(new MethodInvoker(delegate()
                         {
                             lock (bitmap)
                             {
@@ -164,7 +164,7 @@ namespace NiViewer.Net
                                 pb_image.Image = new Bitmap(bitmap, pb_image.Size);
                                 pb_image.Refresh();
                             }
-                        });
+                        }));
                     }
                 }
             }
