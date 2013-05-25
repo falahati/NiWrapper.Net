@@ -51,7 +51,6 @@ extern "C"
 		 vs->stop();
 	}
 
-
 	__declspec(dllexport) Status VideoStream_getProperty(VideoStream* vs, int propertyId, void* data, int* dataSize)
 	{
 		 return vs->getProperty(propertyId, data, dataSize);
