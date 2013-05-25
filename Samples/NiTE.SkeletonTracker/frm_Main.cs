@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using NiTEWrapper;
@@ -99,7 +98,7 @@ namespace NiTESkeletonTracker
                         g.Save();
                     }
                 }
-                this.Invoke(new Action(delegate()
+                this.Invoke(new MethodInvoker(delegate()
                 {
                     fps = ((1000000 / (frame.Timestamp - lastTime)) + (fps * 4)) / 5;
                     lastTime = frame.Timestamp;
