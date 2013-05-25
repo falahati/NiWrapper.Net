@@ -19,6 +19,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiViewer.Net", "Samples\NiV
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Packages", "Packages", "{265FBF19-1441-41D6-AA6D-389262B76E7E}"
+	ProjectSection(SolutionItems) = preProject
+		Packages\NiWrapper.Net x64.zip = Packages\NiWrapper.Net x64.zip
+		Packages\NiWrapper.Net x86.zip = Packages\NiWrapper.Net x86.zip
+		Packages\NiWrapper.NiTE.Net x64.zip = Packages\NiWrapper.NiTE.Net x64.zip
+		Packages\NiWrapper.NiTE.Net x86.zip = Packages\NiWrapper.NiTE.Net x86.zip
+	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CustomBitmapCopyVB", "Samples\CustomBitmapCopyVB\CustomBitmapCopyVB.vbproj", "{965C2EC2-85DC-4403-A6E1-DBC92C1847D7}"
 	ProjectSection(ProjectDependencies) = postProject
