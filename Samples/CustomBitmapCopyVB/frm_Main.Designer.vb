@@ -46,7 +46,7 @@ Partial Class frm_Main
         Me.pictureBox1.TabIndex = 2
         Me.pictureBox1.TabStop = False
         '
-        'Form1
+        'frm_Main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -57,8 +57,8 @@ Partial Class frm_Main
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.Name = "Form1"
-        Me.Text = "Form1"
+        Me.Name = "frm_Main"
+        Me.Text = "Custom Copy using VB"
         CType(Me.pictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
