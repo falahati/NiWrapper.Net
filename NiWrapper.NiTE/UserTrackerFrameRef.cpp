@@ -8,7 +8,8 @@ extern "C"
 {
 	__declspec(dllexport) void UserTrackerFrameRef_release(UserTrackerFrameRef* vf)
 	{
-		 vf->release();
+		vf->release();
+		delete vf;
 	}
 
 	__declspec(dllexport) openni::VideoFrameRef* UserTrackerFrameRef_getDepthFrame(UserTrackerFrameRef* vf)
@@ -29,11 +30,6 @@ extern "C"
 		 return vf->getFloorConfidence();
 	}
 
-	__declspec(dllexport) bool UserTrackerFrameRef_isValid(UserTrackerFrameRef* vf)
-	{
-		 return vf->isValid();
-	}
-
 	__declspec(dllexport) int  UserTrackerFrameRef_getFrameIndex(UserTrackerFrameRef* vf)
 	{
 		 return vf->getFrameIndex();
@@ -42,6 +38,11 @@ extern "C"
 	__declspec(dllexport) uint64_t UserTrackerFrameRef_getTimestamp(UserTrackerFrameRef* vf)
 	{
 		 return vf->getTimestamp();
+	}
+
+	__declspec(dllexport) bool UserTrackerFrameRef_isValid(UserTrackerFrameRef* vf)
+	{
+		 return vf->isValid();
 	}
 
 	__declspec(dllexport) UserData* UserTrackerFrameRef_getUserById(UserTrackerFrameRef* vf, UserId id)
@@ -68,7 +69,7 @@ extern "C"
 
 	__declspec(dllexport) void UserTrackerFrameRef_destroyUsersArray(WrapperArray p){
 		delete[] p.Data;
-		delete p.Handle;
+		//delete &p;
 	}
 
 };

@@ -36,7 +36,7 @@ namespace NiTEWrapper
         [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void SkeletonJoint_getOrientation(IntPtr objectHandler,
             ref float x, ref float y, ref float z, ref float w);
-        Quaternion? _Orientation;
+        object _Orientation;
         public Quaternion Orientation
         {
             get
@@ -47,14 +47,14 @@ namespace NiTEWrapper
                     SkeletonJoint_getOrientation(this.Handle, ref x, ref y, ref z, ref w);
                     _Orientation = new Quaternion(x, y, z, w);
                 }
-                return _Orientation.Value;
+                return (Quaternion)_Orientation;
             }
         }
 
         [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void SkeletonJoint_getPosition(IntPtr objectHandler,
             ref float x, ref float y, ref float z);
-        Point3D? _Position;
+        object _Position;
         public Point3D Position
         {
             get
@@ -65,7 +65,7 @@ namespace NiTEWrapper
                     SkeletonJoint_getPosition(this.Handle, ref x, ref y, ref z);
                     _Position = new Point3D(x, y, z);
                 }
-                return _Position.Value;
+                return (Point3D)_Position;
             }
         }
 

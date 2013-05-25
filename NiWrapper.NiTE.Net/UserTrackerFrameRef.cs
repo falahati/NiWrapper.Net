@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Windows.Media.Media3D;
+using System.Drawing;
+using OpenNIWrapper;
 
 namespace NiTEWrapper
 {
-    class UserTrackerFrameRef : NiTEBase, IDisposable
+    public class UserTrackerFrameRef : NiTEBase, IDisposable
     {
         internal UserTrackerFrameRef(IntPtr handle)
         {
@@ -18,7 +21,6 @@ namespace NiTEWrapper
             try
             {
                 Dispose();
-                Common.DeleteObject(this);
             }
             catch (Exception)
             { }
@@ -29,18 +31,20 @@ namespace NiTEWrapper
         public void Release()
         {
             UserTrackerFrameRef_release(this.Handle);
+            _users = null;
+            base.Handle = IntPtr.Zero;
         }
 
         [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern IntPtr UserTrackerFrameRef_getDepthFrame(IntPtr objectHandler);
-        OpenNIWrapper.VideoStream _DepthFrame = null;
-        public OpenNIWrapper.VideoStream DepthFrame
+        OpenNIWrapper.VideoFrameRef _DepthFrame = null;
+        public OpenNIWrapper.VideoFrameRef DepthFrame
         {
             get
             {
                 if (_DepthFrame == null)
-                _DepthFrame = new OpenNIWrapper.VideoStream(
-                                UserTrackerFrameRef_getDepthFrame(this.Handle));
+                    _DepthFrame = new OpenNIWrapper.VideoFrameRef(
+                                    UserTrackerFrameRef_getDepthFrame(this.Handle));
                 return _DepthFrame;
             }
         }
@@ -48,7 +52,7 @@ namespace NiTEWrapper
         [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void UserTrackerFrameRef_getFloor(IntPtr objectHandler,
             ref float Px, ref float Py, ref float Pz, ref float Nx, ref float Ny, ref float Nz);
-        Plane? _Floor;
+        Object _Floor;
         public Plane Floor
         {
             get
@@ -63,7 +67,7 @@ namespace NiTEWrapper
                         point = new System.Windows.Media.Media3D.Point3D(Px, Py, Pz)
                     };
                 }
-                return _Floor.Value;
+                return (Plane)_Floor;
             }
         }
 
@@ -82,14 +86,11 @@ namespace NiTEWrapper
 
         [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern bool UserTrackerFrameRef_isValid(IntPtr objectHandler);
-        bool? _isValid;
         public new bool isValid
         {
             get
             {
-                if (_isValid == null)
-                    _isValid = UserTrackerFrameRef_isValid(this.Handle);
-                return _isValid.Value;
+                return base.isValid && UserTrackerFrameRef_isValid(this.Handle);
             }
         }
 
@@ -123,17 +124,17 @@ namespace NiTEWrapper
             }
         }
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern IntPtr UserTrackerFrameRef_getUserById(IntPtr objectHandler, short UserId);
-        Dictionary<int, UserData> _usersById = new Dictionary<int,UserData>();
-        public UserData getUserById(short userId)
-        {
-            if (!_usersById.ContainsKey(userId))
-                _usersById[userId] = new UserData(
-                    UserTrackerFrameRef_getUserById(this.Handle, userId));
+        //[DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        //static extern IntPtr UserTrackerFrameRef_getUserById(IntPtr objectHandler, short UserId);
+        //Dictionary<int, UserData> _usersById = new Dictionary<int, UserData>();
+        //public UserData getUserById(short userId)
+        //{
+        //    if (!_usersById.ContainsKey(userId))
+        //        _usersById[userId] = new UserData(
+        //            UserTrackerFrameRef_getUserById(this.Handle, userId));
 
-            return _usersById[userId];
-        }
+        //    return _usersById[userId];
+        //}
 
         [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern IntPtr UserTrackerFrameRef_getUserMap(IntPtr objectHandler);
@@ -153,21 +154,23 @@ namespace NiTEWrapper
         static extern WrapperArray UserTrackerFrameRef_getUsers(IntPtr vf);
         [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern IntPtr UserTrackerFrameRef_destroyUsersArray(WrapperArray array);
-        List<UserData> _users = null;
-        public UserData[] Users()
+        UserData[] _users = null;
+        public UserData[] Users
         {
-            if (_users == null)
+            get
             {
-                WrapperArray csa = UserTrackerFrameRef_getUsers(this.Handle);
-                IntPtr[] array = new IntPtr[csa.Size];
-                Marshal.Copy(csa.Data, array, 0, csa.Size);
-                UserData[] arrayObjects = new UserData[csa.Size];
-                for (int i = 0; i < csa.Size; i++)
-                    arrayObjects[i] = new UserData(array[i]);
-                UserTrackerFrameRef_destroyUsersArray(csa);
-                _users = new List<UserData>(arrayObjects);
+                if (_users == null)
+                {
+                    WrapperArray csa = UserTrackerFrameRef_getUsers(this.Handle);
+                    IntPtr[] array = new IntPtr[csa.Size];
+                    Marshal.Copy(csa.Data, array, 0, csa.Size);
+                    _users = new UserData[csa.Size];
+                    for (int i = 0; i < csa.Size; i++)
+                        _users[i] = new UserData(array[i]);
+                    UserTrackerFrameRef_destroyUsersArray(csa);
+                }
+                return _users;
             }
-            return _users.ToArray();
         }
 
         public void Dispose()

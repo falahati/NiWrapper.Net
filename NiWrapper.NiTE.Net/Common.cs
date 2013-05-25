@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace NiTEWrapper
 {
-    internal class Common
+    public class Common
     {
         [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void Common_Delete(IntPtr objectHandler);

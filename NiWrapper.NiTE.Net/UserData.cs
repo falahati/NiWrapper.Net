@@ -17,7 +17,7 @@ namespace NiTEWrapper
         [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void UserData_getBoundingBox(IntPtr objectHandler,
             ref float minX, ref float minY, ref float minZ, ref float maxX, ref float maxY, ref float maxZ);
-        Rect3D? _BoundingBox;
+        object _BoundingBox;
         public Rect3D BoundingBox
         {
             get
@@ -28,14 +28,14 @@ namespace NiTEWrapper
                     UserData_getBoundingBox(this.Handle, ref minX, ref minY, ref minZ, ref maxX, ref maxY, ref maxZ);
                     _BoundingBox = new Rect3D(minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ);
                 }
-                return _BoundingBox.Value;
+                return (Rect3D)_BoundingBox;
             }
         }
 
         [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void UserData_getCenterOfMass(IntPtr objectHandler,
             ref float x, ref float y, ref float z);
-        Point3D? _CenterOfMass;
+        object _CenterOfMass;
         public Point3D CenterOfMass
         {
             get
@@ -46,7 +46,7 @@ namespace NiTEWrapper
                     UserData_getCenterOfMass(this.Handle, ref x, ref y, ref z);
                     _CenterOfMass = new Point3D(x, y, z);
                 }
-                return _CenterOfMass.Value;
+                return (Point3D)_CenterOfMass;
             }
         }
 
