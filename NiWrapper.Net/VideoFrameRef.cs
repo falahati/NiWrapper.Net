@@ -20,7 +20,7 @@ namespace OpenNIWrapper
             DepthFillShadow = 32,
         }
 
-        internal VideoFrameRef(IntPtr handle)
+        public VideoFrameRef(IntPtr handle)
         {
             this.Handle = handle;
         }

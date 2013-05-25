@@ -14,7 +14,7 @@ namespace OpenNIWrapper
         public delegate void VideoStreamNewFrame(VideoStream vStream);
         private videoStreamNewFrame internal_NewFrame;
         public event VideoStreamNewFrame onNewFrame;
-        public VideoStream(IntPtr handle)
+        internal VideoStream(IntPtr handle)
         {
             ParentDevice = null;
             this.Handle = handle;
