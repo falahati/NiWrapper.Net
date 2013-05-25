@@ -1,7 +1,7 @@
 NiWrapper.Net
 =============
 
-OpenNI 2 .Net Wrapper
+OpenNI 2 and NiTE 2 .Net Wrapper
 Using .Net 4.0 CP
 
 For using it in your project you can download it from "Package" folder.
