@@ -24,6 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Packages", "Packages", "{26
 		Packages\NiWrapper.Net x86.zip = Packages\NiWrapper.Net x86.zip
 		Packages\NiWrapper.NiTE.Net x64.zip = Packages\NiWrapper.NiTE.Net x64.zip
 		Packages\NiWrapper.NiTE.Net x86.zip = Packages\NiWrapper.NiTE.Net x86.zip
+		Packages\README.md = Packages\README.md
 	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CustomBitmapCopyVB", "Samples\CustomBitmapCopyVB\CustomBitmapCopyVB.vbproj", "{965C2EC2-85DC-4403-A6E1-DBC92C1847D7}"
