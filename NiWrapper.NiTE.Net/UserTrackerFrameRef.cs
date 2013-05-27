@@ -123,17 +123,17 @@ namespace NiTEWrapper
             }
         }
 
-        //[DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        //static extern IntPtr UserTrackerFrameRef_getUserById(IntPtr objectHandler, short UserId);
-        //Dictionary<int, UserData> _usersById = new Dictionary<int, UserData>();
-        //public UserData getUserById(short userId)
-        //{
-        //    if (!_usersById.ContainsKey(userId))
-        //        _usersById[userId] = new UserData(
-        //            UserTrackerFrameRef_getUserById(this.Handle, userId));
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        static extern IntPtr UserTrackerFrameRef_getUserById(IntPtr objectHandler, short UserId);
+        Dictionary<int, UserData> _usersById = new Dictionary<int, UserData>();
+        public UserData getUserById(short userId)
+        {
+            if (!_usersById.ContainsKey(userId))
+                _usersById[userId] = new UserData(
+                    UserTrackerFrameRef_getUserById(this.Handle, userId));
 
-        //    return _usersById[userId];
-        //}
+            return _usersById[userId];
+        }
 
         [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern IntPtr UserTrackerFrameRef_getUserMap(IntPtr objectHandler);
