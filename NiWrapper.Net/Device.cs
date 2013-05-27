@@ -56,6 +56,7 @@ namespace OpenNIWrapper
                 foreach (VideoStream stream in VideoStreams_Cache.Values)
                     stream.Destroy();
             Device_close(this.Handle);
+            base.Handle = IntPtr.Zero;
         }
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
