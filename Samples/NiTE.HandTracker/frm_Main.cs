@@ -49,7 +49,7 @@ namespace NiTEHandTracker
              * You can copy OpenNI.dll from version 2.0 to solve this problem.
              * Then you can uncomment above line of code and comment below ones.
              */
-            while (true)
+            while (this.IsHandleCreated)
             {
                 hTracker_onNewData(hTracker);
                 Application.DoEvents();
@@ -60,8 +60,12 @@ namespace NiTEHandTracker
         ulong fps;
         void hTracker_onNewData(HandTracker hTracker)
         {
+            if (!hTracker.isValid)
+                return;
             using (HandTrackerFrameRef frame = hTracker.readFrame())
             {
+                if (!frame.isValid)
+                    return;
                 lock (image)
                 {
                     /* Because of incompatibility between current version of OpenNI and NiTE,
@@ -109,6 +113,7 @@ namespace NiTEHandTracker
         private void frm_Main_FormClosing(object sender, FormClosingEventArgs e)
         {
             NiTE.Shutdown();
+            OpenNIWrapper.OpenNI.Shutdown();
         }
     }
 }

@@ -48,7 +48,7 @@ namespace NiTEUserColor
              * You can copy OpenNI.dll from version 2.0 to solve this problem.
              * Then you can uncomment above line of code and comment below ones.
              */
-            while (true)
+            while (this.IsHandleCreated)
             {
                 uTracker_onNewData(uTracker);
                 Application.DoEvents();
@@ -59,8 +59,12 @@ namespace NiTEUserColor
         ulong fps;
         void uTracker_onNewData(UserTracker uTracker)
         {
+            if (!uTracker.isValid)
+                return;
             using (UserTrackerFrameRef frame = uTracker.readFrame())
             {
+                if (!frame.isValid)
+                    return;
                 UserMap um = frame.UserMap;
                 FillImageFromUserMap(frame.UserMap);
 
@@ -81,7 +85,6 @@ namespace NiTEUserColor
                     }
                     g.Save();
                 }
-
                 this.Invoke(new MethodInvoker(delegate()
                 {
                     fps = ((1000000 / (frame.Timestamp - lastTime)) + (fps * 4)) / 5;
@@ -122,6 +125,7 @@ namespace NiTEUserColor
         private void frm_Main_FormClosing(object sender, FormClosingEventArgs e)
         {
             NiTE.Shutdown();
+            OpenNIWrapper.OpenNI.Shutdown();
         }
     }
 }

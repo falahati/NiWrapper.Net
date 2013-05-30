@@ -48,7 +48,7 @@ namespace NiTESkeletonTracker
              * You can copy OpenNI.dll from version 2.0 to solve this problem.
              * Then you can uncomment above line of code and comment below ones.
              */
-            while (true)
+            while (this.IsHandleCreated)
             {
                 uTracker_onNewData(uTracker);
                 Application.DoEvents();
@@ -59,8 +59,12 @@ namespace NiTESkeletonTracker
         ulong fps;
         void uTracker_onNewData(UserTracker uTracker)
         {
+            if (!uTracker.isValid)
+                return;
             using (UserTrackerFrameRef frame = uTracker.readFrame())
             {
+                if (!frame.isValid)
+                    return;
                 lock (image)
                 {
                     if (image.Width != frame.UserMap.FrameSize.Width || image.Height != frame.UserMap.FrameSize.Height)
@@ -142,6 +146,7 @@ namespace NiTESkeletonTracker
         private void frm_Main_FormClosing(object sender, FormClosingEventArgs e)
         {
             NiTE.Shutdown();
+            OpenNIWrapper.OpenNI.Shutdown();
         }
     }
 }
