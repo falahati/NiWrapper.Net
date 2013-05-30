@@ -5,8 +5,12 @@ OpenNI 2 and NiTE 2 .Net Wrapper
 Using .Net 4.0 CP
 
 For using it in your project you can download it from "Package" folder.
-OpenNI 2.2.0.10 redist files included.
+
+OpenNI 2.2.0.21 redist files included.
+
 NiTE 2.0.0.12 redist files included.
+
+
 
 x86 version works with both 32 and 64 bits versions of Windows.
 
