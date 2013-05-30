@@ -22,7 +22,7 @@ namespace NiTEWrapper
 
         [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void UserTracker_destroy(IntPtr objectHandler);
-        internal void Destroy()
+        public void Destroy()
         {
             UserTracker_destroy(this.Handle);
             Common.DeleteObject(this);
