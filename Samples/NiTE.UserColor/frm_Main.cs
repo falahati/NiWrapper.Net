@@ -41,18 +41,19 @@ namespace NiTEUserColor
         {
             uTracker = UserTracker.Create();
             btn_start.Enabled = false;
-            //uTracker.onNewData += new UserTracker.UserTrackerListener(uTracker_onNewData);
+            uTracker.onNewData += new UserTracker.UserTrackerListener(uTracker_onNewData);
 
-            /* Because of incompatibility between current version of OpenNI and NiTE,
-             * we can't use event based reading. So we put our sample in a loop.
-             * You can copy OpenNI.dll from version 2.0 to solve this problem.
-             * Then you can uncomment above line of code and comment below ones.
-             */
-            while (this.IsHandleCreated)
-            {
-                uTracker_onNewData(uTracker);
-                Application.DoEvents();
-            }
+            //  FIXED Jun 2013
+            ///* Because of incompatibility between current version of OpenNI and NiTE,
+            // * we can't use event based reading. So we put our sample in a loop.
+            // * You can copy OpenNI.dll from version 2.0 to solve this problem.
+            // * Then you can uncomment above line of code and comment below ones.
+            // */
+            //while (this.IsHandleCreated)
+            //{
+            //    uTracker_onNewData(uTracker);
+            //    Application.DoEvents();
+            //}
         }
 
         ulong lastTime = 0;

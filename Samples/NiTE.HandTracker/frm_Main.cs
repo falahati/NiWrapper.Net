@@ -42,18 +42,19 @@ namespace NiTEHandTracker
             hTracker = HandTracker.Create();
             btn_start.Enabled = false;
             HandleError(hTracker.StartGestureDetection(GestureData.GestureType.HAND_RAISE));
-            //hTracker.onNewData += new HandTracker.HandTrackerListener(hTracker_onNewData);
+            hTracker.onNewData += new HandTracker.HandTrackerListener(hTracker_onNewData);
 
-            /* Because of incompatibility between current version of OpenNI and NiTE,
-             * we can't use event based reading. So we put our sample in a loop.
-             * You can copy OpenNI.dll from version 2.0 to solve this problem.
-             * Then you can uncomment above line of code and comment below ones.
-             */
-            while (this.IsHandleCreated)
-            {
-                hTracker_onNewData(hTracker);
-                Application.DoEvents();
-            }
+            //  FIXED Jun 2013
+            ///* Because of incompatibility between current version of OpenNI and NiTE,
+            // * we can't use event based reading. So we put our sample in a loop.
+            // * You can copy OpenNI.dll from version 2.0 to solve this problem.
+            // * Then you can uncomment above line of code and comment below ones.
+            // */
+            //while (this.IsHandleCreated)
+            //{
+            //    hTracker_onNewData(hTracker);
+            //    Application.DoEvents();
+            //}
         }
 
         ulong lastTime;
@@ -68,14 +69,11 @@ namespace NiTEHandTracker
                     return;
                 lock (image)
                 {
-                    /* Because of incompatibility between current version of OpenNI and NiTE,
-                     * we can't use VideoFrameRef methods when working with 
-                     * UserTrackerFrameRef.DepthFrame/HandTrackerFrameRef.DepthFrame
-                     * There is no workaround for this problem yet and we must wait for official update of NiTE
-                     * Then you can uncomment below lines.
-                     */
-                    //if (image.Width != frame.DepthFrame.FrameSize.Width || image.Height != frame.DepthFrame.FrameSize.Height)
-                    //    image = new Bitmap(frame.DepthFrame.FrameSize.Width, frame.DepthFrame.FrameSize.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                    using (OpenNIWrapper.VideoFrameRef depthFrame = frame.DepthFrame)
+                    {
+                        if (image.Width != depthFrame.FrameSize.Width || image.Height != depthFrame.FrameSize.Height)
+                            image = new Bitmap(depthFrame.FrameSize.Width, depthFrame.FrameSize.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                    }
                     using (Graphics g = Graphics.FromImage(image))
                     {
                         g.FillRectangle(Brushes.Black, new Rectangle(new Point(0, 0), image.Size));
