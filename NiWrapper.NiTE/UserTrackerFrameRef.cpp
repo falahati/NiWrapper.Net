@@ -14,7 +14,8 @@ extern "C"
 
 	__declspec(dllexport) openni::VideoFrameRef* UserTrackerFrameRef_getDepthFrame(UserTrackerFrameRef* vf)
 	{
-		 return &(vf->getDepthFrame());
+		openni::VideoFrameRef* vp = new openni::VideoFrameRef(vf->getDepthFrame());
+		return vp;
 	}
 
 	__declspec(dllexport) void UserTrackerFrameRef_getFloor(UserTrackerFrameRef* vf,

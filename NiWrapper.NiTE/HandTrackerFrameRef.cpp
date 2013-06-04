@@ -14,7 +14,8 @@ extern "C"
 
 	__declspec(dllexport) openni::VideoFrameRef* HandTrackerFrameRef_getDepthFrame(HandTrackerFrameRef* vf)
 	{
-		 return &(vf->getDepthFrame());
+		openni::VideoFrameRef* vp = new openni::VideoFrameRef(vf->getDepthFrame());
+		return vp;
 	}
 
 	__declspec(dllexport) int  HandTrackerFrameRef_getFrameIndex(HandTrackerFrameRef* vf)
