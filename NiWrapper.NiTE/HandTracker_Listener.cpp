@@ -2,7 +2,7 @@
 #include "NiTE.h"
 using namespace nite;
 
-class HandTracker_Listener : public HandTracker::Listener
+class HandTracker_Listener : public HandTracker::NewFrameListener
 {
 	public:
 		typedef void (*del_NewFrame)(HandTracker* ut);

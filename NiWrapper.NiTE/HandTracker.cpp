@@ -59,7 +59,7 @@ extern "C"
 		HandTracker* ut, void (*newFrame)(HandTracker*)){
 		HandTracker_Listener* lis = new HandTracker_Listener();
 		lis->SetNewFrameCallback(newFrame);
-		ut->addListener(lis);
+		ut->addNewFrameListener(lis);
 		return lis;
 	}
 

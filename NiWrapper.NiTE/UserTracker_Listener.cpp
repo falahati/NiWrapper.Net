@@ -2,7 +2,7 @@
 #include "NiTE.h"
 using namespace nite;
 
-class UserTracker_Listener : public UserTracker::Listener
+class UserTracker_Listener : public UserTracker::NewFrameListener
 {
 	public:
 		typedef void (*del_NewFrame)(UserTracker* ut);

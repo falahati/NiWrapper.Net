@@ -59,7 +59,7 @@ extern "C"
 		UserTracker* ut, void (*newFrame)(UserTracker*)){
 		UserTracker_Listener* lis = new UserTracker_Listener();
 		lis->SetNewFrameCallback(newFrame);
-		ut->addListener(lis);
+		ut->addNewFrameListener(lis);
 		return lis;
 	}
 
