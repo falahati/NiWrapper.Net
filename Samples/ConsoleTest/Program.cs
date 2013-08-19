@@ -27,8 +27,16 @@ namespace ConsoleTest
             DeviceInfo[] devices = OpenNI.EnumerateDevices();
             if (devices.Length == 0)
                 return;
-            using (Device device = Device.Open(null)) //devices[0].OpenDevice())
-            {
+            Device device;
+            using (device = Device._openEx(null,"lr")) // lean init and no reset flags
+            {	
+                VideoStream depth;
+                SensorInfo sensorInfo = device.getSensorInfo(Device.SensorType.DEPTH);
+	            if (sensorInfo != null)
+	            {
+		            depth = VideoStream.Create(device, OpenNIWrapper.Device.SensorType.DEPTH);
+	            }
+
 
                 if (device.hasSensor(Device.SensorType.DEPTH) &&
                     device.hasSensor(Device.SensorType.COLOR))
