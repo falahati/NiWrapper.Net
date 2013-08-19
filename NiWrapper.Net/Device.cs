@@ -69,6 +69,14 @@ namespace OpenNIWrapper
         }
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        static extern OpenNI.Status Device__openEx(out IntPtr objectHandler, IntPtr uri, IntPtr mode);
+        public static Device _openEx(string uri, string mode)
+        {
+            IntPtr handle;
+            OpenNI.throwIfError(Device__openEx(out handle, Marshal.StringToHGlobalAnsi(uri), Marshal.StringToHGlobalAnsi(mode)));
+            return new Device(handle);
+        }
+        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern IntPtr Device_getDeviceInfo(IntPtr objectHandler);
         DeviceInfo _DeviceInfo;
         public DeviceInfo DeviceInfo
@@ -107,6 +115,13 @@ namespace OpenNIWrapper
         public OpenNI.Status getProperty(int propertyId, IntPtr data, out int dataSize)
         {
             return Device_getProperty(this.Handle, propertyId, data, out dataSize);
+        }
+
+        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        static extern IntPtr Device_getSensorInfo(IntPtr objectHandler, SensorType sensorType);
+        public SensorInfo getSensorInfo(SensorType sensorType)
+        {
+            return new SensorInfo(Device_getSensorInfo(this.Handle, sensorType));
         }
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
