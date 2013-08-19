@@ -70,6 +70,17 @@ extern "C"
 			 Device_close(dl);
 		 return status;
 	}
+
+    __declspec(dllexport) Status Device__openEx(Device*& di, const char* uri, const char* mode)
+    {
+        Device* dl = new Device();
+        Status status = dl->_openEx(uri, mode);
+        if (status == STATUS_OK)
+            di = dl;
+        else
+            Device_close(dl);
+        return status;
+    }
 	__declspec(dllexport) Status Device_setDepthColorSyncEnabled(Device* di, bool enable)
 	{
 		 return di->setDepthColorSyncEnabled(enable);
