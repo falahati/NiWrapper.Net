@@ -60,6 +60,7 @@ extern "C"
 	{
 		 return di->isValid();
 	}
+
 	__declspec(dllexport) Status Device_open(Device*& di, const char* uri)
 	{
 		 Device* dl = new Device();
@@ -81,6 +82,7 @@ extern "C"
             Device_close(dl);
         return status;
     }
+
 	__declspec(dllexport) Status Device_setDepthColorSyncEnabled(Device* di, bool enable)
 	{
 		 return di->setDepthColorSyncEnabled(enable);

@@ -28,7 +28,7 @@ namespace ConsoleTest
             if (devices.Length == 0)
                 return;
             Device device;
-            using (device = Device._openEx(null,"lr")) // lean init and no reset flags
+            using (device = Device.Open(null,"lr")) // lean init and no reset flags
             {	
                 VideoStream depth;
                 SensorInfo sensorInfo = device.getSensorInfo(Device.SensorType.DEPTH);

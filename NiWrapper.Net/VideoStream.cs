@@ -27,7 +27,8 @@ namespace OpenNIWrapper
         static extern void VideoStream_destroy(IntPtr objectHandler);
         internal void Destroy()
         {
-            VideoStream_destroy(this.Handle);
+            if (this.isValid)
+                VideoStream_destroy(this.Handle);
             Common.DeleteObject(this);
         }
 

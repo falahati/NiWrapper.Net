@@ -61,21 +61,18 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern OpenNI.Status Device_open(out IntPtr objectHandler, IntPtr uri);
-        public static Device Open(string uri)
+        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        static extern OpenNI.Status Device__openEx(out IntPtr objectHandler, IntPtr uri, IntPtr mode);
+        public static Device Open(string uri, string mode = "")
         {
             IntPtr handle;
-            OpenNI.throwIfError(Device_open(out handle, Marshal.StringToHGlobalAnsi(uri)));
+            if (mode != "")
+                OpenNI.throwIfError(Device__openEx(out handle, Marshal.StringToHGlobalAnsi(uri), Marshal.StringToHGlobalAnsi(mode)));
+            else
+                OpenNI.throwIfError(Device_open(out handle, Marshal.StringToHGlobalAnsi(uri)));
             return new Device(handle);
         }
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern OpenNI.Status Device__openEx(out IntPtr objectHandler, IntPtr uri, IntPtr mode);
-        public static Device _openEx(string uri, string mode)
-        {
-            IntPtr handle;
-            OpenNI.throwIfError(Device__openEx(out handle, Marshal.StringToHGlobalAnsi(uri), Marshal.StringToHGlobalAnsi(mode)));
-            return new Device(handle);
-        }
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern IntPtr Device_getDeviceInfo(IntPtr objectHandler);
         DeviceInfo _DeviceInfo;
