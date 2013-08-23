@@ -73,6 +73,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="CopyExcludeList.txt" />
-    <None Include="LICENSE.txt" />
+    <None Include="NiWrapper - LICENSE.txt" />
   </ItemGroup>
 </Project>
