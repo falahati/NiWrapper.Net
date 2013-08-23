@@ -192,6 +192,7 @@ xcopy "%NITE2_REDIST64%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.tx
   </ItemGroup>
   <ItemGroup>
     <None Include="CopyExcludeList.txt" />
+    <None Include="LICENSE.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

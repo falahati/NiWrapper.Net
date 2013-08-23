@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="CopyExcludeList.txt" />
+    <None Include="LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NiWrapper.NiTE.rc">
