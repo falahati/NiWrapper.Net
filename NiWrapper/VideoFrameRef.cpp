@@ -98,7 +98,7 @@ extern "C"
 					pixelFormat == PIXEL_FORMAT_GRAY16){
 			// GRAY16 TO RGB24
 			uint16_t maxValue = 0;
-			uint16_t minValue = 65535;
+			uint16_t minValue = 0xFFFF;
 			int dataSize = vf->getDataSize();
 			for	(int y = 0; y < height; ++y)
 			{
@@ -131,10 +131,10 @@ extern "C"
 				char* srcPixel = ((char*)data + (y * stride));
 				memcpy(destPixel, srcPixel, stride);
 			}
-		}else if (pixelFormat == PIXEL_FORMAT_DEPTH_1_MM)
+		}else if (pixelFormat == PIXEL_FORMAT_DEPTH_1_MM || pixelFormat == PIXEL_FORMAT_DEPTH_100_UM)
 		{
 			DepthPixel maxDepth = 0;
-			DepthPixel minDepth = 10000;
+			DepthPixel minDepth = 0xFFFF;
 			int dataSize = vf->getDataSize();
 			for	(int y = 0; y < height; ++y)
 			{

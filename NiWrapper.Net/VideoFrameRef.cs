@@ -155,6 +155,7 @@ namespace OpenNIWrapper
                     format = System.Drawing.Imaging.PixelFormat.Format8bppIndexed;
                     break;
                 case VideoMode.PixelFormat.DEPTH_1MM:
+                case VideoMode.PixelFormat.DEPTH_100UM:
                 case VideoMode.PixelFormat.GRAY16:
                     format = System.Drawing.Imaging.PixelFormat.Format16bppGrayScale;
                     break;
@@ -175,13 +176,11 @@ namespace OpenNIWrapper
         static extern void VideoFrameRef_copyDataTo(IntPtr objectHandler, IntPtr dstData, int dstStride, copyBitmapOptions options);
         public void updateBitmap(Bitmap image, copyBitmapOptions options = copyBitmapOptions.None)
         {
-            lock (image)
-            {
                 if (image.Width != this.FrameSize.Width || image.Height != this.FrameSize.Height)
                     throw new ArgumentException("Bitmap size if not acceptable.");
                 if (image.PixelFormat == PixelFormat.Format24bppRgb)
                     options |= copyBitmapOptions.Force24BitRGB;
-                else if ((options & copyBitmapOptions.Force24BitRGB) != copyBitmapOptions.Force24BitRGB)
+                else if ((options & copyBitmapOptions.Force24BitRGB) == copyBitmapOptions.Force24BitRGB)
                     throw new ArgumentException("Requested RGB888 operation on a non-RGB24 bitmap.");
 
                 System.Drawing.Imaging.PixelFormat desiredFormat = System.Drawing.Imaging.PixelFormat.Format24bppRgb;
@@ -194,6 +193,7 @@ namespace OpenNIWrapper
                         desiredFormat = System.Drawing.Imaging.PixelFormat.Format8bppIndexed;
                         break;
                     case VideoMode.PixelFormat.DEPTH_1MM:
+                    case VideoMode.PixelFormat.DEPTH_100UM:
                     case VideoMode.PixelFormat.GRAY16:
                         desiredFormat = System.Drawing.Imaging.PixelFormat.Format16bppGrayScale;
                         break;
@@ -206,7 +206,6 @@ namespace OpenNIWrapper
                 BitmapData destBits = image.LockBits(new Rectangle(new Point(0, 0), image.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, image.PixelFormat);
                 VideoFrameRef_copyDataTo(this.Handle, destBits.Scan0, destBits.Stride, options);
                 image.UnlockBits(destBits);
-            }
         }
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
