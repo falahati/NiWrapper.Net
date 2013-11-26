@@ -111,7 +111,7 @@ namespace NiViewer.Net
                 currentSensor.VideoMode = (VideoMode)cb_videomode.SelectedItem;
                 try // Not supported by Kinect yet
                 {
-                    currentSensor.Mirroring = cb_mirror.Checked;
+                    currentSensor.Mirroring = cb_mirrorHard.Checked;
                     if (cb_tir.Checked)
                         currentDevice.ImageRegistration = Device.ImageRegistrationMode.DEPTH_TO_COLOR;
                     else
@@ -154,6 +154,8 @@ namespace NiViewer.Net
                             {
                                 bitmap = frame.toBitmap(options);
                             }
+                            if (cb_mirrorSoft.Checked)
+                                bitmap.RotateFlip(RotateFlipType.RotateNoneFlipX);
                         }
                         this.BeginInvoke(new MethodInvoker(delegate()
                         {
@@ -161,7 +163,7 @@ namespace NiViewer.Net
                             {
                                 if (pb_image.Image != null)
                                     pb_image.Image.Dispose();
-                                pb_image.Image = new Bitmap(bitmap, pb_image.Size);
+                                pb_image.Image = new Bitmap(bitmap, bitmap.Size);
                                 pb_image.Refresh();
                             }
                         }));
