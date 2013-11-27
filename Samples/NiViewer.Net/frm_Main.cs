@@ -46,10 +46,6 @@ namespace NiViewer.Net
         {
             DeviceInfo[] devices = OpenNI.EnumerateDevices();
             cb_devices.Items.Clear();
-            if (devices.Length == 0)
-            {
-                
-            }
             for (int i = 0; i < devices.Length; i++)
 			{
                 cb_devices.Items.Add(devices[i]);
@@ -172,31 +168,31 @@ namespace NiViewer.Net
                         
                         ///////////////////// You can simply pass the newly created/updated image to a
                         ///////////////////// PictureBox right here instead of drawing it with Graphic object
-                        this.BeginInvoke(new MethodInvoker(delegate()
-                        {
-                            if (!pb_image.Visible)
-                                pb_image.Visible = true;
-                            if (bitmap == null)
-                                return;
-                            lock (bitmap) // this.BeginInvoke happens on UI Thread so it is better to always keep this lock in place
-                            {
-                                if (pb_image.Image != null)
-                                    pb_image.Image.Dispose();
+                        //this.BeginInvoke(new MethodInvoker(delegate()
+                        //{
+                        //    if (!pb_image.Visible)
+                        //        pb_image.Visible = true;
+                        //    if (bitmap == null)
+                        //        return;
+                        //    lock (bitmap) // this.BeginInvoke happens on UI Thread so it is better to always keep this lock in place
+                        //    {
+                        //        if (pb_image.Image != null)
+                        //            pb_image.Image.Dispose();
 
-                                /////////////////////// If you want to use one bitmap object for all frames, the 
-                                /////////////////////// best way to prevent and multi-thread access problems
-                                /////////////////////// is to clone the bitmap each time you want to send it to PictureBox 
-                                //pb_image.Image = new Bitmap(bitmap, bitmap.Size);
-                                /////////////////////// END NOTE
+                        //        /////////////////////// If you want to use one bitmap object for all frames, the 
+                        //        /////////////////////// best way to prevent and multi-thread access problems
+                        //        /////////////////////// is to clone the bitmap each time you want to send it to PictureBox 
+                        //        pb_image.Image = new Bitmap(bitmap, bitmap.Size);
+                        //        /////////////////////// END NOTE
 
-                                /////////////////////// If you only use toBitmap() method. you can simply skip the
-                                /////////////////////// cloning process. It is perfectly thread-safe.
-                                //pb_image.Image = bitmap;
-                                /////////////////////// END NOTE
+                        //        /////////////////////// If you only use toBitmap() method. you can simply skip the
+                        //        /////////////////////// cloning process. It is perfectly thread-safe.
+                        //        //pb_image.Image = bitmap;
+                        //        /////////////////////// END NOTE
 
-                                pb_image.Refresh();
-                            }
-                        }));
+                        //        pb_image.Refresh();
+                        //    }
+                        //}));
                         ///////////////////// END NOTE
                         if (!pb_image.Visible)
                             this.Invalidate();
