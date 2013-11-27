@@ -144,33 +144,101 @@ namespace NiViewer.Net
                             options |= VideoFrameRef.copyBitmapOptions.DepthHistogramEqualize;
                         if (cb_fill.Checked)
                             options |= (vStream.Mirroring) ? VideoFrameRef.copyBitmapOptions.DepthFillRigthBlack : VideoFrameRef.copyBitmapOptions.DepthFillLeftBlack;
+
                         lock (bitmap)
                         {
+                            /////////////////////// Instead of creating a bitmap object for each frame, you can simply
+                            /////////////////////// update one you have. Please note that you must be very careful 
+                            /////////////////////// with multi-thread situations.
                             try
                             {
                                 frame.updateBitmap(bitmap, options);
                             }
-                            catch (Exception)
+                            catch (Exception) // Happens when our Bitmap object is not compatible with returned Frame
                             {
                                 bitmap = frame.toBitmap(options);
                             }
+                            /////////////////////// END NOTE
+
+                            /////////////////////// You can always use .toBitmap() if you dont want to
+                            /////////////////////// clone image later and be safe when using it in multi-thread situations
+                            /////////////////////// This is little slower, but easier to handle
+                            //bitmap = frame.toBitmap(options);
+                            /////////////////////// END NOTE
+
                             if (cb_mirrorSoft.Checked)
                                 bitmap.RotateFlip(RotateFlipType.RotateNoneFlipX);
                         }
+                        
+                        ///////////////////// You can simply pass the newly created/updated image to a
+                        ///////////////////// PictureBox right here instead of drawing it with Graphic object
                         this.BeginInvoke(new MethodInvoker(delegate()
                         {
-                            lock (bitmap)
+                            if (!pb_image.Visible)
+                                pb_image.Visible = true;
+                            if (bitmap == null)
+                                return;
+                            lock (bitmap) // this.BeginInvoke happens on UI Thread so it is better to always keep this lock in place
                             {
                                 if (pb_image.Image != null)
                                     pb_image.Image.Dispose();
-                                pb_image.Image = new Bitmap(bitmap, bitmap.Size);
+
+                                /////////////////////// If you want to use one bitmap object for all frames, the 
+                                /////////////////////// best way to prevent and multi-thread access problems
+                                /////////////////////// is to clone the bitmap each time you want to send it to PictureBox 
+                                //pb_image.Image = new Bitmap(bitmap, bitmap.Size);
+                                /////////////////////// END NOTE
+
+                                /////////////////////// If you only use toBitmap() method. you can simply skip the
+                                /////////////////////// cloning process. It is perfectly thread-safe.
+                                //pb_image.Image = bitmap;
+                                /////////////////////// END NOTE
+
                                 pb_image.Refresh();
                             }
                         }));
+                        ///////////////////// END NOTE
+                        if (!pb_image.Visible)
+                            this.Invalidate();
                     }
                 }
             }
         }
+
+        /////////////////////// You can use one Bitmap object and update it for each frame 
+        /////////////////////// or one Bitmap object per each frame. Either way you can use
+        /////////////////////// OnPaint method to prevent multi-thread access problems
+        /////////////////////// without creating a new Bitmap object each time.
+        /////////////////////// In other word, you can skip Cloning even when using updateBitmap().
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            if (pb_image.Visible)
+                pb_image.Visible = false;
+            if (bitmap == null)
+                return;
+            lock (bitmap) // OnPaint happens on UI Thread so it is better to always keep this lock in place
+            {
+                Size canvasSize = pb_image.Size; // Even though we dont use PictureBox, we use it as a placeholder
+                Point canvasPosition = pb_image.Location;
+
+                double ratioX = (double)canvasSize.Width / (double)bitmap.Width;
+                double ratioY = (double)canvasSize.Height / (double)bitmap.Height;
+                double ratio = Math.Min(ratioX, ratioY);
+
+                int drawWidth = Convert.ToInt32(bitmap.Width * ratio);
+                int drawHeight = Convert.ToInt32(bitmap.Height * ratio);
+
+                int drawX = canvasPosition.X + Convert.ToInt32((canvasSize.Width - drawWidth) / 2);
+                int drawY = canvasPosition.Y + Convert.ToInt32((canvasSize.Height - drawHeight) / 2);
+
+                e.Graphics.DrawImage(bitmap, drawX, drawY, drawWidth, drawHeight);
+            }
+            /////////////////////// If we do create a new Bitmap object per each frame we must
+            /////////////////////// make sure to DISPOSE it after using.
+            //bitmap.Dispose();
+            /////////////////////// END NOTE
+        }
+        /////////////////////// END NOTE
 
         private void frm_Main_FormClosing(object sender, FormClosingEventArgs e)
         {
