@@ -6,9 +6,9 @@ Using .Net 4.0 CP
 
 For using it in your project you can download it from "Package" folder.
 
-OpenNI 2.2.0.30 redist files included.
+OpenNI 2.2.0.33 redist files included.
 
-NiTE 2.2.0.5 redist files included.
+NiTE 2.2.0.11 redist files included.
 
 
 
