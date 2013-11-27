@@ -228,11 +228,11 @@ namespace NiViewer.Net
                 int drawY = canvasPosition.Y + Convert.ToInt32((canvasSize.Height - drawHeight) / 2);
 
                 e.Graphics.DrawImage(bitmap, drawX, drawY, drawWidth, drawHeight);
+                /////////////////////// If we do create a new Bitmap object per each frame we must
+                /////////////////////// make sure to DISPOSE it after using.
+                //bitmap.Dispose();
+                /////////////////////// END NOTE
             }
-            /////////////////////// If we do create a new Bitmap object per each frame we must
-            /////////////////////// make sure to DISPOSE it after using.
-            //bitmap.Dispose();
-            /////////////////////// END NOTE
         }
         /////////////////////// END NOTE
 
