@@ -34,7 +34,7 @@ Public Class frm_Main
                     device.ImageRegistration = device.ImageRegistrationMode.DEPTH_TO_COLOR
                     device.DepthColorSyncEnabled = True
                 Catch ex As Exception
-                    MessageBox.Show("No Support for Depth to Color registration and/or Depth and Color sync is available when OpenNI used along with Kinect. Yet.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    MessageBox.Show("No Support for Depth to Color registration and/or Depth and Color sync is not available when OpenNI used along with Kinect. Yet.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 End Try
                 If (depthStream.isValid AndAlso colorStream.isValid) Then
                     If (Not HandleError(depthStream.Start()) OrElse Not HandleError(colorStream.Start())) Then
