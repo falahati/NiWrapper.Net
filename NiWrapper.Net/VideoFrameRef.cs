@@ -143,7 +143,7 @@ namespace OpenNIWrapper
             }
         }
 
-        public Bitmap toBitmap(copyBitmapOptions options = copyBitmapOptions.None)
+        public Bitmap ToBitmap(copyBitmapOptions options = copyBitmapOptions.None)
         {
             System.Drawing.Imaging.PixelFormat format = System.Drawing.Imaging.PixelFormat.Format24bppRgb;
             switch (this.VideoMode.DataPixelFormat)
@@ -168,13 +168,13 @@ namespace OpenNIWrapper
             if (format == PixelFormat.Format8bppIndexed)
                 for (int i = 0; i < 256; i++)
                     destination.Palette.Entries[i] = Color.FromArgb(i, i, i);
-            updateBitmap(destination, options);
+            UpdateBitmap(destination, options);
             return destination;
         }
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void VideoFrameRef_copyDataTo(IntPtr objectHandler, IntPtr dstData, int dstStride, copyBitmapOptions options);
-        public void updateBitmap(Bitmap image, copyBitmapOptions options = copyBitmapOptions.None)
+        public void UpdateBitmap(Bitmap image, copyBitmapOptions options = copyBitmapOptions.None)
         {
                 if (image.Width != this.FrameSize.Width || image.Height != this.FrameSize.Height)
                     throw new ArgumentException("Bitmap size if not acceptable.");
@@ -279,7 +279,7 @@ namespace OpenNIWrapper
         {
             if (!_disposed)
             {
-                if (disposing && this.isValid)
+                if (disposing && this.IsValid)
                     this.Release();
 
                 this.Handle = IntPtr.Zero;

@@ -31,19 +31,19 @@ namespace ConsoleTest
             using (device = Device.Open(null,"lr")) // lean init and no reset flags
             {	
                 VideoStream depth;
-                SensorInfo sensorInfo = device.getSensorInfo(Device.SensorType.DEPTH);
+                SensorInfo sensorInfo = device.GetSensorInfo(Device.SensorType.DEPTH);
 	            if (sensorInfo != null)
 	            {
 		            depth = VideoStream.Create(device, OpenNIWrapper.Device.SensorType.DEPTH);
 	            }
 
 
-                if (device.hasSensor(Device.SensorType.DEPTH) &&
-                    device.hasSensor(Device.SensorType.COLOR))
+                if (device.HasSensor(Device.SensorType.DEPTH) &&
+                    device.HasSensor(Device.SensorType.COLOR))
                 {
                     VideoStream depthStream = device.CreateVideoStream(Device.SensorType.DEPTH);
                     VideoStream colorStream = device.CreateVideoStream(Device.SensorType.COLOR);
-                    if (depthStream.isValid && colorStream.isValid)
+                    if (depthStream.IsValid && colorStream.IsValid)
                     {
                         if (!HandleError(depthStream.Start())) { OpenNI.Shutdown(); return; }
                         if (!HandleError(colorStream.Start())) { OpenNI.Shutdown(); return; }

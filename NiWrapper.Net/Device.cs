@@ -59,7 +59,7 @@ namespace OpenNIWrapper
 
         public VideoStream CreateVideoStream(SensorType sensorType)
         {
-            if (!this.isValid)
+            if (!this.IsValid)
                 return null;
             if (!VideoStreams_Cache.ContainsKey(sensorType))
                 VideoStreams_Cache[sensorType] = VideoStream.Private_Create(this, sensorType);
@@ -70,7 +70,7 @@ namespace OpenNIWrapper
         static extern void Device_close(IntPtr objectHandler);
         public void Close()
         {
-            if (this.isValid)
+            if (this.IsValid)
                 foreach (VideoStream stream in VideoStreams_Cache.Values)
                     stream.Destroy();
             Device_close(this.Handle);
@@ -119,7 +119,7 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern bool Device_isImageRegistrationModeSupported(IntPtr objectHandler, ImageRegistrationMode mode);
-        public bool isImageRegistrationModeSupported(ImageRegistrationMode mode)
+        public bool IsImageRegistrationModeSupported(ImageRegistrationMode mode)
         {
             return Device_isImageRegistrationModeSupported(this.Handle, mode);
         }
@@ -127,14 +127,14 @@ namespace OpenNIWrapper
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern OpenNI.Status Device_getProperty(IntPtr objectHandler,
             int propertyId, IntPtr data, out int dataSize);
-        public OpenNI.Status getProperty(int propertyId, IntPtr data, out int dataSize)
+        public OpenNI.Status GetProperty(int propertyId, IntPtr data, out int dataSize)
         {
             return Device_getProperty(this.Handle, propertyId, data, out dataSize);
         }
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern IntPtr Device_getSensorInfo(IntPtr objectHandler, SensorType sensorType);
-        public SensorInfo getSensorInfo(SensorType sensorType)
+        public SensorInfo GetSensorInfo(SensorType sensorType)
         {
             return new SensorInfo(Device_getSensorInfo(this.Handle, sensorType));
         }
@@ -142,21 +142,21 @@ namespace OpenNIWrapper
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern OpenNI.Status Device_setProperty(IntPtr objectHandler,
             int propertyId, IntPtr data, int dataSize);
-        public OpenNI.Status setProperty(int propertyId, IntPtr data, int dataSize)
+        public OpenNI.Status SetProperty(int propertyId, IntPtr data, int dataSize)
         {
             return Device_setProperty(this.Handle, propertyId, data, dataSize);
         }
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern bool Device_hasSensor(IntPtr objectHandler, SensorType sensorType);
-        public bool hasSensor(SensorType sensorType)
+        public bool HasSensor(SensorType sensorType)
         {
             return Device_hasSensor(this.Handle, sensorType);
         }
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern bool Device_isCommandSupported(IntPtr objectHandler, int commandId);
-        public bool isCommandSupported(int commandId)
+        public bool IsCommandSupported(int commandId)
         {
             return Device_isCommandSupported(this.Handle, commandId);
         }
@@ -164,14 +164,14 @@ namespace OpenNIWrapper
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern OpenNI.Status Device_invoke(IntPtr objectHandler,
             int commandId, IntPtr data, int dataSize);
-        public OpenNI.Status invoke(int commandId, IntPtr data, int dataSize)
+        public OpenNI.Status Invoke(int commandId, IntPtr data, int dataSize)
         {
             return Device_invoke(this.Handle, commandId, data, dataSize);
         }
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern bool Device_isPropertySupported(IntPtr objectHandler, int propertyId);
-        public bool isPropertySupported(int propertyId)
+        public bool IsPropertySupported(int propertyId)
         {
             return Device_isPropertySupported(this.Handle, propertyId);
         }
@@ -223,11 +223,11 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern bool Device_isValid(IntPtr objectHandler);
-        public new bool isValid
+        public new bool IsValid
         {
             get
             {
-                return base.isValid && Device_isValid(this.Handle);
+                return base.IsValid && Device_isValid(this.Handle);
             }
         }
 
@@ -241,7 +241,7 @@ namespace OpenNIWrapper
         {
             if (!_disposed)
             {
-                if (disposing && this.isValid)
+                if (disposing && this.IsValid)
                     this.Close();
 
                 this.Handle = IntPtr.Zero;
