@@ -32,7 +32,7 @@ namespace OpenNIWrapper
 
         public Device OpenDevice()
         {
-            if (!this.isValid)
+            if (!this.IsValid)
                 return null;
             return Device.Open(this.URI);
         }

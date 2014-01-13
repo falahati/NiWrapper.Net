@@ -74,11 +74,11 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern bool Recorder_isValid(IntPtr objectHandler);
-        public new bool isValid
+        public new bool IsValid
         {
             get
             {
-                return base.isValid && Recorder_isValid(this.Handle);
+                return base.IsValid && Recorder_isValid(this.Handle);
             }
         }
 
@@ -99,7 +99,7 @@ namespace OpenNIWrapper
         {
             if (!_disposed)
             {
-                if (disposing && this.isValid)
+                if (disposing && this.IsValid)
                     this.Destroy();
 
                 this.Handle = IntPtr.Zero;

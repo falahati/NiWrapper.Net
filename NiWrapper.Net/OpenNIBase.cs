@@ -36,7 +36,7 @@ namespace OpenNIWrapper
             return this.Handle == obj;
         }
 
-        public bool isValid
+        public bool IsValid
         {
             get
             {

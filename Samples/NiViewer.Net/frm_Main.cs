@@ -60,9 +60,9 @@ namespace NiViewer.Net
             {
                 if (currentDevice != null) currentDevice.Dispose();
                 currentDevice = ((DeviceInfo)cb_devices.SelectedItem).OpenDevice();
-                if (currentDevice.hasSensor(Device.SensorType.COLOR)) cb_sensor.Items.Add("Color");
-                if (currentDevice.hasSensor(Device.SensorType.DEPTH)) cb_sensor.Items.Add("Depth");
-                if (currentDevice.hasSensor(Device.SensorType.IR)) cb_sensor.Items.Add("IR");
+                if (currentDevice.HasSensor(Device.SensorType.COLOR)) cb_sensor.Items.Add("Color");
+                if (currentDevice.HasSensor(Device.SensorType.DEPTH)) cb_sensor.Items.Add("Depth");
+                if (currentDevice.HasSensor(Device.SensorType.IR)) cb_sensor.Items.Add("IR");
             }
         }
         VideoStream currentSensor;
@@ -71,7 +71,7 @@ namespace NiViewer.Net
             cb_videomode.Items.Clear();
             if (cb_sensor.SelectedItem != null && currentDevice != null)
             {
-                if (currentSensor != null && currentSensor.isValid) currentSensor.Stop();
+                if (currentSensor != null && currentSensor.IsValid) currentSensor.Stop();
                 switch ((string)(cb_sensor.SelectedItem))
                 {
                     case "Color":
@@ -86,7 +86,7 @@ namespace NiViewer.Net
                     default:
                         break;
                 }
-                VideoMode[] videoModes = currentSensor.SensorInfo.getSupportedVideoModes();
+                VideoMode[] videoModes = currentSensor.SensorInfo.GetSupportedVideoModes();
                 for (int i = 0; i < videoModes.Length; i++)
                 {
                     if (videoModes[i].DataPixelFormat == VideoMode.PixelFormat.GRAY16 ||
@@ -100,7 +100,7 @@ namespace NiViewer.Net
 
         private void btn_submit_Click(object sender, EventArgs e)
         {
-            if (currentSensor != null && currentSensor.isValid && cb_videomode.SelectedItem != null)
+            if (currentSensor != null && currentSensor.IsValid && cb_videomode.SelectedItem != null)
             {
                 currentSensor.Stop();
                 currentSensor.onNewFrame -= currentSensor_onNewFrame;
@@ -127,11 +127,11 @@ namespace NiViewer.Net
         
         void currentSensor_onNewFrame(VideoStream vStream)
         {
-            if (vStream.isValid && vStream.isFrameAvailable())
+            if (vStream.IsValid && vStream.isFrameAvailable())
             {
                 using (VideoFrameRef frame = vStream.readFrame())
                 {
-                    if (frame.isValid)
+                    if (frame.IsValid)
                     {
                         VideoFrameRef.copyBitmapOptions options = VideoFrameRef.copyBitmapOptions.Force24BitRGB | VideoFrameRef.copyBitmapOptions.DepthFillShadow;
                         if (cb_invert.Checked)
@@ -148,11 +148,11 @@ namespace NiViewer.Net
                             /////////////////////// with multi-thread situations.
                             try
                             {
-                                frame.updateBitmap(bitmap, options);
+                                frame.UpdateBitmap(bitmap, options);
                             }
                             catch (Exception) // Happens when our Bitmap object is not compatible with returned Frame
                             {
-                                bitmap = frame.toBitmap(options);
+                                bitmap = frame.ToBitmap(options);
                             }
                             /////////////////////// END NOTE
 

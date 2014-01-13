@@ -45,7 +45,7 @@ namespace OpenNIWrapper
         static extern void VideoStream_destroy(IntPtr objectHandler);
         internal void Destroy()
         {
-            if (this.isValid)
+            if (this.IsValid)
                 VideoStream_destroy(this.Handle);
             Common.DeleteObject(this);
         }
@@ -166,7 +166,7 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern bool VideoStream_isCroppingSupported(IntPtr objectHandler);
-        public bool isCroppingSupported
+        public bool IsCroppingSupported
         {
             get
             {
@@ -247,7 +247,7 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern bool VideoStream_isCommandSupported(IntPtr objectHandler, int commandId);
-        public bool isCommandSupported(int commandId)
+        public bool IsCommandSupported(int commandId)
         {
             return VideoStream_isCommandSupported(this.Handle, commandId);
         }
@@ -255,25 +255,25 @@ namespace OpenNIWrapper
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern OpenNI.Status VideoStream_invoke(IntPtr objectHandler,
             int commandId, IntPtr data, int dataSize);
-        public OpenNI.Status invoke(int commandId, IntPtr data, int dataSize)
+        public OpenNI.Status Invoke(int commandId, IntPtr data, int dataSize)
         {
             return VideoStream_invoke(this.Handle, commandId, data, dataSize);
         }
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern bool VideoStream_isPropertySupported(IntPtr objectHandler, int propertyId);
-        public bool isPropertySupported(int propertyId)
+        public bool IsPropertySupported(int propertyId)
         {
             return VideoStream_isPropertySupported(this.Handle, propertyId);
         }
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern bool VideoStream_isValid(IntPtr objectHandler);
-        public new bool isValid
+        public new bool IsValid
         {
             get
             {
-                return base.isValid && VideoStream_isValid(this.Handle);
+                return base.IsValid && VideoStream_isValid(this.Handle);
             }
         }
 
@@ -293,7 +293,7 @@ namespace OpenNIWrapper
 
         public override string ToString()
         {
-            return this.SensorInfo.getSensorType().ToString();
+            return this.SensorInfo.GetSensorType().ToString();
         }
     }
 }

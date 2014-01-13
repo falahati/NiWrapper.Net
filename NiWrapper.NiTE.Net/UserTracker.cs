@@ -55,7 +55,7 @@ namespace NiTEWrapper
         public static UserTracker Create(Device device = null)
         {
             IntPtr deviceHandle = IntPtr.Zero;
-            if (device != null && device.isValid)
+            if (device != null && device.IsValid)
                 deviceHandle = device.Handle;
             IntPtr handle;
             NiTE.throwIfError(UserTracker_create(out handle, deviceHandle));

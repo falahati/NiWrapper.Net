@@ -32,24 +32,24 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern bool PlaybackControl_isValid(IntPtr objectHandler);
-        public new bool isValid
+        public new bool IsValid
         {
             get
             {
-                return base.isValid && PlaybackControl_isValid(this.Handle);
+                return base.IsValid && PlaybackControl_isValid(this.Handle);
             }
         }
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern int PlaybackControl_getNumberOfFrames(IntPtr objectHandler, IntPtr videoStream);
-        public int getNumberOfFrames(VideoStream stream)
+        public int GetNumberOfFrames(VideoStream stream)
         {
             return PlaybackControl_getNumberOfFrames(this.Handle, stream.Handle);
         }
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern OpenNI.Status PlaybackControl_seek(IntPtr objectHandler, IntPtr videoStream, int frameIndex);
-        public OpenNI.Status seek(VideoStream stream, int frameIndex)
+        public OpenNI.Status Seek(VideoStream stream, int frameIndex)
         {
             return PlaybackControl_seek(this.Handle, stream.Handle, frameIndex);
         }

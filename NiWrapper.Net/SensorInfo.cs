@@ -32,7 +32,7 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern Device.SensorType SensorInfo_getSensorType(IntPtr objectHandler);
-        public Device.SensorType getSensorType()
+        public Device.SensorType GetSensorType()
         {
             return SensorInfo_getSensorType(this.Handle);
         }
@@ -41,7 +41,7 @@ namespace OpenNIWrapper
         static extern WrapperArray SensorInfo_getSupportedVideoModes(IntPtr objectHandler);
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern IntPtr SensorInfo_destroyVideoModesArray(WrapperArray array);
-        public VideoMode[] getSupportedVideoModes()
+        public VideoMode[] GetSupportedVideoModes()
         {
             WrapperArray csa = SensorInfo_getSupportedVideoModes(this.Handle);
             IntPtr[] array = new IntPtr[csa.Size];
@@ -54,7 +54,7 @@ namespace OpenNIWrapper
         }
         public override string ToString()
         {
-            return this.getSensorType().ToString();
+            return this.GetSensorType().ToString();
         }
     }
 }

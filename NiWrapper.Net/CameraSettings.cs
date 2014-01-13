@@ -32,11 +32,11 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern bool CameraSettings_isValid(IntPtr objectHandler);
-        public new bool isValid
+        public new bool IsValid
         {
             get
             {
-                return base.isValid && CameraSettings_isValid(this.Handle);
+                return base.IsValid && CameraSettings_isValid(this.Handle);
             }
         }
 
