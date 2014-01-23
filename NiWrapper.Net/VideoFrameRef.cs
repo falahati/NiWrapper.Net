@@ -160,7 +160,7 @@ namespace OpenNIWrapper
                     format = System.Drawing.Imaging.PixelFormat.Format16bppGrayScale;
                     break;
                 default:
-                    throw new BadImageFormatException("Pixel format is not acceptable for bitmap converting.");
+                    throw new InvalidOperationException("Pixel format is not acceptable for bitmap converting.");
             }
             if ((options & copyBitmapOptions.Force24BitRGB) == copyBitmapOptions.Force24BitRGB)
                 format = PixelFormat.Format24bppRgb;
@@ -198,7 +198,7 @@ namespace OpenNIWrapper
                         desiredFormat = System.Drawing.Imaging.PixelFormat.Format16bppGrayScale;
                         break;
                     default:
-                        throw new BadImageFormatException("Pixel format is not acceptable for bitmap converting.");
+                        throw new InvalidOperationException("Pixel format is not acceptable for bitmap converting.");
                 }
                 if ((options & copyBitmapOptions.Force24BitRGB) != copyBitmapOptions.Force24BitRGB &&
                     desiredFormat != image.PixelFormat)
