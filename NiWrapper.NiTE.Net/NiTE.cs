@@ -75,7 +75,7 @@ namespace NiTEWrapper
             switch (status)
             {
                 case Status.ERROR:
-                    throw new Exception(OpenNI.LastError);
+                    throw new OpenNIException(OpenNI.LastError);
                 case Status.BAD_USER_ID:
                     throw new ArgumentOutOfRangeException(OpenNI.LastError,
                         new Exception("NiTE: Bad User ID"));

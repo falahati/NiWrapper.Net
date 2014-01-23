@@ -97,6 +97,7 @@
     <Compile Include="DeviceInfo.cs" />
     <Compile Include="OpenNI.cs" />
     <Compile Include="OpenNIBase.cs" />
+    <Compile Include="OpenNIException.cs" />
     <Compile Include="PlaybackControl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Recorder.cs" />

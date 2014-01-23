@@ -209,19 +209,19 @@ namespace OpenNIWrapper
             switch (status)
             {
                 case Status.ERROR:
-                    throw new Exception(OpenNI.LastError);
+                    throw new OpenNIException(LastError);
                 case Status.NOT_IMPLEMENTED:
-                    throw new NotImplementedException(OpenNI.LastError);
+                    throw new NotImplementedException(LastError);
                 case Status.NOT_SUPPORTED:
-                    throw new NotSupportedException(OpenNI.LastError);
+                    throw new NotSupportedException(LastError);
                 case Status.BAD_PARAMETER:
-                    throw new ArgumentException(OpenNI.LastError);
+                    throw new ArgumentException(LastError);
                 case Status.OUT_OF_FLOW:
-                    throw new OverflowException(OpenNI.LastError);
+                    throw new OverflowException(LastError);
                 case Status.NO_DEVICE:
-                    throw new System.IO.IOException(OpenNI.LastError);
+                    throw new System.IO.IOException(LastError);
                 case Status.TIME_OUT:
-                    throw new TimeoutException(OpenNI.LastError);
+                    throw new TimeoutException(LastError);
                 default:
                     return;
             }
