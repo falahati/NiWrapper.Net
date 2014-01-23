@@ -18,7 +18,7 @@ namespace NiTEHandTracker
 
         static bool HandleError(NiTE.Status status)
         {
-            if (status == NiTE.Status.OK)
+            if (status == NiTE.Status.Ok)
                 return true;
             MessageBox.Show("Error: " + status.ToString());
             return false;
@@ -41,8 +41,8 @@ namespace NiTEHandTracker
         {
             hTracker = HandTracker.Create();
             btn_start.Enabled = false;
-            HandleError(hTracker.StartGestureDetection(GestureData.GestureType.HAND_RAISE));
-            hTracker.onNewData += new HandTracker.HandTrackerListener(hTracker_onNewData);
+            HandleError(hTracker.StartGestureDetection(GestureData.GestureType.HandRaise));
+            hTracker.OnNewData += new HandTracker.HandTrackerListenerDelegate(hTracker_onNewData);
 
             //  FIXED Jun 2013
             ///* Because of incompatibility between current version of OpenNI and NiTE,
@@ -61,11 +61,11 @@ namespace NiTEHandTracker
         ulong fps;
         void hTracker_onNewData(HandTracker hTracker)
         {
-            if (!hTracker.isValid)
+            if (!hTracker.IsValid)
                 return;
-            using (HandTrackerFrameRef frame = hTracker.readFrame())
+            using (HandTrackerFrameRef frame = hTracker.ReadFrame())
             {
-                if (!frame.isValid)
+                if (!frame.IsValid)
                     return;
                 lock (image)
                 {
@@ -78,14 +78,14 @@ namespace NiTEHandTracker
                     {
                         g.FillRectangle(Brushes.Black, new Rectangle(new Point(0, 0), image.Size));
                         foreach (GestureData gesture in frame.Gestures)
-                            if (gesture.isComplete)
-                                hTracker.startHandTracking(gesture.CurrentPosition);
+                            if (gesture.IsComplete)
+                                hTracker.StartHandTracking(gesture.CurrentPosition);
                         if (frame.Hands.Length == 0)
                             g.DrawString("Raise your hand", SystemFonts.DefaultFont, Brushes.White, 10, 10);
                         else
                             foreach (HandData hand in frame.Hands)
                             {
-                                if (hand.isTracking)
+                                if (hand.IsTracking)
                                 {
                                     Point HandPosEllipse = new Point();
                                     PointF HandPos = hTracker.ConvertHandCoordinatesToDepth(hand.Position);

@@ -1,33 +1,52 @@
 ﻿/*
-    Copyright (C) 2013 Soroush Falahati - soroush@falahati.net
+   Copyright (C) 2013 Soroush Falahati - soroush@falahati.net
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+   This library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+   This library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-	*/
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Runtime.InteropServices;
-using System.Windows.Media.Media3D;
-using System.Drawing;
-using OpenNIWrapper;
-
+   You should have received a copy of the GNU Lesser General Public
+   License along with this library; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+   */
 namespace NiTEWrapper
 {
-    public class HandTrackerFrameRef : NiTEBase, IDisposable
+    #region
+
+    using System;
+    using System.Collections.Generic;
+    using System.Runtime.InteropServices;
+
+    using OpenNIWrapper;
+
+    #endregion
+
+    public sealed class HandTrackerFrameRef : NiTEBase, IDisposable
     {
+        #region Fields
+
+        private VideoFrameRef depthFrame;
+
+        private int? frameIndex;
+
+        private GestureData[] gestures;
+
+        private HandData[] hands;
+
+        private bool isDisposed;
+
+        private ulong? timestamp;
+
+        #endregion
+
+        #region Constructors and Destructors
+
         internal HandTrackerFrameRef(IntPtr handle)
         {
             this.Handle = handle;
@@ -37,138 +56,172 @@ namespace NiTEWrapper
         {
             try
             {
-                Dispose();
+                this.Dispose();
             }
             catch (Exception)
-            { }
-        }
-
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern void HandTrackerFrameRef_release(IntPtr objectHandler);
-        public void Release()
-        {
-            HandTrackerFrameRef_release(this.Handle);
-            _gestures = null;
-            base.Handle = IntPtr.Zero;
-        }
-
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern IntPtr HandTrackerFrameRef_getDepthFrame(IntPtr objectHandler);
-        OpenNIWrapper.VideoFrameRef _DepthFrame = null;
-        public OpenNIWrapper.VideoFrameRef DepthFrame
-        {
-            get
             {
-                if (_DepthFrame == null)
-                    _DepthFrame = new OpenNIWrapper.VideoFrameRef(
-                                    HandTrackerFrameRef_getDepthFrame(this.Handle));
-                return _DepthFrame;
             }
         }
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern bool HandTrackerFrameRef_isValid(IntPtr objectHandler);
-        public new bool isValid
+        #endregion
+
+        #region Public Properties
+
+        public VideoFrameRef DepthFrame
         {
             get
             {
-                return base.isValid && HandTrackerFrameRef_isValid(this.Handle);
+                if (this.depthFrame == null)
+                {
+                    this.depthFrame = new VideoFrameRef(HandTrackerFrameRef_getDepthFrame(this.Handle));
+                }
+
+                return this.depthFrame;
             }
         }
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern int HandTrackerFrameRef_getFrameIndex(IntPtr objectHandler);
-        int? _FrameIndex;
         public int FrameIndex
         {
             get
             {
-                if (_FrameIndex != null)
-                    return _FrameIndex.Value;
-
-                _FrameIndex = HandTrackerFrameRef_getFrameIndex(this.Handle);
-                return _FrameIndex.Value;
-            }
-        }
-
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern UInt64 HandTrackerFrameRef_getTimestamp(IntPtr objectHandler);
-        UInt64? _Timestamp;
-        public UInt64 Timestamp
-        {
-            get
-            {
-                if (_Timestamp != null)
-                    return _Timestamp.Value;
-
-                _Timestamp = HandTrackerFrameRef_getTimestamp(this.Handle);
-                return _Timestamp.Value;
-            }
-        }
-
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern WrapperArray HandTrackerFrameRef_getHands(IntPtr vf);
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern IntPtr HandTrackerFrameRef_destroyHandsArray(WrapperArray array);
-        HandData[] _hands = null;
-        public HandData[] Hands
-        {
-            get
-            {
-                if (_hands == null)
+                if (this.frameIndex != null)
                 {
-                    WrapperArray csa = HandTrackerFrameRef_getHands(this.Handle);
-                    IntPtr[] array = new IntPtr[csa.Size];
-                    Marshal.Copy(csa.Data, array, 0, csa.Size);
-                    _hands = new HandData[csa.Size];
-                    for (int i = 0; i < csa.Size; i++)
-                        _hands[i] = new HandData(array[i]);
-                    HandTrackerFrameRef_destroyHandsArray(csa);
+                    return this.frameIndex.Value;
                 }
-                return _hands;
+
+                this.frameIndex = HandTrackerFrameRef_getFrameIndex(this.Handle);
+                return this.frameIndex.Value;
             }
         }
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern WrapperArray HandTrackerFrameRef_getGestures(IntPtr vf);
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern IntPtr HandTrackerFrameRef_destroyGesturesArray(WrapperArray array);
-        GestureData[] _gestures = null;
-        public GestureData[] Gestures
+        public IEnumerable<GestureData> Gestures
         {
             get
             {
-                if (_gestures == null)
+                if (this.gestures == null)
                 {
                     WrapperArray csa = HandTrackerFrameRef_getGestures(this.Handle);
                     IntPtr[] array = new IntPtr[csa.Size];
                     Marshal.Copy(csa.Data, array, 0, csa.Size);
-                    _gestures = new GestureData[csa.Size];
+                    this.gestures = new GestureData[csa.Size];
                     for (int i = 0; i < csa.Size; i++)
-                        _gestures[i] = new GestureData(array[i]);
+                    {
+                        this.gestures[i] = new GestureData(array[i]);
+                    }
+
                     HandTrackerFrameRef_destroyGesturesArray(csa);
                 }
-                return _gestures;
+
+                return this.gestures;
             }
         }
+
+        public HandData[] Hands
+        {
+            get
+            {
+                if (this.hands == null)
+                {
+                    WrapperArray csa = HandTrackerFrameRef_getHands(this.Handle);
+                    IntPtr[] array = new IntPtr[csa.Size];
+                    Marshal.Copy(csa.Data, array, 0, csa.Size);
+                    this.hands = new HandData[csa.Size];
+                    for (int i = 0; i < csa.Size; i++)
+                    {
+                        this.hands[i] = new HandData(array[i]);
+                    }
+
+                    HandTrackerFrameRef_destroyHandsArray(csa);
+                }
+
+                return this.hands;
+            }
+        }
+
+        public new bool IsValid
+        {
+            get
+            {
+                return base.IsValid && HandTrackerFrameRef_isValid(this.Handle);
+            }
+        }
+
+        public ulong Timestamp
+        {
+            get
+            {
+                if (this.timestamp != null)
+                {
+                    return this.timestamp.Value;
+                }
+
+                this.timestamp = HandTrackerFrameRef_getTimestamp(this.Handle);
+                return this.timestamp.Value;
+            }
+        }
+
+        #endregion
+
+        #region Public Methods and Operators
 
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        private bool _disposed = false;
-        protected virtual void Dispose(bool disposing)
+        public void Release()
         {
-            if (!_disposed)
+            HandTrackerFrameRef_release(this.Handle);
+            this.gestures = null;
+            this.Handle = IntPtr.Zero;
+        }
+
+        #endregion
+
+        #region Methods
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr HandTrackerFrameRef_destroyGesturesArray(WrapperArray array);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr HandTrackerFrameRef_destroyHandsArray(WrapperArray array);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr HandTrackerFrameRef_getDepthFrame(IntPtr objectHandler);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int HandTrackerFrameRef_getFrameIndex(IntPtr objectHandler);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern WrapperArray HandTrackerFrameRef_getGestures(IntPtr vf);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern WrapperArray HandTrackerFrameRef_getHands(IntPtr vf);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ulong HandTrackerFrameRef_getTimestamp(IntPtr objectHandler);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern bool HandTrackerFrameRef_isValid(IntPtr objectHandler);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void HandTrackerFrameRef_release(IntPtr objectHandler);
+
+        private void Dispose(bool disposing)
+        {
+            if (!this.isDisposed)
             {
-                if (disposing && this.isValid)
+                if (disposing && this.IsValid)
+                {
                     this.Release();
+                }
 
                 this.Handle = IntPtr.Zero;
-                _disposed = true;
+                this.isDisposed = true;
             }
         }
+
+        #endregion
     }
 }

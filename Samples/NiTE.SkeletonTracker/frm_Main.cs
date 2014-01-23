@@ -18,7 +18,7 @@ namespace NiTESkeletonTracker
 
         static bool HandleError(NiTE.Status status)
         {
-            if (status == NiTE.Status.OK)
+            if (status == NiTE.Status.Ok)
                 return true;
             MessageBox.Show("Error: " + status.ToString());
             return false;
@@ -41,7 +41,7 @@ namespace NiTESkeletonTracker
         {
             uTracker = UserTracker.Create();
             btn_start.Enabled = false;
-            uTracker.onNewData += new UserTracker.UserTrackerListener(uTracker_onNewData);
+            uTracker.OnNewData += new UserTracker.UserTrackerListenerDelegate(uTracker_onNewData);
 
             //  FIXED Jun 2013
             ///* Because of incompatibility between current version of OpenNI and NiTE,
@@ -60,11 +60,11 @@ namespace NiTESkeletonTracker
         ulong fps;
         void uTracker_onNewData(UserTracker uTracker)
         {
-            if (!uTracker.isValid)
+            if (!uTracker.IsValid)
                 return;
-            using (UserTrackerFrameRef frame = uTracker.readFrame())
+            using (UserTrackerFrameRef frame = uTracker.ReadFrame())
             {
-                if (!frame.isValid)
+                if (!frame.IsValid)
                     return;
                 lock (image)
                 {
@@ -75,29 +75,29 @@ namespace NiTESkeletonTracker
                         g.FillRectangle(Brushes.Black, new Rectangle(new Point(0, 0), image.Size));
                         foreach (UserData user in frame.Users)
                         {
-                            if (user.isNew && user.isVisible)
+                            if (user.IsNew && user.IsVisible)
                                 uTracker.StartSkeletonTracking(user.UserId);
-                            if (user.isVisible && user.Skeleton.State == Skeleton.SkeletonState.TRACKED)
+                            if (user.IsVisible && user.Skeleton.State == Skeleton.SkeletonState.Tracked)
                             {
-                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.RIGHT_HAND, SkeletonJoint.JointType.RIGHT_ELBOW);
-                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.LEFT_HAND, SkeletonJoint.JointType.LEFT_ELBOW);
+                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.RightHand, SkeletonJoint.JointType.RightElbow);
+                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.LeftHand, SkeletonJoint.JointType.LeftElbow);
 
-                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.RIGHT_ELBOW, SkeletonJoint.JointType.RIGHT_SHOULDER);
-                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.LEFT_ELBOW, SkeletonJoint.JointType.LEFT_SHOULDER);
+                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.RightElbow, SkeletonJoint.JointType.RightShoulder);
+                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.LeftElbow, SkeletonJoint.JointType.LeftShoulder);
 
-                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.RIGHT_FOOT, SkeletonJoint.JointType.RIGHT_KNEE);
-                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.LEFT_FOOT, SkeletonJoint.JointType.LEFT_KNEE);
+                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.RightFoot, SkeletonJoint.JointType.RightKnee);
+                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.LeftFoot, SkeletonJoint.JointType.LeftKnee);
 
-                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.RIGHT_KNEE, SkeletonJoint.JointType.RIGHT_HIP);
-                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.LEFT_KNEE, SkeletonJoint.JointType.LEFT_HIP);
+                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.RightKnee, SkeletonJoint.JointType.RightHip);
+                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.LeftKnee, SkeletonJoint.JointType.LeftHip);
 
-                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.RIGHT_SHOULDER, SkeletonJoint.JointType.LEFT_SHOULDER);
-                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.RIGHT_HIP, SkeletonJoint.JointType.LEFT_HIP);
+                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.RightShoulder, SkeletonJoint.JointType.LeftShoulder);
+                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.RightHip, SkeletonJoint.JointType.LeftHip);
 
-                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.RIGHT_SHOULDER, SkeletonJoint.JointType.RIGHT_HIP);
-                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.LEFT_SHOULDER, SkeletonJoint.JointType.LEFT_HIP);
+                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.RightShoulder, SkeletonJoint.JointType.RightHip);
+                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.LeftShoulder, SkeletonJoint.JointType.LeftHip);
 
-                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.HEAD, SkeletonJoint.JointType.NECK);
+                                DrawLineBetweenJoints(g, user.Skeleton, SkeletonJoint.JointType.Head, SkeletonJoint.JointType.Neck);
                             }
                         }
                         g.Save();
@@ -117,10 +117,10 @@ namespace NiTESkeletonTracker
         {
             try
             {
-                if (skel.State == Skeleton.SkeletonState.TRACKED)
+                if (skel.State == Skeleton.SkeletonState.Tracked)
                 {
-                    SkeletonJoint joint1 = skel.getJoint(j1);
-                    SkeletonJoint joint2 = skel.getJoint(j2);
+                    SkeletonJoint joint1 = skel.GetJoint(j1);
+                    SkeletonJoint joint2 = skel.GetJoint(j2);
                     if (joint1.Position.Z > 0 && joint2.Position.Z > 0)
                     {
                         Point j1PosEllipse = new Point();

@@ -17,29 +17,17 @@
    */
 namespace NiTEWrapper
 {
-    #region
-
-    using System;
     using System.Runtime.InteropServices;
 
-    #endregion
-
-    public static class Common
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct OniVersion
     {
-        #region Public Methods and Operators
+        public readonly int Major;
 
-        public static void DeleteObject(NiTEBase o)
-        {
-            Common_Delete(o.Handle);
-        }
+        public readonly int Minor;
 
-        #endregion
+        public readonly int Maintenance;
 
-        #region Methods
-
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void Common_Delete(IntPtr objectHandler);
-
-        #endregion
+        public readonly int Build;
     }
 }

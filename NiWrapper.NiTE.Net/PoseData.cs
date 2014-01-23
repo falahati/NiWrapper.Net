@@ -1,92 +1,139 @@
 ﻿/*
-    Copyright (C) 2013 Soroush Falahati - soroush@falahati.net
+   Copyright (C) 2013 Soroush Falahati - soroush@falahati.net
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+   This library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+   This library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-	*/
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Runtime.InteropServices;
-
+   You should have received a copy of the GNU Lesser General Public
+   License along with this library; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+   */
 namespace NiTEWrapper
 {
+    #region
+
+    using System;
+    using System.Runtime.InteropServices;
+
+    #endregion
+
     public class PoseData : NiTEBase
     {
-        public const int POSE_COUNT = 2;
-        public enum PoseType
-        {
-            POSE_PSI,
-            POSE_CROSSED_HANDS
-        }
+        #region Constants
+
+        public const int PoseCount = 2;
+
+        #endregion
+
+        #region Fields
+
+        private PoseType? type;
+
+        private bool? isEntered;
+
+        private bool? isExited;
+
+        private bool? isHeld;
+
+        #endregion
+
+        #region Constructors and Destructors
 
         internal PoseData(IntPtr handle)
         {
             this.Handle = handle;
         }
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern PoseType PoseData_getType(IntPtr objectHandler);
-        PoseType? _Type;
+        #endregion
+
+        #region Enums
+
+        public enum PoseType
+        {
+            Psi, 
+
+            CrossedHands
+        }
+
+        #endregion
+
+        #region Public Properties
+
         public PoseType Type
         {
             get
             {
-                if (_Type == null)
-                    _Type = PoseData_getType(this.Handle);
-                return _Type.Value;
+                if (this.type == null)
+                {
+                    this.type = PoseData_getType(this.Handle);
+                }
+
+                return this.type.Value;
             }
         }
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern bool PoseData_isEntered(IntPtr objectHandler);
-        bool? _isEntered;
-        public bool isEntered
+        public bool IsEntered
         {
             get
             {
-                if (_isEntered == null)
-                    _isEntered = PoseData_isEntered(this.Handle);
-                return _isEntered.Value;
+                if (this.isEntered == null)
+                {
+                    this.isEntered = PoseData_isEntered(this.Handle);
+                }
+
+                return this.isEntered.Value;
             }
         }
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern bool PoseData_isExited(IntPtr objectHandler);
-        bool? _isExited;
-        public bool isExited
+        public bool IsExited
         {
             get
             {
-                if (_isExited == null)
-                    _isExited = PoseData_isExited(this.Handle);
-                return _isExited.Value;
+                if (this.isExited == null)
+                {
+                    this.isExited = PoseData_isExited(this.Handle);
+                }
+
+                return this.isExited.Value;
             }
         }
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern bool PoseData_isHeld(IntPtr objectHandler);
-        bool? _isHeld;
-        public bool isHeld
+        public bool IsHeld
         {
             get
             {
-                if (_isHeld == null)
-                    _isHeld = PoseData_isHeld(this.Handle);
-                return _isHeld.Value;
+                if (this.isHeld == null)
+                {
+                    this.isHeld = PoseData_isHeld(this.Handle);
+                }
+
+                return this.isHeld.Value;
             }
         }
+
+        #endregion
+
+        #region Methods
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern PoseType PoseData_getType(IntPtr objectHandler);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern bool PoseData_isEntered(IntPtr objectHandler);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern bool PoseData_isExited(IntPtr objectHandler);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern bool PoseData_isHeld(IntPtr objectHandler);
+
+        #endregion
     }
 }

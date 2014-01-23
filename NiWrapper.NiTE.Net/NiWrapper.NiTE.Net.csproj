@@ -98,6 +98,7 @@
     <Compile Include="HandTrackerFrameRef.cs" />
     <Compile Include="NiTE.cs" />
     <Compile Include="NiTEBase.cs" />
+    <Compile Include="OniVersion.cs" />
     <Compile Include="Plane.cs" />
     <Compile Include="PoseData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

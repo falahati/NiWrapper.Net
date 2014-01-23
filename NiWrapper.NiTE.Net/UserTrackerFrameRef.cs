@@ -1,33 +1,59 @@
 ﻿/*
-    Copyright (C) 2013 Soroush Falahati - soroush@falahati.net
+   Copyright (C) 2013 Soroush Falahati - soroush@falahati.net
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+   This library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+   This library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-	*/
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Runtime.InteropServices;
-using System.Windows.Media.Media3D;
-using System.Drawing;
-using OpenNIWrapper;
-
+   You should have received a copy of the GNU Lesser General Public
+   License along with this library; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+   */
 namespace NiTEWrapper
 {
-    public class UserTrackerFrameRef : NiTEBase, IDisposable
+    #region
+
+    using System;
+    using System.Collections.Generic;
+    using System.Runtime.InteropServices;
+    using System.Windows.Media.Media3D;
+
+    using OpenNIWrapper;
+
+    #endregion
+
+    public sealed class UserTrackerFrameRef : NiTEBase, IDisposable
     {
+        #region Fields
+
+        private readonly Dictionary<int, UserData> usersById = new Dictionary<int, UserData>();
+
+        private VideoFrameRef depthFrame;
+
+        private object floor;
+
+        private float? floorConfidence;
+
+        private int? frameIndex;
+
+        private bool isDisposed;
+
+        private ulong? timestamp;
+
+        private UserMap userMap;
+
+        private UserData[] users;
+
+        #endregion
+
+        #region Constructors and Destructors
+
         internal UserTrackerFrameRef(IntPtr handle)
         {
             this.Handle = handle;
@@ -37,176 +63,210 @@ namespace NiTEWrapper
         {
             try
             {
-                Dispose();
+                this.Dispose();
             }
             catch (Exception)
-            { }
+            {
+            }
         }
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern void UserTrackerFrameRef_release(IntPtr objectHandler);
-        public void Release()
-        {
-            UserTrackerFrameRef_release(this.Handle);
-            _users = null;
-            base.Handle = IntPtr.Zero;
-        }
+        #endregion
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern IntPtr UserTrackerFrameRef_getDepthFrame(IntPtr objectHandler);
-        OpenNIWrapper.VideoFrameRef _DepthFrame = null;
-        public OpenNIWrapper.VideoFrameRef DepthFrame
+        #region Public Properties
+
+        public VideoFrameRef DepthFrame
         {
             get
             {
-                if (_DepthFrame == null)
-                    _DepthFrame = new OpenNIWrapper.VideoFrameRef(
-                                    UserTrackerFrameRef_getDepthFrame(this.Handle));
-                return _DepthFrame;
+                return this.depthFrame
+                       ?? (this.depthFrame = new VideoFrameRef(UserTrackerFrameRef_getDepthFrame(this.Handle)));
             }
         }
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern void UserTrackerFrameRef_getFloor(IntPtr objectHandler,
-            ref float Px, ref float Py, ref float Pz, ref float Nx, ref float Ny, ref float Nz);
-        Object _Floor;
         public Plane Floor
         {
             get
             {
-                if (_Floor == null)
+                if (this.floor == null)
                 {
-                    float Px = 0, Py = 0, Pz = 0, Nx = 0, Ny = 0, Nz = 0;
-                    UserTrackerFrameRef_getFloor(this.Handle, ref Px, ref Py, ref Pz, ref Nx, ref Ny, ref Nz);
-                    _Floor = new Plane()
-                    {
-                        normal = new System.Windows.Media.Media3D.Vector3D(Nx, Ny, Nz),
-                        point = new System.Windows.Media.Media3D.Point3D(Px, Py, Pz)
-                    };
+                    float px = 0, py = 0, pz = 0, nx = 0, ny = 0, nz = 0;
+                    UserTrackerFrameRef_getFloor(this.Handle, ref px, ref py, ref pz, ref nx, ref ny, ref nz);
+                    this.floor = new Plane { Normal = new Vector3D(nx, ny, nz), Point = new Point3D(px, py, pz) };
                 }
-                return (Plane)_Floor;
+
+                return (Plane)this.floor;
             }
         }
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern float UserTrackerFrameRef_getFloorConfidence(IntPtr objectHandler);
-        float? _FloorConfidence;
         public float FloorConfidence
         {
             get
             {
-                if (_FloorConfidence == null)
-                    _FloorConfidence = UserTrackerFrameRef_getFloorConfidence(this.Handle);
-                return _FloorConfidence.Value;
+                if (this.floorConfidence == null)
+                {
+                    this.floorConfidence = UserTrackerFrameRef_getFloorConfidence(this.Handle);
+                }
+
+                return this.floorConfidence.Value;
             }
         }
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern bool UserTrackerFrameRef_isValid(IntPtr objectHandler);
-        public new bool isValid
-        {
-            get
-            {
-                return base.isValid && UserTrackerFrameRef_isValid(this.Handle);
-            }
-        }
-
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern int UserTrackerFrameRef_getFrameIndex(IntPtr objectHandler);
-        int? _FrameIndex;
         public int FrameIndex
         {
             get
             {
-                if (_FrameIndex != null)
-                    return _FrameIndex.Value;
+                if (this.frameIndex != null)
+                {
+                    return this.frameIndex.Value;
+                }
 
-                _FrameIndex = UserTrackerFrameRef_getFrameIndex(this.Handle);
-                return _FrameIndex.Value;
+                this.frameIndex = UserTrackerFrameRef_getFrameIndex(this.Handle);
+                return this.frameIndex.Value;
             }
         }
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern UInt64 UserTrackerFrameRef_getTimestamp(IntPtr objectHandler);
-        UInt64? _Timestamp;
-        public UInt64 Timestamp
+        public new bool IsValid
         {
             get
             {
-                if (_Timestamp != null)
-                    return _Timestamp.Value;
-
-                _Timestamp = UserTrackerFrameRef_getTimestamp(this.Handle);
-                return _Timestamp.Value;
+                return base.IsValid && UserTrackerFrameRef_isValid(this.Handle);
             }
         }
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern IntPtr UserTrackerFrameRef_getUserById(IntPtr objectHandler, short UserId);
-        Dictionary<int, UserData> _usersById = new Dictionary<int, UserData>();
-        public UserData getUserById(short userId)
+        public ulong Timestamp
         {
-            if (!_usersById.ContainsKey(userId))
-                _usersById[userId] = new UserData(
-                    UserTrackerFrameRef_getUserById(this.Handle, userId));
+            get
+            {
+                if (this.timestamp != null)
+                {
+                    return this.timestamp.Value;
+                }
 
-            return _usersById[userId];
+                this.timestamp = UserTrackerFrameRef_getTimestamp(this.Handle);
+                return this.timestamp.Value;
+            }
         }
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern IntPtr UserTrackerFrameRef_getUserMap(IntPtr objectHandler);
-        UserMap _UserMap;
         public UserMap UserMap
         {
             get
             {
-                if (_UserMap == null)
-                    return _UserMap = new UserMap(UserTrackerFrameRef_getUserMap(this.Handle));
+                if (this.userMap == null)
+                {
+                    return this.userMap = new UserMap(UserTrackerFrameRef_getUserMap(this.Handle));
+                }
 
-                return _UserMap;
+                return this.userMap;
             }
         }
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern WrapperArray UserTrackerFrameRef_getUsers(IntPtr vf);
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern IntPtr UserTrackerFrameRef_destroyUsersArray(WrapperArray array);
-        UserData[] _users = null;
         public UserData[] Users
         {
             get
             {
-                if (_users == null)
+                if (this.users == null)
                 {
                     WrapperArray csa = UserTrackerFrameRef_getUsers(this.Handle);
                     IntPtr[] array = new IntPtr[csa.Size];
                     Marshal.Copy(csa.Data, array, 0, csa.Size);
-                    _users = new UserData[csa.Size];
+                    this.users = new UserData[csa.Size];
                     for (int i = 0; i < csa.Size; i++)
-                        _users[i] = new UserData(array[i]);
+                    {
+                        this.users[i] = new UserData(array[i]);
+                    }
+
                     UserTrackerFrameRef_destroyUsersArray(csa);
                 }
-                return _users;
+
+                return this.users;
             }
         }
+
+        #endregion
+
+        #region Public Methods and Operators
 
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        private bool _disposed = false;
-        protected virtual void Dispose(bool disposing)
+        public UserData GetUserById(short userId)
         {
-            if (!_disposed)
+            if (!this.usersById.ContainsKey(userId))
             {
-                if (disposing && this.isValid)
+                this.usersById[userId] = new UserData(UserTrackerFrameRef_getUserById(this.Handle, userId));
+            }
+
+            return this.usersById[userId];
+        }
+
+        public void Release()
+        {
+            UserTrackerFrameRef_release(this.Handle);
+            this.users = null;
+            this.Handle = IntPtr.Zero;
+        }
+
+        #endregion
+
+        #region Methods
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr UserTrackerFrameRef_destroyUsersArray(WrapperArray array);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr UserTrackerFrameRef_getDepthFrame(IntPtr objectHandler);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void UserTrackerFrameRef_getFloor(
+            IntPtr objectHandler, 
+            ref float px, 
+            ref float py, 
+            ref float pz, 
+            ref float nx, 
+            ref float ny, 
+            ref float nz);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern float UserTrackerFrameRef_getFloorConfidence(IntPtr objectHandler);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int UserTrackerFrameRef_getFrameIndex(IntPtr objectHandler);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ulong UserTrackerFrameRef_getTimestamp(IntPtr objectHandler);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr UserTrackerFrameRef_getUserById(IntPtr objectHandler, short userId);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr UserTrackerFrameRef_getUserMap(IntPtr objectHandler);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern WrapperArray UserTrackerFrameRef_getUsers(IntPtr vf);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern bool UserTrackerFrameRef_isValid(IntPtr objectHandler);
+
+        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void UserTrackerFrameRef_release(IntPtr objectHandler);
+
+        private void Dispose(bool disposing)
+        {
+            if (!this.isDisposed)
+            {
+                if (disposing && this.IsValid)
+                {
                     this.Release();
+                }
 
                 this.Handle = IntPtr.Zero;
-                _disposed = true;
+                this.isDisposed = true;
             }
         }
+
+        #endregion
     }
 }

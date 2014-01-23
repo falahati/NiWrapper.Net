@@ -19,7 +19,7 @@ namespace NiTEUserColor
 
         static bool HandleError(NiTE.Status status)
         {
-            if (status == NiTE.Status.OK)
+            if (status == NiTE.Status.Ok)
                 return true;
             MessageBox.Show("Error: " + status.ToString() + Environment.NewLine + OpenNIWrapper.OpenNI.LastError);
             return false;
@@ -41,7 +41,7 @@ namespace NiTEUserColor
         {
             uTracker = UserTracker.Create();
             btn_start.Enabled = false;
-            uTracker.onNewData += new UserTracker.UserTrackerListener(uTracker_onNewData);
+            uTracker.OnNewData += new UserTracker.UserTrackerListenerDelegate(uTracker_onNewData);
 
             //  FIXED Jun 2013
             ///* Because of incompatibility between current version of OpenNI and NiTE,
@@ -60,11 +60,11 @@ namespace NiTEUserColor
         ulong fps;
         void uTracker_onNewData(UserTracker uTracker)
         {
-            if (!uTracker.isValid)
+            if (!uTracker.IsValid)
                 return;
-            using (UserTrackerFrameRef frame = uTracker.readFrame())
+            using (UserTrackerFrameRef frame = uTracker.ReadFrame())
             {
-                if (!frame.isValid)
+                if (!frame.IsValid)
                     return;
                 UserMap um = frame.UserMap;
                 FillImageFromUserMap(frame.UserMap);
