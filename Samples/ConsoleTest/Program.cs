@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using OpenNIWrapper;
 
 namespace ConsoleTest
@@ -10,7 +8,7 @@ namespace ConsoleTest
         static int eventDepth = 0, eventColor = 0, inlineDepth = 0, inlineColor = 0;
         static bool HandleError(OpenNI.Status status)
         {
-            if (status == OpenNI.Status.OK)
+            if (status == OpenNI.Status.Ok)
                 return true;
             Console.WriteLine("Error: " + status.ToString() + " - " + OpenNI.LastError);
             Console.ReadLine();
@@ -22,8 +20,8 @@ namespace ConsoleTest
             Console.WriteLine(OpenNI.Version.ToString());
             status = OpenNI.Initialize();
             if (!HandleError(status)) { Environment.Exit(0); }
-            OpenNI.onDeviceConnected += new OpenNI.DeviceConnectionStateChanged(OpenNI_onDeviceConnected);
-            OpenNI.onDeviceDisconnected += new OpenNI.DeviceConnectionStateChanged(OpenNI_onDeviceDisconnected);
+            OpenNI.OnDeviceConnected += new OpenNI.DeviceConnectionStateChanged(OpenNI_onDeviceConnected);
+            OpenNI.OnDeviceDisconnected += new OpenNI.DeviceConnectionStateChanged(OpenNI_onDeviceDisconnected);
             DeviceInfo[] devices = OpenNI.EnumerateDevices();
             if (devices.Length == 0)
                 return;
@@ -31,36 +29,36 @@ namespace ConsoleTest
             using (device = Device.Open(null,"lr")) // lean init and no reset flags
             {	
                 VideoStream depth;
-                SensorInfo sensorInfo = device.GetSensorInfo(Device.SensorType.DEPTH);
+                SensorInfo sensorInfo = device.GetSensorInfo(Device.SensorType.Depth);
 	            if (sensorInfo != null)
 	            {
-		            depth = VideoStream.Create(device, OpenNIWrapper.Device.SensorType.DEPTH);
+		            depth = VideoStream.Create(device, OpenNIWrapper.Device.SensorType.Depth);
 	            }
 
 
-                if (device.HasSensor(Device.SensorType.DEPTH) &&
-                    device.HasSensor(Device.SensorType.COLOR))
+                if (device.HasSensor(Device.SensorType.Depth) &&
+                    device.HasSensor(Device.SensorType.Color))
                 {
-                    VideoStream depthStream = device.CreateVideoStream(Device.SensorType.DEPTH);
-                    VideoStream colorStream = device.CreateVideoStream(Device.SensorType.COLOR);
+                    VideoStream depthStream = device.CreateVideoStream(Device.SensorType.Depth);
+                    VideoStream colorStream = device.CreateVideoStream(Device.SensorType.Color);
                     if (depthStream.IsValid && colorStream.IsValid)
                     {
                         if (!HandleError(depthStream.Start())) { OpenNI.Shutdown(); return; }
                         if (!HandleError(colorStream.Start())) { OpenNI.Shutdown(); return; }
                         new System.Threading.Thread(new System.Threading.ThreadStart(DisplayInfo)).Start();
-                        depthStream.onNewFrame += new VideoStream.VideoStreamNewFrame(depthStream_onNewFrame);
-                        colorStream.onNewFrame += new VideoStream.VideoStreamNewFrame(colorStream_onNewFrame);
+                        depthStream.OnNewFrame += new VideoStream.VideoStreamNewFrame(depthStream_onNewFrame);
+                        colorStream.OnNewFrame += new VideoStream.VideoStreamNewFrame(colorStream_onNewFrame);
                         VideoStream[] array = new VideoStream[] { depthStream, colorStream };
                         while (!Console.KeyAvailable)
                         {
                             VideoStream aS;
-                            if (OpenNI.WaitForAnyStream(array, out aS) == OpenNI.Status.OK)
+                            if (OpenNI.WaitForAnyStream(array, out aS) == OpenNI.Status.Ok)
                             {
                                 if (aS.Equals(colorStream))
                                     inlineColor++;
                                 else
                                     inlineDepth++;
-                                aS.readFrame().Release();
+                                aS.ReadFrame().Release();
                             }
                         }
                         

@@ -20,7 +20,7 @@ namespace NiViewer.Net
 
         private bool HandleError(OpenNI.Status status)
         {
-            if (status == OpenNI.Status.OK)
+            if (status == OpenNI.Status.Ok)
                 return true;
             MessageBox.Show("Error: " + status.ToString() + " - " + OpenNI.LastError, "Error", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             return false;
@@ -29,8 +29,8 @@ namespace NiViewer.Net
         private void frm_Main_Load(object sender, EventArgs e)
         {
             HandleError(OpenNI.Initialize());
-            OpenNI.onDeviceConnected += new OpenNI.DeviceConnectionStateChanged(OpenNI_onDeviceConnectionStateChanged);
-            OpenNI.onDeviceDisconnected += new OpenNI.DeviceConnectionStateChanged(OpenNI_onDeviceConnectionStateChanged);
+            OpenNI.OnDeviceConnected += this.OpenNI_onDeviceConnectionStateChanged;
+            OpenNI.OnDeviceDisconnected += this.OpenNI_onDeviceConnectionStateChanged;
             UpdateDevicesList();
         }
 
@@ -60,9 +60,9 @@ namespace NiViewer.Net
             {
                 if (currentDevice != null) currentDevice.Dispose();
                 currentDevice = ((DeviceInfo)cb_devices.SelectedItem).OpenDevice();
-                if (currentDevice.HasSensor(Device.SensorType.COLOR)) cb_sensor.Items.Add("Color");
-                if (currentDevice.HasSensor(Device.SensorType.DEPTH)) cb_sensor.Items.Add("Depth");
-                if (currentDevice.HasSensor(Device.SensorType.IR)) cb_sensor.Items.Add("IR");
+                if (currentDevice.HasSensor(Device.SensorType.Color)) cb_sensor.Items.Add("Color");
+                if (currentDevice.HasSensor(Device.SensorType.Depth)) cb_sensor.Items.Add("Depth");
+                if (currentDevice.HasSensor(Device.SensorType.Ir)) cb_sensor.Items.Add("IR");
             }
         }
         VideoStream currentSensor;
@@ -75,13 +75,13 @@ namespace NiViewer.Net
                 switch ((string)(cb_sensor.SelectedItem))
                 {
                     case "Color":
-                        currentSensor = currentDevice.CreateVideoStream(Device.SensorType.COLOR);
+                        currentSensor = currentDevice.CreateVideoStream(Device.SensorType.Color);
                         break;
                     case "Depth":
-                        currentSensor = currentDevice.CreateVideoStream(Device.SensorType.DEPTH);
+                        currentSensor = currentDevice.CreateVideoStream(Device.SensorType.Depth);
                         break;
                     case "IR":
-                        currentSensor = currentDevice.CreateVideoStream(Device.SensorType.IR);
+                        currentSensor = currentDevice.CreateVideoStream(Device.SensorType.Ir);
                         break;
                     default:
                         break;
@@ -89,10 +89,10 @@ namespace NiViewer.Net
                 VideoMode[] videoModes = currentSensor.SensorInfo.GetSupportedVideoModes();
                 for (int i = 0; i < videoModes.Length; i++)
                 {
-                    if (videoModes[i].DataPixelFormat == VideoMode.PixelFormat.GRAY16 ||
-                        videoModes[i].DataPixelFormat == VideoMode.PixelFormat.GRAY8 ||
-                        videoModes[i].DataPixelFormat == VideoMode.PixelFormat.RGB888 ||
-                        videoModes[i].DataPixelFormat == VideoMode.PixelFormat.DEPTH_1MM)
+                    if (videoModes[i].DataPixelFormat == VideoMode.PixelFormat.Gray16 ||
+                        videoModes[i].DataPixelFormat == VideoMode.PixelFormat.Gray8 ||
+                        videoModes[i].DataPixelFormat == VideoMode.PixelFormat.Rgb888 ||
+                        videoModes[i].DataPixelFormat == VideoMode.PixelFormat.Depth1Mm)
                         cb_videomode.Items.Add(videoModes[i]);
                 }
             }
@@ -103,22 +103,22 @@ namespace NiViewer.Net
             if (currentSensor != null && currentSensor.IsValid && cb_videomode.SelectedItem != null)
             {
                 currentSensor.Stop();
-                currentSensor.onNewFrame -= currentSensor_onNewFrame;
+                currentSensor.OnNewFrame -= currentSensor_onNewFrame;
                 currentSensor.VideoMode = (VideoMode)cb_videomode.SelectedItem;
                 try // Not supported by Kinect yet
                 {
                     currentSensor.Mirroring = cb_mirrorHard.Checked;
                     if (cb_tir.Checked)
-                        currentDevice.ImageRegistration = Device.ImageRegistrationMode.DEPTH_TO_COLOR;
+                        currentDevice.ImageRegistration = Device.ImageRegistrationMode.DepthToColor;
                     else
-                        currentDevice.ImageRegistration = Device.ImageRegistrationMode.OFF;
+                        currentDevice.ImageRegistration = Device.ImageRegistrationMode.Off;
                 }
                 catch (Exception)
                 {
                 }
 
-                if (currentSensor.Start() == OpenNI.Status.OK){
-                    currentSensor.onNewFrame += currentSensor_onNewFrame;
+                if (currentSensor.Start() == OpenNI.Status.Ok){
+                    currentSensor.OnNewFrame += currentSensor_onNewFrame;
                 }else{
                     MessageBox.Show("Failed to start stream.");
                 }
@@ -127,19 +127,19 @@ namespace NiViewer.Net
         
         void currentSensor_onNewFrame(VideoStream vStream)
         {
-            if (vStream.IsValid && vStream.isFrameAvailable())
+            if (vStream.IsValid && vStream.IsFrameAvailable())
             {
-                using (VideoFrameRef frame = vStream.readFrame())
+                using (VideoFrameRef frame = vStream.ReadFrame())
                 {
                     if (frame.IsValid)
                     {
-                        VideoFrameRef.copyBitmapOptions options = VideoFrameRef.copyBitmapOptions.Force24BitRGB | VideoFrameRef.copyBitmapOptions.DepthFillShadow;
+                        VideoFrameRef.CopyBitmapOptions options = VideoFrameRef.CopyBitmapOptions.Force24BitRgb | VideoFrameRef.CopyBitmapOptions.DepthFillShadow;
                         if (cb_invert.Checked)
-                            options |= VideoFrameRef.copyBitmapOptions.DepthInvert;
+                            options |= VideoFrameRef.CopyBitmapOptions.DepthInvert;
                         if (cb_equal.Checked)
-                            options |= VideoFrameRef.copyBitmapOptions.DepthHistogramEqualize;
+                            options |= VideoFrameRef.CopyBitmapOptions.DepthHistogramEqualize;
                         if (cb_fill.Checked)
-                            options |= (vStream.Mirroring) ? VideoFrameRef.copyBitmapOptions.DepthFillRigthBlack : VideoFrameRef.copyBitmapOptions.DepthFillLeftBlack;
+                            options |= (vStream.Mirroring) ? VideoFrameRef.CopyBitmapOptions.DepthFillRigthBlack : VideoFrameRef.CopyBitmapOptions.DepthFillLeftBlack;
 
                         lock (bitmap)
                         {

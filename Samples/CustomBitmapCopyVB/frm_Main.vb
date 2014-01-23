@@ -31,7 +31,7 @@ Public Class frm_Main
                 depthStream = device.CreateVideoStream(device.SensorType.DEPTH)
                 colorStream = device.CreateVideoStream(device.SensorType.COLOR)
                 Try
-                    device.ImageRegistration = device.ImageRegistrationMode.DEPTH_TO_COLOR
+                    device.ImageRegistration = device.ImageRegistrationMode.DepthToColor
                     device.DepthColorSyncEnabled = True
                 Catch ex As Exception
                     MessageBox.Show("No Support for Depth to Color registration and/or Depth and Color sync is not available when OpenNI used along with Kinect. Yet.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Information)

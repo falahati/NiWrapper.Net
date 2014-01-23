@@ -1,154 +1,142 @@
 ﻿/*
-    Copyright (C) 2013 Soroush Falahati - soroush@falahati.net
+   Copyright (C) 2013 Soroush Falahati - soroush@falahati.net
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+   This library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+   This library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-	*/
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
-
+   You should have received a copy of the GNU Lesser General Public
+   License along with this library; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+   */
 namespace OpenNIWrapper
 {
-    public class OpenNI
+    #region
+
+    using System;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Runtime.InteropServices;
+
+    #endregion
+
+    // ReSharper disable once InconsistentNaming
+    public static class OpenNI
     {
+        #region Constants
+
+        public const int TimeoutForever = -1;
+
+        public const int TimeoutNone = 0;
+
+        #endregion
+
+        #region Static Fields
+
+        private static readonly DeviceConnectionStateChangedDelegate InternalDeviceConnect = PrivateDeviceConnect;
+
+        private static readonly DeviceConnectionStateChangedDelegate InternalDeviceDisconnect = PrivateDeviceDisconnect;
+
+        private static readonly DeviceStateChangedDelegate InternalDeviceStateChanged = PrivateDeviceStateChanged;
+
+        // ReSharper disable once NotAccessedField.Local
+        private static IntPtr handlerEvents;
+
+        #endregion
+
+        #region Delegates
+
+        public delegate void DeviceConnectionStateChanged(DeviceInfo device);
+
+        public delegate void DeviceStateChanged(DeviceInfo device, DeviceState state);
+
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate void deviceConnectionStateChanged(IntPtr Device);
+        private delegate void DeviceConnectionStateChangedDelegate(IntPtr device);
+
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate void deviceStateChanged(IntPtr Device, DeviceState state);
+        private delegate void DeviceStateChangedDelegate(IntPtr device, DeviceState state);
 
-        public delegate void DeviceConnectionStateChanged(DeviceInfo Device);
-        public delegate void DeviceStateChanged(DeviceInfo Device, DeviceState state);
+        #endregion
 
-        private static deviceConnectionStateChanged internal_DeviceConnect = new deviceConnectionStateChanged(Internal_DeviceConnect);
-        private static deviceConnectionStateChanged internal_DeviceDisconnect = new deviceConnectionStateChanged(Internal_DeviceDisconnect);
-        private static deviceStateChanged internal_DeviceStateChanged = new deviceStateChanged(Internal_DeviceStateChanged);
+        #region Public Events
 
-        public static event DeviceConnectionStateChanged onDeviceConnected;
-        public static event DeviceConnectionStateChanged onDeviceDisconnected;
-        public static event DeviceStateChanged onDeviceStateChanged;
+        public static event DeviceConnectionStateChanged OnDeviceConnected;
 
-        public const int TIMEOUT_FOREVER = -1;
-        public const int TIMEOUT_NONE = 0;
+        public static event DeviceConnectionStateChanged OnDeviceDisconnected;
 
-        [StructLayout(LayoutKind.Sequential)]
-        struct OniVersion
+        public static event DeviceStateChanged OnDeviceStateChanged;
+
+        #endregion
+
+        #region Enums
+
+        public enum DeviceState
         {
-            public int major;
-            public int minor;
-            public int maintenance;
-            public int build;
+            Ok = 0, 
+
+            Error = 1, 
+
+            NotReady = 2, 
+
+            Eof = 3, 
         }
 
         public enum Status
         {
-            OK = 0,
-            ERROR = 1,
-            NOT_IMPLEMENTED = 2,
-            NOT_SUPPORTED = 3,
-            BAD_PARAMETER = 4,
-            OUT_OF_FLOW = 5,
-            NO_DEVICE = 6,
-            TIME_OUT = 102,
+            Ok = 0, 
+
+            Error = 1, 
+
+            NotImplemented = 2, 
+
+            NotSupported = 3, 
+
+            BadParameter = 4, 
+
+            OutOfFlow = 5, 
+
+            NoDevice = 6, 
+
+            TimeOut = 102, 
         }
 
-        public enum DeviceState
+        #endregion
+
+        #region Public Properties
+
+        public static string LastError
         {
-            DEVICE_STATE_OK 	= 0,
-	        DEVICE_STATE_ERROR 	= 1,
-	        DEVICE_STATE_NOT_READY 	= 2,
-	        DEVICE_STATE_EOF 	= 3,
+            get
+            {
+                IntPtr e = OpenNI_getExtendedError();
+                string errorString = Marshal.PtrToStringAnsi(e);
+                if (errorString == null)
+                    return null;
+
+                string r = (string)errorString.Clone();
+                return r;
+            }
         }
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern OniVersion OpenNI_getVersion();
         public static Version Version
         {
             get
             {
                 OniVersion ver = OpenNI_getVersion();
-                return new Version(ver.major, ver.minor, ver.maintenance, ver.build);
+                return new Version(ver.Major, ver.Minor, ver.Maintenance, ver.Build);
             }
         }
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern IntPtr OpenNI_getExtendedError();
-        public static String LastError
-        {
-            get
-            {
-                IntPtr e = OpenNI_getExtendedError();
-                string r = (string)Marshal.PtrToStringAnsi(e).Clone();
-                //Marshal.FreeBSTR(e);
-                return r;
-            }
-        }
+        #endregion
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern Status OpenNI_initialize();
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern IntPtr OpenNI_RegisterListener(
-            [MarshalAs(UnmanagedType.FunctionPtr)]deviceConnectionStateChanged connect,
-            [MarshalAs(UnmanagedType.FunctionPtr)]deviceConnectionStateChanged disconnect,
-            [MarshalAs(UnmanagedType.FunctionPtr)]deviceStateChanged statechanged);
-        static IntPtr handler_events;
-        public static Status Initialize()
-        {
-            Status ret = OpenNI_initialize();
-            if (ret == Status.OK)
-            {
-                handler_events = OpenNI_RegisterListener(internal_DeviceConnect,
-                    internal_DeviceDisconnect, internal_DeviceStateChanged);
-            }
-            return ret;
-        }
+        #region Public Methods and Operators
 
-        private static void Internal_DeviceConnect(IntPtr device)
-        {
-            DeviceConnectionStateChanged ev = onDeviceConnected;
-            if (ev != null)
-                ev(new DeviceInfo(device));
-        }
-
-        private static void Internal_DeviceDisconnect(IntPtr device)
-        {
-            DeviceConnectionStateChanged ev = onDeviceDisconnected;
-            if (ev != null)
-                ev(new DeviceInfo(device));
-        }
-
-        private static void Internal_DeviceStateChanged(IntPtr device, DeviceState state)
-        {
-            DeviceStateChanged ev = onDeviceStateChanged;
-            if (ev != null)
-                ev(new DeviceInfo(device), state);
-        }
-
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern void OpenNI_shutdown();
-        public static void Shutdown()
-        {
-            OpenNI_shutdown();
-        }
-
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern WrapperArray OpenNI_enumerateDevices();
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern IntPtr OpenNI_destroyDevicesArray(WrapperArray array);
         public static DeviceInfo[] EnumerateDevices()
         {
             WrapperArray csa = OpenNI_enumerateDevices();
@@ -156,75 +144,173 @@ namespace OpenNIWrapper
             Marshal.Copy(csa.Data, array, 0, csa.Size);
             DeviceInfo[] arrayObjects = new DeviceInfo[csa.Size];
             for (int i = 0; i < csa.Size; i++)
+            {
                 arrayObjects[i] = new DeviceInfo(array[i]);
+            }
+
             OpenNI_destroyDevicesArray(csa);
             return arrayObjects;
         }
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
-        static extern Status OpenNI_waitForAnyStream(IntPtr pStreams, int streamCount, ref int pReadyStreamIndex, int timeout);
-        public static Status WaitForAnyStream(VideoStream[] pStreams, out VideoStream pReadyStream, int timeout = OpenNI.TIMEOUT_FOREVER)
+        public static Status Initialize()
         {
-            pReadyStream = null;
-            IntPtr[] pStreamArray = new IntPtr[pStreams.Length];
-            
-            int i = 0;
-            foreach (VideoStream vs in pStreams)
+            Status ret = OpenNI_initialize();
+            if (ret == Status.Ok)
             {
-                pStreamArray[i] = vs.Handle;
+                handlerEvents = OpenNI_RegisterListener(
+                    InternalDeviceConnect, 
+                    InternalDeviceDisconnect, 
+                    InternalDeviceStateChanged);
+            }
+
+            return ret;
+        }
+
+        public static void Shutdown()
+        {
+            OpenNI_shutdown();
+        }
+
+        public static Status WaitForAnyStream(
+            VideoStream[] streams, 
+            out VideoStream readyStream, 
+            int timeout = TimeoutForever)
+        {
+            readyStream = null;
+            IntPtr[] streamArray = new IntPtr[streams.Length];
+
+            int i = 0;
+            foreach (VideoStream vs in streams)
+            {
+                streamArray[i] = vs.Handle;
                 i++;
             }
+
             int selectedId = -1;
-            Status ret = Status.ERROR;
-            IntPtr arrayPointer = Marshal.AllocHGlobal(IntPtr.Size * pStreamArray.Length);
+            Status returnValue;
+            IntPtr arrayPointer = Marshal.AllocHGlobal(IntPtr.Size * streamArray.Length);
             try
             {
-                Marshal.Copy(pStreamArray, 0, arrayPointer, pStreamArray.Length);
-                ret = OpenNI_waitForAnyStream(arrayPointer, pStreamArray.Length, ref selectedId, timeout);
+                Marshal.Copy(streamArray, 0, arrayPointer, streamArray.Length);
+                returnValue = OpenNI_waitForAnyStream(arrayPointer, streamArray.Length, ref selectedId, timeout);
             }
             finally
             {
                 Marshal.FreeHGlobal(arrayPointer);
             }
-             
-            if (ret == Status.OK)
-                foreach (VideoStream vs in pStreams)
-                    if (vs.Equals(pStreamArray[selectedId]))
-                        pReadyStream = vs;
-            return ret;
+
+            if (returnValue == Status.Ok)
+            {
+                foreach (VideoStream vs in streams)
+                {
+                    if (vs.Equals(streamArray[selectedId]))
+                    {
+                        readyStream = vs;
+                    }
+                }
+            }
+
+            return returnValue;
         }
 
-        public static Status WaitForStream(VideoStream pStreams, int timeout = OpenNI.TIMEOUT_FOREVER)
+        public static Status WaitForStream(VideoStream streams, int timeout = TimeoutForever)
         {
             VideoStream vs;
-            Status ret = WaitForAnyStream(new VideoStream[] { pStreams }, out vs, timeout);
-            if (ret == Status.OK && !vs.Equals(pStreams))
-                return Status.ERROR;
-            return ret;
+            Status returnValue = WaitForAnyStream(new[] { streams }, out vs, timeout);
+            if (returnValue == Status.Ok && !vs.Equals(streams))
+            {
+                return Status.Error;
+            }
+
+            return returnValue;
         }
 
-        [DebuggerStepThrough()]
-        internal static void throwIfError(Status status)
+        #endregion
+
+        #region Methods
+
+        [DebuggerStepThrough]
+        internal static void ThrowIfError(Status status)
         {
             switch (status)
             {
-                case Status.ERROR:
+                case Status.Error:
                     throw new OpenNIException(LastError);
-                case Status.NOT_IMPLEMENTED:
+                case Status.NotImplemented:
                     throw new NotImplementedException(LastError);
-                case Status.NOT_SUPPORTED:
+                case Status.NotSupported:
                     throw new NotSupportedException(LastError);
-                case Status.BAD_PARAMETER:
+                case Status.BadParameter:
                     throw new ArgumentException(LastError);
-                case Status.OUT_OF_FLOW:
+                case Status.OutOfFlow:
                     throw new OverflowException(LastError);
-                case Status.NO_DEVICE:
-                    throw new System.IO.IOException(LastError);
-                case Status.TIME_OUT:
+                case Status.NoDevice:
+                    throw new IOException(LastError);
+                case Status.TimeOut:
                     throw new TimeoutException(LastError);
                 default:
                     return;
             }
         }
+
+        private static void PrivateDeviceConnect(IntPtr device)
+        {
+            DeviceConnectionStateChanged ev = OnDeviceConnected;
+            if (ev != null)
+            {
+                ev(new DeviceInfo(device));
+            }
+        }
+
+        private static void PrivateDeviceDisconnect(IntPtr device)
+        {
+            DeviceConnectionStateChanged ev = OnDeviceDisconnected;
+            if (ev != null)
+            {
+                ev(new DeviceInfo(device));
+            }
+        }
+
+        private static void PrivateDeviceStateChanged(IntPtr device, DeviceState state)
+        {
+            DeviceStateChanged ev = OnDeviceStateChanged;
+            if (ev != null)
+            {
+                ev(new DeviceInfo(device), state);
+            }
+        }
+
+        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr OpenNI_RegisterListener(
+            [MarshalAs(UnmanagedType.FunctionPtr)] DeviceConnectionStateChangedDelegate connect, 
+            [MarshalAs(UnmanagedType.FunctionPtr)] DeviceConnectionStateChangedDelegate disconnect, 
+            [MarshalAs(UnmanagedType.FunctionPtr)] DeviceStateChangedDelegate statechanged);
+
+        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr OpenNI_destroyDevicesArray(WrapperArray array);
+
+        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern WrapperArray OpenNI_enumerateDevices();
+
+        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr OpenNI_getExtendedError();
+
+        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern OniVersion OpenNI_getVersion();
+
+        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern Status OpenNI_initialize();
+
+        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void OpenNI_shutdown();
+
+        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern Status OpenNI_waitForAnyStream(
+            IntPtr streams, 
+            int streamCount, 
+            ref int readyStreamIndex, 
+            int timeout);
+
+        #endregion
     }
 }

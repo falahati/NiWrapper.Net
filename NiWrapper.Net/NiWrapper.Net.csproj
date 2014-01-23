@@ -95,6 +95,7 @@
     <Compile Include="CoordinateConverter.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="DeviceInfo.cs" />
+    <Compile Include="OniVersion.cs" />
     <Compile Include="OpenNI.cs" />
     <Compile Include="OpenNIBase.cs" />
     <Compile Include="OpenNIException.cs" />

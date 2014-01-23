@@ -17,41 +17,17 @@
    */
 namespace OpenNIWrapper
 {
-    #region
+    using System.Runtime.InteropServices;
 
-    using System;
-
-    #endregion
-
-    // ReSharper disable once InconsistentNaming
-    public abstract class OpenNIBase
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct OniVersion
     {
-        #region Public Properties
+        public readonly int Major;
 
-        public IntPtr Handle { get; protected set; }
+        public readonly int Minor;
 
-        public bool IsValid
-        {
-            get
-            {
-                return !this.Handle.Equals(IntPtr.Zero);
-            }
-        }
+        public readonly int Maintenance;
 
-        #endregion
-
-        #region Public Methods and Operators
-
-        public bool Equals(OpenNIBase obj)
-        {
-            return this.Handle == obj.Handle;
-        }
-
-        public bool Equals(IntPtr obj)
-        {
-            return this.Handle == obj;
-        }
-
-        #endregion
+        public readonly int Build;
     }
 }
