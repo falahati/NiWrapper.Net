@@ -51,7 +51,7 @@
             this.btn_start.TabIndex = 3;
             this.btn_start.Text = "Start";
             this.btn_start.UseVisualStyleBackColor = true;
-            this.btn_start.Click += new System.EventHandler(this.btn_start_Click);
+            this.btn_start.Click += new System.EventHandler(this.BtnStartClick);
             // 
             // frm_Main
             // 
@@ -67,8 +67,8 @@
             this.MinimizeBox = false;
             this.Name = "frm_Main";
             this.ShowIcon = false;
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frm_Main_FormClosing);
-            this.Load += new System.EventHandler(this.frm_Main_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMainFormClosing);
+            this.Load += new System.EventHandler(this.FrmMainLoad);
             ((System.ComponentModel.ISupportInitialize)(this.pb_preview)).EndInit();
             this.ResumeLayout(false);
 

@@ -62,7 +62,7 @@
             this.cb_devices.Name = "cb_devices";
             this.cb_devices.Size = new System.Drawing.Size(142, 21);
             this.cb_devices.TabIndex = 1;
-            this.cb_devices.SelectedIndexChanged += new System.EventHandler(this.cb_devices_SelectedIndexChanged);
+            this.cb_devices.SelectedIndexChanged += new System.EventHandler(this.CbDevicesSelectedIndexChanged);
             // 
             // cb_sensor
             // 
@@ -72,7 +72,7 @@
             this.cb_sensor.Name = "cb_sensor";
             this.cb_sensor.Size = new System.Drawing.Size(142, 21);
             this.cb_sensor.TabIndex = 3;
-            this.cb_sensor.SelectedIndexChanged += new System.EventHandler(this.cb_sensor_SelectedIndexChanged);
+            this.cb_sensor.SelectedIndexChanged += new System.EventHandler(this.CbSensorSelectedIndexChanged);
             // 
             // label2
             // 
@@ -110,7 +110,7 @@
             this.btn_submit.TabIndex = 12;
             this.btn_submit.Text = "Update";
             this.btn_submit.UseVisualStyleBackColor = true;
-            this.btn_submit.Click += new System.EventHandler(this.btn_submit_Click);
+            this.btn_submit.Click += new System.EventHandler(this.BtnSubmitClick);
             // 
             // cb_mirrorHard
             // 
@@ -214,8 +214,8 @@
             this.MinimumSize = new System.Drawing.Size(580, 300);
             this.Name = "frm_Main";
             this.Text = "NiViewer.Net";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frm_Main_FormClosing);
-            this.Load += new System.EventHandler(this.frm_Main_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMainFormClosing);
+            this.Load += new System.EventHandler(this.FrmMainLoad);
             ((System.ComponentModel.ISupportInitialize)(this.pb_image)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

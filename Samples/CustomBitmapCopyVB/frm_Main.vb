@@ -1,11 +1,14 @@
-﻿Imports OpenNIWrapper
-Imports System.Runtime.InteropServices
+﻿Imports System.Runtime.InteropServices
 Imports System.Drawing.Imaging
+Imports OpenNIWrapper
 
+' ReSharper disable once InconsistentNaming
+' ReSharper disable once UnusedMember.Global
 Public Class frm_Main
-    Dim canceled As Boolean = False
+    Dim _canceled As Boolean = False
+
     Function HandleError(status As OpenNI.Status) As Boolean
-        If (status = OpenNI.Status.OK) Then
+        If (status = OpenNI.Status.Ok) Then
             Return True
         End If
         Console.WriteLine("Error: " + status.ToString() + " - " + OpenNI.LastError)
@@ -13,12 +16,14 @@ Public Class frm_Main
         Return False
     End Function
 
-    Private Sub button1_Click(sender As System.Object, e As System.EventArgs) Handles button1.Click
-        canceled = True
+    Private Sub button1_Click(sender As Object, e As EventArgs) Handles button1.Click
+        _canceled = True
     End Sub
-    Dim depthStream As VideoStream
-    Dim colorStream As VideoStream
-    Private Sub Form1_Shown(sender As System.Object, e As System.EventArgs) Handles MyBase.Shown
+
+    Dim _depthStream As VideoStream
+    Dim _colorStream As VideoStream
+
+    Private Sub Form1_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Dim status As OpenNI.Status
         Console.WriteLine(OpenNI.Version.ToString())
         status = OpenNI.Initialize()
@@ -27,24 +32,26 @@ Public Class frm_Main
         If (devices.Length = 0) Then Environment.Exit(0)
         Dim device As Device = devices(0).OpenDevice()
         Using (device)
-            If (device.hasSensor(device.SensorType.DEPTH) AndAlso device.hasSensor(device.SensorType.COLOR)) Then
-                depthStream = device.CreateVideoStream(device.SensorType.DEPTH)
-                colorStream = device.CreateVideoStream(device.SensorType.COLOR)
+            If (device.HasSensor(device.SensorType.Depth) AndAlso device.HasSensor(device.SensorType.Color)) Then
+                _depthStream = device.CreateVideoStream(device.SensorType.Depth)
+                _colorStream = device.CreateVideoStream(device.SensorType.Color)
                 Try
                     device.ImageRegistration = device.ImageRegistrationMode.DepthToColor
                     device.DepthColorSyncEnabled = True
                 Catch ex As Exception
-                    MessageBox.Show("No Support for Depth to Color registration and/or Depth and Color sync is not available when OpenNI used along with Kinect. Yet.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    MessageBox.Show(
+                        "No Support for Depth to Color registration and/or Depth and Color sync is not available when OpenNI used along with Kinect. Yet.",
+                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 End Try
-                If (depthStream.isValid AndAlso colorStream.isValid) Then
-                    If (Not HandleError(depthStream.Start()) OrElse Not HandleError(colorStream.Start())) Then
+                If (_depthStream.IsValid AndAlso _colorStream.IsValid) Then
+                    If (Not HandleError(_depthStream.Start()) OrElse Not HandleError(_colorStream.Start())) Then
                         OpenNI.Shutdown()
                         Environment.Exit(0)
                     End If
-                    While (Not canceled)
-                        If (depthStream.isFrameAvailable() AndAlso colorStream.isFrameAvailable()) Then
-                            Dim depthFrame As VideoFrameRef = depthStream.readFrame()
-                            Dim colorFrame As VideoFrameRef = colorStream.readFrame()
+                    While (Not _canceled)
+                        If (_depthStream.IsFrameAvailable() AndAlso _colorStream.IsFrameAvailable()) Then
+                            Dim depthFrame As VideoFrameRef = _depthStream.ReadFrame()
+                            Dim colorFrame As VideoFrameRef = _colorStream.ReadFrame()
                             If (Not (pictureBox1.Image Is Nothing)) Then pictureBox1.Image.Dispose()
                             pictureBox1.Image = ToBitmap(depthFrame, colorFrame)
                             depthFrame.Release()
@@ -58,16 +65,20 @@ Public Class frm_Main
         OpenNI.Shutdown()
         Environment.Exit(0)
     End Sub
-    Dim bit As Bitmap
+
+    Dim _bit As Bitmap
+
     Private Function ToBitmap(depthFrame As VideoFrameRef, colorFrame As VideoFrameRef) As Bitmap
         Dim imageBytes(depthFrame.FrameSize.Width * depthFrame.FrameSize.Height * 3 - 1) As Byte
-        If (bit Is Nothing OrElse bit.Width <> depthFrame.FrameSize.Width OrElse bit.Height <> depthFrame.FrameSize.Height OrElse bit.PixelFormat <> Imaging.PixelFormat.Format24bppRgb) Then
-            bit = New Bitmap(depthFrame.FrameSize.Width, depthFrame.FrameSize.Height, Imaging.PixelFormat.Format24bppRgb)
+        If _
+            (_bit Is Nothing OrElse _bit.Width <> depthFrame.FrameSize.Width OrElse
+             _bit.Height <> depthFrame.FrameSize.Height OrElse _bit.PixelFormat <> PixelFormat.Format24bppRgb) Then
+            _bit = New Bitmap(depthFrame.FrameSize.Width, depthFrame.FrameSize.Height, PixelFormat.Format24bppRgb)
         End If
         Dim maxDepth As UInt16 = 0
         Dim minDepth As UInt16 = UInt16.MaxValue
         Dim dataPosition As IntPtr = depthFrame.Data
-        For p As Integer = 0 To (depthFrame.DataSize / 2) - 1
+        For p = 0 To (depthFrame.DataSize / 2) - 1
             Dim depth As UInt16 = Marshal.ReadInt16(dataPosition)
             If (depth > maxDepth) Then maxDepth = depth
             If (depth < minDepth) Then minDepth = depth
@@ -75,11 +86,11 @@ Public Class frm_Main
         Next
         Dim i As Integer = 0
         For y As Integer = 0 To depthFrame.FrameSize.Height - 1
-            Dim depthPixelPosition As IntPtr = New IntPtr(CType((y * depthFrame.DataStrideBytes) + depthFrame.Data, Integer))
-            Dim colorPixelPosition As IntPtr = New IntPtr(CType((y * colorFrame.DataStrideBytes) + colorFrame.Data, Integer))
+            Dim depthPixelPosition As IntPtr = New IntPtr((y * depthFrame.DataStrideBytes) + depthFrame.Data.ToInt64())
+            Dim colorPixelPosition As IntPtr = New IntPtr((y * colorFrame.DataStrideBytes) + colorFrame.Data.ToInt64())
             For x As Integer = 0 To depthFrame.FrameSize.Width - 1
                 Dim depth As UInt16 = Marshal.ReadInt16(depthPixelPosition)
-                Dim color As RGB = Marshal.PtrToStructure(colorPixelPosition, GetType(RGB))
+                Dim color As Rgb = Marshal.PtrToStructure(colorPixelPosition, GetType(Rgb))
                 If (depth > 0) Then
                     If (IsThisSpecialDepth(depth, x, y)) Then
                         ' Special GREEN
@@ -99,27 +110,30 @@ Public Class frm_Main
                     imageBytes(i + 2) = 0 ' Blue
                 End If
                 depthPixelPosition += Marshal.SizeOf(GetType(Int16))
-                colorPixelPosition += Marshal.SizeOf(GetType(RGB))
-                i += Marshal.SizeOf(GetType(RGB))
+                colorPixelPosition += Marshal.SizeOf(GetType(Rgb))
+                i += Marshal.SizeOf(GetType(Rgb))
             Next
         Next
 
-        Dim bitData As BitmapData = bit.LockBits(New Rectangle(0, 0, bit.Width, bit.Height), Imaging.ImageLockMode.WriteOnly, Imaging.PixelFormat.Format24bppRgb)
+        Dim bitData As BitmapData = _bit.LockBits(New Rectangle(0, 0, _bit.Width, _bit.Height), ImageLockMode.WriteOnly,
+                                                  PixelFormat.Format24bppRgb)
         Marshal.Copy(imageBytes, 0, bitData.Scan0, imageBytes.Length - 1)
-        bit.UnlockBits(bitData)
+        _bit.UnlockBits(bitData)
 
-        Return New Bitmap(bit)
+        Return New Bitmap(_bit)
     End Function
 
     Private Function IsThisSpecialDepth(depthValue As UInt16, x As Integer, y As Integer) As Boolean
         Dim rwX, rwY, rwZ As Single
-        If (CoordinateConverter.convertDepthToWorld(depthStream, x, y, depthValue, rwX, rwY, rwZ) = OpenNI.Status.OK) Then
+        If (CoordinateConverter.ConvertDepthToWorld(_depthStream, x, y, depthValue, rwX, rwY, rwZ) = OpenNI.Status.Ok) _
+            Then
             Return rwZ < 1000
         End If
         Return False
     End Function
+
     <StructLayout(LayoutKind.Sequential)>
-    Public Structure RGB
+    Public Structure Rgb
         Public B As Byte
         Public G As Byte
         Public R As Byte
