@@ -37,6 +37,8 @@ namespace OpenNIWrapper
         // Keeping event address
         private IntPtr handlerEvents;
 
+        private bool isStarted;
+
         #endregion
 
         #region Constructors and Destructors
@@ -224,11 +226,14 @@ namespace OpenNIWrapper
 
         public OpenNI.Status Start()
         {
-            return VideoStream_start(this.Handle);
+            OpenNI.Status status = VideoStream_start(this.Handle);
+            this.isStarted = status == OpenNI.Status.Ok;
+            return status;
         }
 
         public void Stop()
         {
+            this.isStarted = false;
             VideoStream_stop(this.Handle);
         }
 
@@ -390,7 +395,7 @@ namespace OpenNIWrapper
         private void PrivateNewFrame(IntPtr stream)
         {
             VideoStreamNewFrame ev = this.OnNewFrame;
-            if (ev != null)
+            if (ev != null && this.isStarted)
                 ev(this);
         }
 
