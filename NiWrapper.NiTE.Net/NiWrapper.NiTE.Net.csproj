@@ -121,9 +121,14 @@
     </Content>
     <Content Include="ZipExcludeList.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="NiWrapper.NiTE.Net.x64.nuspec" />
+    <None Include="NiWrapper.NiTE.Net.x86.nuspec" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release (
+"$(SolutionDir)Solution Items\nuget" pack "$(ProjectDir)\NiWrapper.NiTE.Net.$(PlatformName).nuspec" -OutputDirectory "$(SolutionDir)Packages\NuGet"
 "$(SolutionDir)Solution Items\7za" a -tzip "$(SolutionDir)Packages\$(ProjectName) $(PlatformName).zip" "$(TargetDir)*" -mx9 -xr@"$(ProjectDir)ZipExcludeList.txt"
 )</PostBuildEvent>
   </PropertyGroup>

@@ -113,10 +113,15 @@
     </Content>
     <Content Include="ZipExcludeList.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="NiWrapper.Net.x64.nuspec" />
+    <None Include="NiWrapper.Net.x86.nuspec" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release (
 "$(SolutionDir)Solution Items\7za" a -tzip "$(SolutionDir)Packages\$(ProjectName) $(PlatformName).zip" "$(TargetDir)*" -mx9 -xr@"$(ProjectDir)ZipExcludeList.txt"
+"$(SolutionDir)Solution Items\nuget" pack "$(ProjectDir)\NiWrapper.Net.$(PlatformName).nuspec" -OutputDirectory "$(SolutionDir)Packages\NuGet"
 )</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

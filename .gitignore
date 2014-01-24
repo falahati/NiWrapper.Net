@@ -31,3 +31,4 @@ NiWrapper.opensdf
 NiWrapper.sdf
 ipch/*
 !7za.exe
+Packages/NuGet
