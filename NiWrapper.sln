@@ -72,7 +72,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiTE.SkeletonTracker", "Sam
 		{0C040035-BC37-4BC6-A26C-CB5D66AF0916} = {0C040035-BC37-4BC6-A26C-CB5D66AF0916}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleImageRegistration", "ConsoleImageRegistration\ConsoleImageRegistration.csproj", "{8333F7BC-AC37-47CF-941A-163B5F0B2740}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleImageRegistration", "Samples\ConsoleImageRegistration\ConsoleImageRegistration.csproj", "{8333F7BC-AC37-47CF-941A-163B5F0B2740}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
