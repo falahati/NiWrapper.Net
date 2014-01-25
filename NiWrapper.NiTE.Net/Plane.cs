@@ -27,8 +27,10 @@ namespace NiTEWrapper
     {
         #region Fields
 
+        // ReSharper disable once NotAccessedField.Global
         public Vector3D Normal;
 
+        // ReSharper disable once NotAccessedField.Global
         public Point3D Point;
 
         #endregion

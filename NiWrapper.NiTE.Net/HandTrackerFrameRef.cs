@@ -71,12 +71,8 @@ namespace NiTEWrapper
         {
             get
             {
-                if (this.depthFrame == null)
-                {
-                    this.depthFrame = new VideoFrameRef(HandTrackerFrameRef_getDepthFrame(this.Handle));
-                }
-
-                return this.depthFrame;
+                return this.depthFrame
+                       ?? (this.depthFrame = new VideoFrameRef(HandTrackerFrameRef_getDepthFrame(this.Handle)));
             }
         }
 

@@ -20,6 +20,7 @@ namespace OpenNIWrapper
     #region
 
     using System;
+    using System.Collections.Generic;
     using System.Runtime.InteropServices;
 
     #endregion
@@ -42,7 +43,7 @@ namespace OpenNIWrapper
             return SensorInfo_getSensorType(this.Handle);
         }
 
-        public VideoMode[] GetSupportedVideoModes()
+        public IEnumerable<VideoMode> GetSupportedVideoModes()
         {
             WrapperArray csa = SensorInfo_getSupportedVideoModes(this.Handle);
             IntPtr[] array = new IntPtr[csa.Size];

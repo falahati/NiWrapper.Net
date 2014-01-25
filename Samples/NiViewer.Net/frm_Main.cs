@@ -3,6 +3,7 @@
     #region
 
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Drawing;
     using System.Windows.Forms;
@@ -184,7 +185,7 @@
 
                 if (this.currentSensor != null)
                 {
-                    VideoMode[] videoModes = this.currentSensor.SensorInfo.GetSupportedVideoModes();
+                    IEnumerable<VideoMode> videoModes = this.currentSensor.SensorInfo.GetSupportedVideoModes();
                     foreach (VideoMode mode in videoModes)
                     {
                         if (mode.DataPixelFormat == VideoMode.PixelFormat.Gray16

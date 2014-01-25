@@ -93,12 +93,7 @@ namespace NiTEWrapper
         {
             get
             {
-                if (this.skeleton == null)
-                {
-                    this.skeleton = new Skeleton(UserData_getSkeleton(this.Handle));
-                }
-
-                return this.skeleton;
+                return this.skeleton ?? (this.skeleton = new Skeleton(UserData_getSkeleton(this.Handle)));
             }
         }
 

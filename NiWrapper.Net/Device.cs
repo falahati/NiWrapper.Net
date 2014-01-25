@@ -171,15 +171,10 @@ namespace OpenNIWrapper
         public static Device Open(string uri, string mode = "")
         {
             IntPtr handle;
-            if (mode != string.Empty)
-            {
-                OpenNI.ThrowIfError(
-                    Device__openEx(out handle, Marshal.StringToHGlobalAnsi(uri), Marshal.StringToHGlobalAnsi(mode)));
-            }
-            else
-            {
-                OpenNI.ThrowIfError(Device_open(out handle, Marshal.StringToHGlobalAnsi(uri)));
-            }
+            OpenNI.ThrowIfError(
+                mode != string.Empty
+                    ? Device__openEx(out handle, Marshal.StringToHGlobalAnsi(uri), Marshal.StringToHGlobalAnsi(mode))
+                    : Device_open(out handle, Marshal.StringToHGlobalAnsi(uri)));
 
             return new Device(handle);
         }

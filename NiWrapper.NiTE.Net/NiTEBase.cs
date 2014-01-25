@@ -30,6 +30,7 @@ namespace NiTEWrapper
 
         public IntPtr Handle { get; protected set; }
 
+        // ReSharper disable once MemberCanBeProtected.Global
         public bool IsValid
         {
             get

@@ -27,7 +27,7 @@ namespace OpenNIWrapper
     [StructLayout(LayoutKind.Sequential)]
     internal struct WrapperArray
     {
-        public int Size;
+        public readonly int Size;
 
         public IntPtr Data;
 

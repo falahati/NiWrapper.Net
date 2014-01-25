@@ -160,7 +160,7 @@ namespace NiTEWrapper
             }
         }
 
-        public UserData[] Users
+        public IEnumerable<UserData> Users
         {
             get
             {
