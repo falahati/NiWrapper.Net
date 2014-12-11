@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>.Net Wrapper for NiTE 2</description>
     <dependencies>
-      <dependency id="Baseclass.Contrib.Nuget.Output" version="1.0.2" />
+      <dependency id="Baseclass.Contrib.Nuget.Output" version="1.0.7" />
       <dependency id="NiWrapper.Net.x86" version="2.2.0.33" />
     </dependencies>
   </metadata>
