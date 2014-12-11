@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>.Net Wrapper for OpenNI 2</description>
     <dependencies>
-      <dependency id="Baseclass.Contrib.Nuget.Output" version="1.0.2" />
+      <dependency id="Baseclass.Contrib.Nuget.Output" version="1.0.7" />
     </dependencies>
   </metadata>
   <files>
