@@ -145,28 +145,28 @@ namespace OpenNIWrapper
 
         #region Methods
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern int VideoMode_getFps(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern PixelFormat VideoMode_getPixelFormat(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern int VideoMode_getResolutionX(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern int VideoMode_getResolutionY(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr VideoMode_new();
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern void VideoMode_setFps(IntPtr objectHandler, int fps);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern void VideoMode_setPixelFormat(IntPtr objectHandler, PixelFormat pf);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern void VideoMode_setResolution(IntPtr objectHandler, int x, int y);
 
         #endregion

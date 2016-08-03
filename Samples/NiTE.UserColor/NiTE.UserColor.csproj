@@ -114,11 +114,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\NiWrapper.Net\NiWrapper.Net.csproj">
-      <Project>{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFC}</Project>
+      <Project>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Project>
       <Name>NiWrapper.Net</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\NiWrapper.NiTE.Net\NiWrapper.NiTE.Net.csproj">
-      <Project>{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFD}</Project>
+      <Project>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Project>
       <Name>NiWrapper.NiTE.Net</Name>
     </ProjectReference>
   </ItemGroup>

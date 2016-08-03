@@ -17,7 +17,9 @@
 	*/
 
 #include <stdio.h>
+#include "Defines.h"
 #include "NiTE.h"
+
 using namespace nite;
 
 class UserTracker_Listener : public UserTracker::NewFrameListener

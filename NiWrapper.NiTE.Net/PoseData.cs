@@ -122,16 +122,16 @@ namespace NiTEWrapper
 
         #region Methods
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern PoseType PoseData_getType(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool PoseData_isEntered(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool PoseData_isExited(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool PoseData_isHeld(IntPtr objectHandler);
 
         #endregion

@@ -96,13 +96,13 @@ namespace NiTEWrapper
 
         #region Methods
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr UserMap_getPixels(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern void UserMap_getSize(IntPtr objectHandler, ref int w, ref int h);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern int UserMap_getStride(IntPtr objectHandler);
 
         #endregion

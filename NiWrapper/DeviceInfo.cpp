@@ -17,28 +17,32 @@
 	*/
 
 #include <stdio.h>
+#include <stdint.h>
+#include "Defines.h"
 #include "OpenNI.h"
 using namespace openni;
 
+typedef int16_t UINT16;
+
 extern "C"
 {
-	__declspec(dllexport) const char* DeviceInfo_getName(DeviceInfo* di)
+	ONI_WRAPPER_API const char* DeviceInfo_getName(DeviceInfo* di)
 	{
 		 return di->getName();
 	}
-	__declspec(dllexport) const char* DeviceInfo_getUri(DeviceInfo* di)
+	ONI_WRAPPER_API const char* DeviceInfo_getUri(DeviceInfo* di)
 	{
 		 return di->getUri();
 	}
-	__declspec(dllexport) UINT16 DeviceInfo_getUsbProductId(DeviceInfo* di)
+	ONI_WRAPPER_API UINT16 DeviceInfo_getUsbProductId(DeviceInfo* di)
 	{
 		 return di->getUsbProductId();
 	}
-	__declspec(dllexport) UINT16 DeviceInfo_getUsbVendorId(DeviceInfo* di)
+	ONI_WRAPPER_API UINT16 DeviceInfo_getUsbVendorId(DeviceInfo* di)
 	{
 		 return di->getUsbVendorId();
 	}
-	__declspec(dllexport) const char* DeviceInfo_getVendor(DeviceInfo* di)
+	ONI_WRAPPER_API const char* DeviceInfo_getVendor(DeviceInfo* di)
 	{
 		 return di->getVendor();
 	}

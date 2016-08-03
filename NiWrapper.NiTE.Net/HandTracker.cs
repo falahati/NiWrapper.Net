@@ -22,7 +22,6 @@ namespace NiTEWrapper
     using System;
     using System.Drawing;
     using System.Runtime.InteropServices;
-    using System.Windows.Media.Media3D;
 
     using OpenNIWrapper;
 
@@ -35,7 +34,9 @@ namespace NiTEWrapper
         private readonly HandTrackerListenerUnmanagedDelegate internalListener;
 
         // ReSharper disable once NotAccessedField.Local
+        #pragma warning disable 414
         private IntPtr handlerEvents;
+        #pragma warning restore 414
 
         #endregion
 
@@ -185,12 +186,12 @@ namespace NiTEWrapper
 
         #region Methods
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr HandTracker_RegisterListener(
             IntPtr objectHandler, 
             [MarshalAs(UnmanagedType.FunctionPtr)] HandTrackerListenerUnmanagedDelegate listener);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern NiTE.Status HandTracker_convertDepthCoordinatesToHand(
             IntPtr objectHandler, 
             int x, 
@@ -199,7 +200,7 @@ namespace NiTEWrapper
             ref float pX, 
             ref float pY);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern NiTE.Status HandTracker_convertHandCoordinatesToDepth(
             IntPtr objectHandler, 
             float x, 
@@ -208,30 +209,30 @@ namespace NiTEWrapper
             ref float pX, 
             ref float pY);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern NiTE.Status HandTracker_create(out IntPtr objectHandler, IntPtr device);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern void HandTracker_destroy(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern float HandTracker_getSmoothingFactor(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool HandTracker_isValid(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern NiTE.Status HandTracker_readFrame(IntPtr objectHandler, out IntPtr newFrame);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern NiTE.Status HandTracker_setSmoothingFactor(IntPtr objectHandler, float value);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern NiTE.Status HandTracker_startGestureDetection(
             IntPtr objectHandler, 
             GestureData.GestureType type);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern NiTE.Status HandTracker_startHandTracking(
             IntPtr objectHandler, 
             float x, 
@@ -239,10 +240,10 @@ namespace NiTEWrapper
             float z, 
             ref short handId);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern void HandTracker_stopGestureDetection(IntPtr objectHandler, GestureData.GestureType type);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern void HandTracker_stopHandTracking(IntPtr objectHandler, short handId);
 
         private void PrivateNewData(IntPtr handTracker)

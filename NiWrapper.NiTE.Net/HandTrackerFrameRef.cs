@@ -177,31 +177,31 @@ namespace NiTEWrapper
 
         #region Methods
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr HandTrackerFrameRef_destroyGesturesArray(WrapperArray array);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr HandTrackerFrameRef_destroyHandsArray(WrapperArray array);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr HandTrackerFrameRef_getDepthFrame(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern int HandTrackerFrameRef_getFrameIndex(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern WrapperArray HandTrackerFrameRef_getGestures(IntPtr vf);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern WrapperArray HandTrackerFrameRef_getHands(IntPtr vf);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern ulong HandTrackerFrameRef_getTimestamp(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool HandTrackerFrameRef_isValid(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern void HandTrackerFrameRef_release(IntPtr objectHandler);
 
         private void Dispose(bool disposing)

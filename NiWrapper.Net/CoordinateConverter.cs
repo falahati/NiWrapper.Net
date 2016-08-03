@@ -141,7 +141,7 @@ namespace OpenNIWrapper
 
         #region Methods
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status CoordinateConverter_convertDepthToColor(
             IntPtr depthStream, 
             IntPtr colorStream, 
@@ -151,7 +151,7 @@ namespace OpenNIWrapper
             ref int colorX, 
             ref int colorY);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status CoordinateConverter_convertDepthToWorld(
             IntPtr depthStream, 
             int depthX, 
@@ -161,7 +161,7 @@ namespace OpenNIWrapper
             ref float worldY, 
             ref float worldZ);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status CoordinateConverter_convertDepthToWorld_Float(
             IntPtr depthStream, 
             float depthX, 
@@ -171,7 +171,7 @@ namespace OpenNIWrapper
             ref float worldY, 
             ref float worldZ);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status CoordinateConverter_convertWorldToDepth(
             IntPtr depthStream, 
             float worldX, 
@@ -181,7 +181,7 @@ namespace OpenNIWrapper
             ref int depthY, 
             ref ushort depthZ);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status CoordinateConverter_convertWorldToDepth_Float(
             IntPtr depthStream, 
             float worldX, 

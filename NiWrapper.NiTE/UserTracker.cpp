@@ -17,6 +17,7 @@
 	*/
 
 #include <stdio.h>
+#include "Defines.h"
 #include "OpenNI.h"
 #include "NiTE.h"
 #include "UserTracker_Listener.cpp"
@@ -24,12 +25,12 @@ using namespace nite;
 
 extern "C"
 {
-	__declspec(dllexport) void UserTracker_destroy(UserTracker* ut)
+	NITE_WRAPPER_API void UserTracker_destroy(UserTracker* ut)
 	{
 		 ut->destroy();
 	}
 
-	__declspec(dllexport) Status UserTracker_create(UserTracker*& ut, openni::Device* device)
+	NITE_WRAPPER_API Status UserTracker_create(UserTracker*& ut, openni::Device* device)
 	{
 		 UserTracker* urt = new UserTracker();
 		 Status status = urt->create(device);
@@ -40,40 +41,40 @@ extern "C"
 		 return status;
 	}
 
-	__declspec(dllexport) bool UserTracker_isValid(UserTracker* ut)
+	NITE_WRAPPER_API bool UserTracker_isValid(UserTracker* ut)
 	{
 		 return ut->isValid();
 	}
 
-	__declspec(dllexport) Status UserTracker_convertDepthCoordinatesToJoint (
+	NITE_WRAPPER_API Status UserTracker_convertDepthCoordinatesToJoint (
 		UserTracker* ut, int x, int y, int z, float *pOutX, float *pOutY)
 	{
 		 return ut->convertDepthCoordinatesToJoint(x, y, z, pOutX, pOutY);
 	}
 
-	__declspec(dllexport) Status UserTracker_convertJointCoordinatesToDepth (
+	NITE_WRAPPER_API Status UserTracker_convertJointCoordinatesToDepth (
 		UserTracker* ut, float x, float y, float z, float *pOutX, float *pOutY)
 	{
 		return ut->convertJointCoordinatesToDepth(x, y, z, pOutX, pOutY);
 	}
 
-	__declspec(dllexport) float UserTracker_getSkeletonSmoothingFactor(UserTracker* ut)
+	NITE_WRAPPER_API float UserTracker_getSkeletonSmoothingFactor(UserTracker* ut)
 	{
 		 return ut->getSkeletonSmoothingFactor();
 	}
 
-	__declspec(dllexport) Status UserTracker_setSkeletonSmoothingFactor(UserTracker* ut, float value)
+	NITE_WRAPPER_API Status UserTracker_setSkeletonSmoothingFactor(UserTracker* ut, float value)
 	{
 		 return ut->setSkeletonSmoothingFactor(value);
 	}
 
-	__declspec(dllexport) Status UserTracker_readFrame(UserTracker* ut, UserTrackerFrameRef*& pFrame)
+	NITE_WRAPPER_API Status UserTracker_readFrame(UserTracker* ut, UserTrackerFrameRef*& pFrame)
 	{
 		pFrame = new UserTrackerFrameRef();
 		return ut->readFrame(pFrame);
 	}
 
-	__declspec(dllexport) UserTracker_Listener* UserTracker_RegisterListener(
+	NITE_WRAPPER_API UserTracker_Listener* UserTracker_RegisterListener(
 		UserTracker* ut, void (*newFrame)(UserTracker*)){
 		UserTracker_Listener* lis = new UserTracker_Listener();
 		lis->SetNewFrameCallback(newFrame);
@@ -81,20 +82,20 @@ extern "C"
 		return lis;
 	}
 
-	__declspec(dllexport) Status UserTracker_startPoseDetection(UserTracker* ut, UserId user, PoseType type)
+	NITE_WRAPPER_API Status UserTracker_startPoseDetection(UserTracker* ut, UserId user, PoseType type)
 	{
 		 return ut->startPoseDetection(user, type);
 	}
-	__declspec(dllexport) void UserTracker_stopPoseDetection(UserTracker* ut, UserId user, PoseType type)
+	NITE_WRAPPER_API void UserTracker_stopPoseDetection(UserTracker* ut, UserId user, PoseType type)
 	{
 		 ut->stopPoseDetection(user, type);
 	}
 
-	__declspec(dllexport) Status UserTracker_startSkeletonTracking(UserTracker* ut, UserId user)
+	NITE_WRAPPER_API Status UserTracker_startSkeletonTracking(UserTracker* ut, UserId user)
 	{
 		 return ut->startSkeletonTracking(user);
 	}
-	__declspec(dllexport) void UserTracker_stopSkeletonTracking(UserTracker* ut, UserId user)
+	NITE_WRAPPER_API void UserTracker_stopSkeletonTracking(UserTracker* ut, UserId user)
 	{
 		 ut->stopSkeletonTracking(user);
 	}

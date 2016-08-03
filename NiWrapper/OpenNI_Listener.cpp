@@ -17,6 +17,7 @@
 	*/
 
 #include <stdio.h>
+#include "Defines.h"
 #include "OpenNI.h"
 using namespace openni;
 

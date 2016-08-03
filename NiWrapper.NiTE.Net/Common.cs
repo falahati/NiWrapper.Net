@@ -37,7 +37,7 @@ namespace NiTEWrapper
 
         #region Methods
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern void Common_Delete(IntPtr objectHandler);
 
         #endregion

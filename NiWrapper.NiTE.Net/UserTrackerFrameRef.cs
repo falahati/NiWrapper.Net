@@ -22,7 +22,6 @@ namespace NiTEWrapper
     using System;
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
-    using System.Windows.Media.Media3D;
 
     using OpenNIWrapper;
 
@@ -213,13 +212,13 @@ namespace NiTEWrapper
 
         #region Methods
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr UserTrackerFrameRef_destroyUsersArray(WrapperArray array);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr UserTrackerFrameRef_getDepthFrame(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern void UserTrackerFrameRef_getFloor(
             IntPtr objectHandler, 
             ref float px, 
@@ -229,28 +228,28 @@ namespace NiTEWrapper
             ref float ny, 
             ref float nz);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern float UserTrackerFrameRef_getFloorConfidence(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern int UserTrackerFrameRef_getFrameIndex(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern ulong UserTrackerFrameRef_getTimestamp(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr UserTrackerFrameRef_getUserById(IntPtr objectHandler, short userId);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr UserTrackerFrameRef_getUserMap(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern WrapperArray UserTrackerFrameRef_getUsers(IntPtr vf);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool UserTrackerFrameRef_isValid(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern void UserTrackerFrameRef_release(IntPtr objectHandler);
 
         private void Dispose(bool disposing)

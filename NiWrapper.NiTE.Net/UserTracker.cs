@@ -22,7 +22,6 @@ namespace NiTEWrapper
     using System;
     using System.Drawing;
     using System.Runtime.InteropServices;
-    using System.Windows.Media.Media3D;
 
     using OpenNIWrapper;
 
@@ -35,7 +34,9 @@ namespace NiTEWrapper
         private readonly UserTrackerListenerUnmanagedDelegate internalListener;
 
         // ReSharper disable once NotAccessedField.Local
+        #pragma warning disable 414
         private IntPtr handlerEvents;
+        #pragma warning restore 414
 
         #endregion
 
@@ -173,12 +174,12 @@ namespace NiTEWrapper
 
         #region Methods
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr UserTracker_RegisterListener(
             IntPtr objectHandler, 
             [MarshalAs(UnmanagedType.FunctionPtr)] UserTrackerListenerUnmanagedDelegate listener);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern NiTE.Status UserTracker_convertDepthCoordinatesToJoint(
             IntPtr objectHandler, 
             int x, 
@@ -187,7 +188,7 @@ namespace NiTEWrapper
             ref float pX, 
             ref float pY);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern NiTE.Status UserTracker_convertJointCoordinatesToDepth(
             IntPtr objectHandler, 
             float x, 
@@ -196,40 +197,40 @@ namespace NiTEWrapper
             ref float pX, 
             ref float pY);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern NiTE.Status UserTracker_create(out IntPtr objectHandler, IntPtr device);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern void UserTracker_destroy(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern float UserTracker_getSkeletonSmoothingFactor(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool UserTracker_isValid(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern NiTE.Status UserTracker_readFrame(IntPtr objectHandler, out IntPtr newFrame);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern NiTE.Status UserTracker_setSkeletonSmoothingFactor(IntPtr objectHandler, float value);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern NiTE.Status UserTracker_startPoseDetection(
             IntPtr objectHandler, 
             short userId, 
             PoseData.PoseType type);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern NiTE.Status UserTracker_startSkeletonTracking(IntPtr objectHandler, short userId);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern void UserTracker_stopPoseDetection(
             IntPtr objectHandler, 
             short userId, 
             PoseData.PoseType type);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern void UserTracker_stopSkeletonTracking(IntPtr objectHandler, short userId);
 
         private void PrivateNewData(IntPtr usetTracker)

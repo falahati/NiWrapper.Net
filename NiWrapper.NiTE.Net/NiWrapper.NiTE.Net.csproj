@@ -2,17 +2,16 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFD}</ProjectGuid>
+    <ProjectGuid>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NiTEWrapper</RootNamespace>
     <AssemblyName>NiWrapper.NiTE.Net</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -83,7 +82,6 @@
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
   </ItemGroup>
@@ -106,10 +104,14 @@
     <Compile Include="UserMap.cs" />
     <Compile Include="UserTracker.cs" />
     <Compile Include="UserTrackerFrameRef.cs" />
+    <Compile Include="Point3D.cs" />
+    <Compile Include="Vector3D.cs" />
+    <Compile Include="Rect3D.cs" />
+    <Compile Include="Quaternion.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NiWrapper.Net\NiWrapper.Net.csproj">
-      <Project>{A4AAED44-E0E5-4FD3-B4B4-FAF27E089BFC}</Project>
+      <Project>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Project>
       <Name>NiWrapper.Net</Name>
     </ProjectReference>
   </ItemGroup>
@@ -124,12 +126,12 @@
     <None Include="NiWrapper.NiTE.Net.x86.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
+<!--  <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release (
 "$(SolutionDir)Solution Items\nuget" pack "$(ProjectDir)\NiWrapper.NiTE.Net.$(PlatformName).nuspec" -OutputDirectory "$(SolutionDir)Packages\NuGet"
 "$(SolutionDir)Solution Items\7za" a -tzip "$(SolutionDir)Packages\$(ProjectName) $(PlatformName).zip" "$(TargetDir)*" -mx9 -xr@"$(ProjectDir)ZipExcludeList.txt"
 )</PostBuildEvent>
-  </PropertyGroup>
+  </PropertyGroup>-->
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

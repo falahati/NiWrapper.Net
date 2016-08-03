@@ -21,7 +21,6 @@ namespace NiTEWrapper
 
     using System;
     using System.Runtime.InteropServices;
-    using System.Windows.Media.Media3D;
 
     #endregion
 
@@ -168,7 +167,7 @@ namespace NiTEWrapper
 
         #region Methods
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SkeletonJoint_getOrientation(
             IntPtr objectHandler, 
             ref float x, 
@@ -176,20 +175,20 @@ namespace NiTEWrapper
             ref float z, 
             ref float w);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern float SkeletonJoint_getOrientationConfidence(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SkeletonJoint_getPosition(
             IntPtr objectHandler, 
             ref float x, 
             ref float y, 
             ref float z);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern float SkeletonJoint_getPositionConfidence(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern JointType SkeletonJoint_getType(IntPtr objectHandler);
 
         #endregion
