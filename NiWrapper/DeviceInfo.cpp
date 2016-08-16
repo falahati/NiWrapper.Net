@@ -22,7 +22,9 @@
 #include "OpenNI.h"
 using namespace openni;
 
-typedef int16_t UINT16;
+#ifndef UINT16
+typedef uint16_t UINT16;
+#endif
 
 extern "C"
 {
