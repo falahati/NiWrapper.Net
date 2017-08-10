@@ -17,6 +17,7 @@
 	*/
 
 #include <stdio.h>
+#include "Defines.h"
 #include "OpenNI.h"
 using namespace openni;
 
@@ -33,22 +34,22 @@ extern "C"
 		DepthFillShadow = 32,
 	};
 
-	__declspec(dllexport) void VideoFrameRef_release(VideoFrameRef* vf)
+	ONI_WRAPPER_API void VideoFrameRef_release(VideoFrameRef* vf)
 	{
 		 vf->release();
 	}
 	
-	__declspec(dllexport) VideoMode* VideoFrameRef_getVideoMode(VideoFrameRef* vf)
+	ONI_WRAPPER_API VideoMode* VideoFrameRef_getVideoMode(VideoFrameRef* vf)
 	{
 		 return const_cast<VideoMode*>(&vf->getVideoMode());
 	}
 
-	__declspec(dllexport) bool VideoFrameRef_isValid(VideoFrameRef* vf)
+	ONI_WRAPPER_API bool VideoFrameRef_isValid(VideoFrameRef* vf)
 	{
 		 return vf->isValid();
 	}
 
-	__declspec(dllexport) bool VideoFrameRef_getCroppingOrigin(VideoFrameRef* vf, int* pOriginX, int* pOriginY)
+	ONI_WRAPPER_API bool VideoFrameRef_getCroppingOrigin(VideoFrameRef* vf, int* pOriginX, int* pOriginY)
 	{
 		if (!vf->getCroppingEnabled())
 			return false;
@@ -57,12 +58,12 @@ extern "C"
 		 return true;
 	}
 
-	__declspec(dllexport) void* VideoFrameRef_getData(VideoFrameRef* vf)
+	ONI_WRAPPER_API void* VideoFrameRef_getData(VideoFrameRef* vf)
 	{
 		return const_cast<void*>(vf->getData());
 	}
 
-	__declspec(dllexport) void VideoFrameRef_copyDataTo(VideoFrameRef* vf, void* dstData, int dstStride, copyBitmapOptions options)
+	ONI_WRAPPER_API void VideoFrameRef_copyDataTo(VideoFrameRef* vf, void* dstData, int dstStride, copyBitmapOptions options)
 	{
 		int width = vf->getWidth();
 		int height = vf->getHeight();
@@ -263,29 +264,29 @@ extern "C"
 		}
 	}
 
-	__declspec(dllexport) int VideoFrameRef_getDataSize(VideoFrameRef* vf)
+	ONI_WRAPPER_API int VideoFrameRef_getDataSize(VideoFrameRef* vf)
 	{
 		 return vf->getDataSize();
 	}
 
-	__declspec(dllexport) int VideoFrameRef_getFrameIndex(VideoFrameRef* vf)
+	ONI_WRAPPER_API int VideoFrameRef_getFrameIndex(VideoFrameRef* vf)
 	{
 		 return vf->getFrameIndex();
 	}
-	__declspec(dllexport) void VideoFrameRef_getSize(VideoFrameRef* vf, int* width, int* height)
+	ONI_WRAPPER_API void VideoFrameRef_getSize(VideoFrameRef* vf, int* width, int* height)
 	{
 		*height = vf->getHeight();
 		*width = vf->getWidth();
 	}
-	__declspec(dllexport) SensorType VideoFrameRef_getSensorType(VideoFrameRef* vf)
+	ONI_WRAPPER_API SensorType VideoFrameRef_getSensorType(VideoFrameRef* vf)
 	{
 		 return vf->getSensorType();
 	}
-	__declspec(dllexport) int VideoFrameRef_getStrideInBytes(VideoFrameRef* vf)
+	ONI_WRAPPER_API int VideoFrameRef_getStrideInBytes(VideoFrameRef* vf)
 	{
 		 return vf->getStrideInBytes();
 	}
-	__declspec(dllexport) uint64_t VideoFrameRef_getTimestamp(VideoFrameRef* vf)
+	ONI_WRAPPER_API uint64_t VideoFrameRef_getTimestamp(VideoFrameRef* vf)
 	{
 		 return vf->getTimestamp();
 	}

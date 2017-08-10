@@ -35,7 +35,9 @@ namespace OpenNIWrapper
 
         // ReSharper disable once NotAccessedField.Local
         // Keeping event address
+        #pragma warning disable 414
         private IntPtr handlerEvents;
+        #pragma warning restore 414
 
         private bool isStarted;
 
@@ -287,24 +289,24 @@ namespace OpenNIWrapper
             Common.DeleteObject(this);
         }
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr VideoStream_RegisterListener(
             IntPtr objectHandler, 
             [MarshalAs(UnmanagedType.FunctionPtr)] VideoStreamNewFrameDelegate newFrame);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status VideoStream_create(
             out IntPtr objectHandler, 
             IntPtr device, 
             Device.SensorType sensorType);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern void VideoStream_destroy(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr VideoStream_getCameraSettings(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool VideoStream_getCropping(
             IntPtr objectHandler, 
             ref int originX, 
@@ -312,60 +314,60 @@ namespace OpenNIWrapper
             ref int width, 
             ref int height);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern float VideoStream_getHorizontalFieldOfView(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern int VideoStream_getMaxPixelValue(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern int VideoStream_getMinPixelValue(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool VideoStream_getMirroringEnabled(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status VideoStream_getProperty(
             IntPtr objectHandler, 
             int propertyId, 
             IntPtr data, 
             out int dataSize);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr VideoStream_getSensorInfo(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern float VideoStream_getVerticalFieldOfView(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr VideoStream_getVideoMode(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status VideoStream_invoke(
             IntPtr objectHandler, 
             int commandId, 
             IntPtr data, 
             int dataSize);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool VideoStream_isCommandSupported(IntPtr objectHandler, int commandId);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool VideoStream_isCroppingSupported(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool VideoStream_isPropertySupported(IntPtr objectHandler, int propertyId);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool VideoStream_isValid(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status VideoStream_readFrame(IntPtr objectHandler, out IntPtr newFrame);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status VideoStream_resetCropping(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status VideoStream_setCropping(
             IntPtr objectHandler, 
             int originX, 
@@ -373,23 +375,23 @@ namespace OpenNIWrapper
             int width, 
             int height);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status VideoStream_setMirroringEnabled(IntPtr objectHandler, bool isEnable);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status VideoStream_setProperty(
             IntPtr objectHandler, 
             int propertyId, 
             IntPtr data, 
             int dataSize);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status VideoStream_setVideoMode(IntPtr objectHandler, IntPtr vmod);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status VideoStream_start(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern void VideoStream_stop(IntPtr objectHandler);
 
         private void PrivateNewFrame(IntPtr stream)

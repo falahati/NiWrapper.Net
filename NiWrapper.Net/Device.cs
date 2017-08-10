@@ -277,73 +277,73 @@ namespace OpenNIWrapper
             }
         }
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status Device__openEx(out IntPtr objectHandler, IntPtr uri, IntPtr mode);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern void Device_close(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool Device_getDepthColorSyncEnabled(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr Device_getDeviceInfo(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern ImageRegistrationMode Device_getImageRegistrationMode(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr Device_getPlaybackControl(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status Device_getProperty(
             IntPtr objectHandler, 
             int propertyId, 
             IntPtr data, 
             out int dataSize);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr Device_getSensorInfo(IntPtr objectHandler, SensorType sensorType);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool Device_hasSensor(IntPtr objectHandler, SensorType sensorType);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status Device_invoke(
             IntPtr objectHandler, 
             int commandId, 
             IntPtr data, 
             int dataSize);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool Device_isCommandSupported(IntPtr objectHandler, int commandId);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool Device_isFile(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool Device_isImageRegistrationModeSupported(
             IntPtr objectHandler, 
             ImageRegistrationMode mode);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool Device_isPropertySupported(IntPtr objectHandler, int propertyId);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool Device_isValid(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status Device_open(out IntPtr objectHandler, IntPtr uri);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status Device_setDepthColorSyncEnabled(IntPtr objectHandler, bool enable);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status Device_setImageRegistrationMode(
             IntPtr objectHandler, 
             ImageRegistrationMode mode);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status Device_setProperty(
             IntPtr objectHandler, 
             int propertyId, 

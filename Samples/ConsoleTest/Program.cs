@@ -21,7 +21,7 @@
 
         private static int inlineDepth;
 
-        private static int lastUpdate;
+        private static long lastUpdate = 0;
 
         #endregion
 
@@ -49,14 +49,14 @@
             {
                 if (lastUpdate == 0)
                 {
-                    lastUpdate = Environment.TickCount;
+                    lastUpdate = DateTime.Now.Ticks;
                     continue;
                 }
 
-                if (Environment.TickCount - lastUpdate > 1000)
+                if (DateTime.Now.Ticks - lastUpdate > 1000)
                 {
                     lastUpdate = Environment.TickCount;
-                    Console.Clear();
+                    //Console.Clear();
                     Console.WriteLine(
                         "Inline Depth: " + inlineDepth + " - Inline Color: " + inlineColor + " - Event Depth: "
                         + eventDepth + " - Event Color: " + eventColor);
@@ -111,7 +111,8 @@
                             return;
                         }
 
-                        new Thread(DisplayInfo).Start();
+                        Thread workThread = new Thread(DisplayInfo);
+                        workThread.Start();
                         depthStream.OnNewFrame += DepthStreamOnNewFrame;
                         colorStream.OnNewFrame += ColorStreamOnNewFrame;
                         VideoStream[] array = { depthStream, colorStream };

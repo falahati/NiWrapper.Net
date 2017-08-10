@@ -162,19 +162,19 @@ namespace OpenNIWrapper
 
         #region Methods
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr DeviceInfo_getName(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr DeviceInfo_getUri(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern ushort DeviceInfo_getUsbProductId(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern ushort DeviceInfo_getUsbVendorId(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr DeviceInfo_getVendor(IntPtr objectHandler);
 
         #endregion

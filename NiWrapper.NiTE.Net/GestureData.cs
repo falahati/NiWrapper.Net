@@ -21,7 +21,6 @@ namespace NiTEWrapper
 
     using System;
     using System.Runtime.InteropServices;
-    using System.Windows.Media.Media3D;
 
     #endregion
 
@@ -127,20 +126,20 @@ namespace NiTEWrapper
 
         #region Methods
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern void GestureData_getCurrentPosition(
             IntPtr objectHandler, 
             ref float x, 
             ref float y, 
             ref float z);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern GestureType GestureData_getType(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool GestureData_isComplete(IntPtr objectHandler);
 
-        [DllImport("NiWrapper.NiTE.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper_NiTE", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool GestureData_isInProgress(IntPtr objectHandler);
 
         #endregion

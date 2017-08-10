@@ -17,20 +17,21 @@
 	*/
 
 #include <stdio.h>
+#include "Defines.h"
 #include "NITE.h"
 using namespace nite;
 
 extern "C"
 {
-	__declspec(dllexport) Version NiTE_getVersion()
+	NITE_WRAPPER_API Version NiTE_getVersion()
 	{
 		 return NiTE::getVersion();
 	}
-	__declspec(dllexport) Status NiTE_initialize()
+	NITE_WRAPPER_API Status NiTE_initialize()
 	{
 		 return NiTE::initialize();
 	}
-	__declspec(dllexport) void NiTE_shutdown()
+	NITE_WRAPPER_API void NiTE_shutdown()
 	{
 		 NiTE::shutdown();
 	}

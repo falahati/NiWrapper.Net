@@ -17,6 +17,7 @@
 	*/
 
 #include <stdio.h>
+#include "Defines.h"
 #include "NiTE.h"
 using namespace nite;
 

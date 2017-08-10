@@ -17,30 +17,37 @@
 	*/
 
 #include <stdio.h>
+#include "Defines.h"
 #include "OpenNI.h"
 #include "Array.cpp"
+
 using namespace openni;
 
 extern "C"
 {
 
-	__declspec(dllexport) SensorType SensorInfo_getSensorType(SensorInfo* si)
+	ONI_WRAPPER_API SensorType SensorInfo_getSensorType(SensorInfo* si)
 	{
 		 return si->getSensorType();
 	}
 
-	__declspec(dllexport) WrapperArray SensorInfo_getSupportedVideoModes(SensorInfo* si){
-		WrapperArray* csarray = new WrapperArray();
-		const Array<VideoMode>& dIArray = si->getSupportedVideoModes();
-		csarray->Size = dIArray.getSize();
+	ONI_WRAPPER_API WrapperArray SensorInfo_getSupportedVideoModes(SensorInfo* si){
+                WrapperArray csarray;
+                const Array<VideoMode>& modes = si->getSupportedVideoModes();
+		Array<VideoMode>* dIArray = new Array<VideoMode>(&modes[0], modes.getSize());
+                csarray.Handle = dIArray;
+		csarray.Size = dIArray->getSize();
 		VideoMode** dP = new VideoMode*[255];
-		for (int i = 0; i < dIArray.getSize(); i++)
-			dP[i] = const_cast<VideoMode*>(&(dIArray[i]));
-		csarray->Data = dP;
-		return *csarray;
+		for (int i = 0; i < dIArray->getSize(); i++)
+                        dP[i] = const_cast<VideoMode*>(&((*dIArray)[i]));
+		csarray.Data = dP;
+		return csarray;
 	}
 
-	__declspec(dllexport) void SensorInfo_destroyVideoModesArray(WrapperArray p){
-		delete[] p.Data;
+	ONI_WRAPPER_API void SensorInfo_destroyVideoModesArray(WrapperArray p){
+		VideoMode** array = reinterpret_cast<VideoMode**>(p.Data);
+                delete [] array;
+                Array<VideoMode>* handle = reinterpret_cast<Array<VideoMode>*>(p.Handle);
+		delete handle;
 	}
 };
