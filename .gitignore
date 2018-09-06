@@ -34,3 +34,5 @@ ipch/*
 Packages/NuGet
 /.vs/*
 /Packages/*.zip
+build/
+*.userprefs

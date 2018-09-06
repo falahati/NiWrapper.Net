@@ -46,7 +46,10 @@ namespace OpenNIWrapper
         private static readonly DeviceStateChangedDelegate InternalDeviceStateChanged = PrivateDeviceStateChanged;
 
         // ReSharper disable once NotAccessedField.Local
+
+        #pragma warning disable 414
         private static IntPtr handlerEvents;
+        #pragma warning restore 414
 
         #endregion
 
@@ -280,31 +283,31 @@ namespace OpenNIWrapper
             }
         }
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr OpenNI_RegisterListener(
             [MarshalAs(UnmanagedType.FunctionPtr)] DeviceConnectionStateChangedDelegate connect, 
             [MarshalAs(UnmanagedType.FunctionPtr)] DeviceConnectionStateChangedDelegate disconnect, 
             [MarshalAs(UnmanagedType.FunctionPtr)] DeviceStateChangedDelegate statechanged);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr OpenNI_destroyDevicesArray(WrapperArray array);
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern WrapperArray OpenNI_enumerateDevices();
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr OpenNI_getExtendedError();
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OniVersion OpenNI_getVersion();
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern Status OpenNI_initialize();
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern void OpenNI_shutdown();
 
-        [DllImport("NiWrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern Status OpenNI_waitForAnyStream(
             IntPtr streams, 
             int streamCount, 

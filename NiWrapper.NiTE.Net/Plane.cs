@@ -19,7 +19,6 @@ namespace NiTEWrapper
 {
     #region
 
-    using System.Windows.Media.Media3D;
 
     #endregion
 
