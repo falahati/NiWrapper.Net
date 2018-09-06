@@ -265,15 +265,17 @@ namespace OpenNIWrapper
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.isDisposed)
+            lock (this)
             {
-                if (disposing && this.IsValid)
+                if (!this.isDisposed)
                 {
-                    this.Close();
+                    this.isDisposed = true;
+                    if (disposing && this.IsValid)
+                    {
+                        this.Close();
+                    }
+                    this.Handle = IntPtr.Zero;
                 }
-
-                this.Handle = IntPtr.Zero;
-                this.isDisposed = true;
             }
         }
 
