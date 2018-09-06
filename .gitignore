@@ -32,3 +32,5 @@ NiWrapper.sdf
 ipch/*
 !7za.exe
 Packages/NuGet
+/.vs/*
+/Packages/*.zip
