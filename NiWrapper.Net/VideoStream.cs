@@ -15,18 +15,47 @@
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
    */
+
+using System;
+using System.Drawing;
+using System.Runtime.InteropServices;
+
 namespace OpenNIWrapper
 {
     #region
 
-    using System;
-    using System.Drawing;
-    using System.Runtime.InteropServices;
-
     #endregion
 
-    public class VideoStream : OpenNIBase
+    public class VideoStream : OpenNIBase, IDisposable
     {
+        #region Public Events
+
+        public event VideoStreamNewFrame OnNewFrame;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        internal VideoStream(IntPtr handle)
+        {
+            ParentDevice = null;
+            Handle = handle;
+            internalNewFrame = PrivateNewFrame;
+        }
+
+        #endregion
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            if (IsValid)
+            {
+                VideoStream_destroy(Handle);
+                Common.DeleteObject(this);
+                Handle = IntPtr.Zero;
+            }
+        }
+
         #region Fields
 
         private readonly VideoStreamNewFrameDelegate internalNewFrame;
@@ -35,22 +64,11 @@ namespace OpenNIWrapper
 
         // ReSharper disable once NotAccessedField.Local
         // Keeping event address
-        #pragma warning disable 414
+#pragma warning disable 414
         private IntPtr handlerEvents;
-        #pragma warning restore 414
+#pragma warning restore 414
 
         private bool isStarted;
-
-        #endregion
-
-        #region Constructors and Destructors
-
-        internal VideoStream(IntPtr handle)
-        {
-            this.ParentDevice = null;
-            this.Handle = handle;
-            this.internalNewFrame = this.PrivateNewFrame;
-        }
 
         #endregion
 
@@ -63,25 +81,20 @@ namespace OpenNIWrapper
 
         #endregion
 
-        #region Public Events
-
-        public event VideoStreamNewFrame OnNewFrame;
-
-        #endregion
-
         #region Public Properties
 
         public CameraSettings CameraSettings
         {
             get
             {
-                if (this.cameraSettings != null)
+                if (cameraSettings != null)
                 {
-                    return this.cameraSettings;
+                    return cameraSettings;
                 }
 
-                this.cameraSettings = new CameraSettings(VideoStream_getCameraSettings(this.Handle));
-                return this.cameraSettings;
+                cameraSettings = new CameraSettings(VideoStream_getCameraSettings(Handle));
+
+                return cameraSettings;
             }
         }
 
@@ -90,7 +103,8 @@ namespace OpenNIWrapper
             get
             {
                 int x = 0, y = 0, w = 0, h = 0;
-                if (VideoStream_getCropping(this.Handle, ref x, ref y, ref w, ref h))
+
+                if (VideoStream_getCropping(Handle, ref x, ref y, ref w, ref h))
                 {
                     return new Rectangle(x, y, w, h);
                 }
@@ -102,16 +116,16 @@ namespace OpenNIWrapper
             {
                 if (value == null)
                 {
-                    OpenNI.ThrowIfError(VideoStream_resetCropping(this.Handle));
+                    OpenNI.ThrowIfError(VideoStream_resetCropping(Handle));
                 }
                 else
                 {
                     OpenNI.ThrowIfError(
                         VideoStream_setCropping(
-                            this.Handle, 
-                            value.Value.X, 
-                            value.Value.Y, 
-                            value.Value.Width, 
+                            Handle,
+                            value.Value.X,
+                            value.Value.Y,
+                            value.Value.Width,
                             value.Value.Height));
                 }
             }
@@ -119,55 +133,34 @@ namespace OpenNIWrapper
 
         public float HorizontalFieldOfView
         {
-            get
-            {
-                return VideoStream_getHorizontalFieldOfView(this.Handle);
-            }
+            get => VideoStream_getHorizontalFieldOfView(Handle);
         }
 
         public bool IsCroppingSupported
         {
-            get
-            {
-                return VideoStream_isCroppingSupported(this.Handle);
-            }
+            get => VideoStream_isCroppingSupported(Handle);
         }
 
         public new bool IsValid
         {
-            get
-            {
-                return base.IsValid && VideoStream_isValid(this.Handle);
-            }
+            get => base.IsValid && VideoStream_isValid(Handle);
         }
 
         public int MaxPixelValue
         {
-            get
-            {
-                return VideoStream_getMaxPixelValue(this.Handle);
-            }
+            get => VideoStream_getMaxPixelValue(Handle);
         }
 
         public int MinPixelValue
         {
-            get
-            {
-                return VideoStream_getMinPixelValue(this.Handle);
-            }
+            get => VideoStream_getMinPixelValue(Handle);
         }
 
         public bool Mirroring
         {
-            get
-            {
-                return VideoStream_getMirroringEnabled(this.Handle);
-            }
+            get => VideoStream_getMirroringEnabled(Handle);
 
-            set
-            {
-                OpenNI.ThrowIfError(VideoStream_setMirroringEnabled(this.Handle, value));
-            }
+            set => OpenNI.ThrowIfError(VideoStream_setMirroringEnabled(Handle, value));
         }
 
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
@@ -175,31 +168,19 @@ namespace OpenNIWrapper
 
         public SensorInfo SensorInfo
         {
-            get
-            {
-                return new SensorInfo(VideoStream_getSensorInfo(this.Handle));
-            }
+            get => new SensorInfo(VideoStream_getSensorInfo(Handle));
         }
 
         public float VerticalFieldOfView
         {
-            get
-            {
-                return VideoStream_getVerticalFieldOfView(this.Handle);
-            }
+            get => VideoStream_getVerticalFieldOfView(Handle);
         }
 
         public VideoMode VideoMode
         {
-            get
-            {
-                return new VideoMode(VideoStream_getVideoMode(this.Handle), false);
-            }
+            get => new VideoMode(VideoStream_getVideoMode(Handle), false);
 
-            set
-            {
-                OpenNI.ThrowIfError(VideoStream_setVideoMode(this.Handle, value.Handle));
-            }
+            set => OpenNI.ThrowIfError(VideoStream_setVideoMode(Handle, value.Handle));
         }
 
         #endregion
@@ -213,40 +194,41 @@ namespace OpenNIWrapper
 
         public OpenNI.Status Invoke(int commandId, IntPtr data, int dataSize)
         {
-            return VideoStream_invoke(this.Handle, commandId, data, dataSize);
+            return VideoStream_invoke(Handle, commandId, data, dataSize);
         }
 
         public bool IsCommandSupported(int commandId)
         {
-            return VideoStream_isCommandSupported(this.Handle, commandId);
+            return VideoStream_isCommandSupported(Handle, commandId);
         }
 
         public bool IsPropertySupported(int propertyId)
         {
-            return VideoStream_isPropertySupported(this.Handle, propertyId);
+            return VideoStream_isPropertySupported(Handle, propertyId);
         }
 
         public OpenNI.Status Start()
         {
-            OpenNI.Status status = VideoStream_start(this.Handle);
-            this.isStarted = status == OpenNI.Status.Ok;
+            var status = VideoStream_start(Handle);
+            isStarted = status == OpenNI.Status.Ok;
+
             return status;
         }
 
         public void Stop()
         {
-            this.isStarted = false;
-            VideoStream_stop(this.Handle);
+            isStarted = false;
+            VideoStream_stop(Handle);
         }
 
         public override string ToString()
         {
-            return this.SensorInfo.GetSensorType().ToString();
+            return SensorInfo.GetSensorType().ToString();
         }
 
         public OpenNI.Status GetProperty(int propertyId, IntPtr data, out int dataSize)
         {
-            return VideoStream_getProperty(this.Handle, propertyId, data, out dataSize);
+            return VideoStream_getProperty(Handle, propertyId, data, out dataSize);
         }
 
         public bool IsFrameAvailable()
@@ -257,13 +239,14 @@ namespace OpenNIWrapper
         public VideoFrameRef ReadFrame()
         {
             IntPtr newFrame;
-            OpenNI.ThrowIfError(VideoStream_readFrame(this.Handle, out newFrame));
+            OpenNI.ThrowIfError(VideoStream_readFrame(Handle, out newFrame));
+
             return new VideoFrameRef(newFrame);
         }
 
         public OpenNI.Status SetProperty(int propertyId, IntPtr data, int dataSize)
         {
-            return VideoStream_setProperty(this.Handle, propertyId, data, dataSize);
+            return VideoStream_setProperty(Handle, propertyId, data, dataSize);
         }
 
         #endregion
@@ -274,30 +257,21 @@ namespace OpenNIWrapper
         {
             IntPtr handle;
             OpenNI.ThrowIfError(VideoStream_create(out handle, device.Handle, sensorType));
-            VideoStream vs = new VideoStream(handle) { ParentDevice = device };
+            var vs = new VideoStream(handle) {ParentDevice = device};
             vs.handlerEvents = VideoStream_RegisterListener(handle, vs.internalNewFrame);
+
             return vs;
-        }
-
-        internal void Destroy()
-        {
-            if (this.IsValid)
-            {
-                VideoStream_destroy(this.Handle);
-            }
-
-            Common.DeleteObject(this);
         }
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr VideoStream_RegisterListener(
-            IntPtr objectHandler, 
+            IntPtr objectHandler,
             [MarshalAs(UnmanagedType.FunctionPtr)] VideoStreamNewFrameDelegate newFrame);
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status VideoStream_create(
-            out IntPtr objectHandler, 
-            IntPtr device, 
+            out IntPtr objectHandler,
+            IntPtr device,
             Device.SensorType sensorType);
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
@@ -308,10 +282,10 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool VideoStream_getCropping(
-            IntPtr objectHandler, 
-            ref int originX, 
-            ref int originY, 
-            ref int width, 
+            IntPtr objectHandler,
+            ref int originX,
+            ref int originY,
+            ref int width,
             ref int height);
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
@@ -328,9 +302,9 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status VideoStream_getProperty(
-            IntPtr objectHandler, 
-            int propertyId, 
-            IntPtr data, 
+            IntPtr objectHandler,
+            int propertyId,
+            IntPtr data,
             out int dataSize);
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
@@ -344,9 +318,9 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status VideoStream_invoke(
-            IntPtr objectHandler, 
-            int commandId, 
-            IntPtr data, 
+            IntPtr objectHandler,
+            int commandId,
+            IntPtr data,
             int dataSize);
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
@@ -369,10 +343,10 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status VideoStream_setCropping(
-            IntPtr objectHandler, 
-            int originX, 
-            int originY, 
-            int width, 
+            IntPtr objectHandler,
+            int originX,
+            int originY,
+            int width,
             int height);
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
@@ -380,9 +354,9 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status VideoStream_setProperty(
-            IntPtr objectHandler, 
-            int propertyId, 
-            IntPtr data, 
+            IntPtr objectHandler,
+            int propertyId,
+            IntPtr data,
             int dataSize);
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
@@ -396,9 +370,12 @@ namespace OpenNIWrapper
 
         private void PrivateNewFrame(IntPtr stream)
         {
-            VideoStreamNewFrame ev = this.OnNewFrame;
-            if (ev != null && this.isStarted)
+            var ev = OnNewFrame;
+
+            if (ev != null && isStarted)
+            {
                 ev(this);
+            }
         }
 
         #endregion

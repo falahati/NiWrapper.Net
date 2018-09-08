@@ -1,0 +1,96 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <Version>2.2.0.11</Version>
+    <Company>falahati.net</Company>
+    <Description>.Net Wrapper for NiTE 2</Description>
+    <Authors>Soroush Falahati</Authors>
+    <Copyright>Copyright © Soroush Falahati 2018 (falahati.net)</Copyright>
+    <Platforms>x64;x86</Platforms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <Product>NiWrapper.Net</Product>
+    <RootNamespace>NiWrapper_NiTE.Net</RootNamespace>
+    <AssemblyName>NiWrapper_NiTE.Net</AssemblyName>
+    <PackageProjectUrl>https://github.com/falahati/NiWrapper.Net</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/falahati/NiWrapper.Net/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSource>true</IncludeSource>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <Title>NiWrapper_NiTE.Net x86</Title>
+    <PackageId>NiWrapper.NiTE.Net.x86</PackageId>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <OutputPath>..\bin\NiTE\x86_Release\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Title>NiWrapper_NiTE.Net x64</Title>
+    <PackageId>NiWrapper.NiTE.Net.x64</PackageId>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <OutputPath>..\bin\NiTE\x64_Release\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+</PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutputPath>..\bin\NiTE\x64_Debug\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <OutputPath>..\bin\NiTE\x86_Debug\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Baseclass.Contrib.Nuget.Output" Version="2.4.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NiWrapper.Net\NiWrapper.Net.csproj" />
+    <ProjectReference Include="..\NiWrapper_NiTE\NiWrapper_NiTE.vcxproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)'=='Release'">
+    <Content Include="$(OutputPath)NiTE2\Data\lbsdata.idx" Link="Output\NiTE2\Data\lbsdata.idx">
+      <Pack>true</Pack>
+      <PackagePath>Output\NiTE2\Data\lbsdata.idx</PackagePath>
+    </Content>
+    <Content Include="$(OutputPath)NiTE2\Data\lbsdata.lbd" Link="Output\NiTE2\Data\lbsdata.lbd">
+      <Pack>true</Pack>
+      <PackagePath>Output\NiTE2\Data\lbsdata.lbd</PackagePath>
+    </Content>
+    <Content Include="$(OutputPath)NiTE2\Data\lbsparam1.lbd" Link="Output\NiTE2\Data\lbsparam1.lbd">
+      <Pack>true</Pack>
+      <PackagePath>Output\NiTE2\Data\lbsparam1.lbd</PackagePath>
+    </Content>
+    <Content Include="$(OutputPath)NiTE2\Data\lbsparam2.lbd" Link="Output\NiTE2\Data\lbsparam2.lbd">
+      <Pack>true</Pack>
+      <PackagePath>Output\NiTE2\Data\lbsparam2.lbd</PackagePath>
+    </Content>
+    <Content Include="$(OutputPath)NiTE2\FeatureExtraction.ini" Link="Output\NiTE2\FeatureExtraction.ini">
+      <Pack>true</Pack>
+      <PackagePath>Output\NiTE2\FeatureExtraction.ini</PackagePath>
+    </Content>
+    <Content Include="$(OutputPath)NiTE2\h.dat" Link="Output\NiTE2\h.dat">
+      <Pack>true</Pack>
+      <PackagePath>Output\NiTE2\h.dat</PackagePath>
+    </Content>
+    <Content Include="$(OutputPath)NiTE2\HandAlgorithms.ini" Link="Output\NiTE2\HandAlgorithms.ini">
+      <Pack>true</Pack>
+      <PackagePath>Output\NiTE2\HandAlgorithms.ini</PackagePath>
+    </Content>
+    <Content Include="$(OutputPath)NiTE2\s.dat" Link="Output\NiTE2\s.dat">
+      <Pack>true</Pack>
+      <PackagePath>Output\NiTE2\s.dat</PackagePath>
+    </Content>
+    <Content Include="$(OutputPath)NiTE2.dll" Link="Output\NiTE2.dll">
+      <Pack>true</Pack>
+      <PackagePath>Output\NiTE2.dll</PackagePath>
+    </Content>
+    <Content Include="$(OutputPath)NiTE.ini" Link="Output\NiTE2.ini">
+      <Pack>true</Pack>
+      <PackagePath>Output\NiTE.ini</PackagePath>
+    </Content>
+    <Content Include="$(OutputPath)\NiWrapper_NiTE.dll" Link="Output\NiWrapper_NiTE.dll">
+      <Pack>true</Pack>
+      <PackagePath>Output\NiWrapper_NiTE.dll</PackagePath>
+    </Content>
+  </ItemGroup>
+</Project>

@@ -36,3 +36,4 @@ Packages/NuGet
 /Packages/*.zip
 build/
 *.userprefs
+/Packages/*

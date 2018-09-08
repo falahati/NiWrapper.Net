@@ -1,16 +1,15 @@
-﻿namespace NiTESkeletonTracker
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Windows.Forms;
+using NiTEWrapper;
+using OpenNIWrapper;
+using Size = System.Drawing.Size;
+
+namespace NiTESkeletonTracker
 {
     #region
-
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using System.Windows.Forms;
-
-    using NiTEWrapper;
-
-    using OpenNIWrapper;
 
     #endregion
 
@@ -19,24 +18,24 @@
         Justification = "Reviewed. Suppression is OK here.")]
     public partial class frm_Main : Form
     {
-        #region Fields
-
-        private ulong fps;
-
-        private Bitmap image = new Bitmap(1, 1);
-
-        private ulong lastTime;
-
-        private UserTracker userTracker;
-
-        #endregion
-
         #region Constructors and Destructors
 
         public frm_Main()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
+
+        #endregion
+
+        #region Fields
+
+        private ulong fps;
+
+        private Bitmap image;
+
+        private ulong lastTime;
+
+        private UserTracker userTracker;
 
         #endregion
 
@@ -50,6 +49,7 @@
             }
 
             MessageBox.Show(@"Error: " + status);
+
             return false;
         }
 
@@ -63,18 +63,19 @@
             {
                 if (skel.State == Skeleton.SkeletonState.Tracked)
                 {
-                    SkeletonJoint joint1 = skel.GetJoint(j1);
-                    SkeletonJoint joint2 = skel.GetJoint(j2);
+                    var joint1 = skel.GetJoint(j1);
+                    var joint2 = skel.GetJoint(j2);
+
                     if (joint1.Position.Z > 0 && joint2.Position.Z > 0)
                     {
-                        Point joint1PosEllipse = new Point();
-                        Point joint2PosEllipse = new Point();
-                        PointF joint1PosLine = this.userTracker.ConvertJointCoordinatesToDepth(joint1.Position);
-                        PointF joint2PosLine = this.userTracker.ConvertJointCoordinatesToDepth(joint2.Position);
-                        joint1PosEllipse.X = (int)joint1PosLine.X - 5;
-                        joint1PosEllipse.Y = (int)joint1PosLine.Y - 5;
-                        joint2PosEllipse.X = (int)joint2PosLine.X - 5;
-                        joint2PosEllipse.Y = (int)joint2PosLine.Y - 5;
+                        var joint1PosEllipse = new Point();
+                        var joint2PosEllipse = new Point();
+                        var joint1PosLine = userTracker.ConvertJointCoordinatesToDepth(joint1.Position);
+                        var joint2PosLine = userTracker.ConvertJointCoordinatesToDepth(joint2.Position);
+                        joint1PosEllipse.X = (int) joint1PosLine.X - 5;
+                        joint1PosEllipse.Y = (int) joint1PosLine.Y - 5;
+                        joint2PosEllipse.X = (int) joint2PosLine.X - 5;
+                        joint2PosEllipse.Y = (int) joint2PosLine.Y - 5;
                         joint1PosLine.X -= 2;
                         joint1PosLine.Y -= 2;
                         joint2PosLine.X -= 2;
@@ -92,25 +93,14 @@
 
         private void Button1Click(object sender, EventArgs e)
         {
-            this.userTracker = UserTracker.Create();
-            this.btn_start.Enabled = false;
-            this.userTracker.OnNewData += this.UserTrackerOnNewData;
-
-            // FIXED Jun 2013
-            // * Because of incompatibility between current version of OpenNI and NiTE,
-            // * we can't use event based reading. So we put our sample in a loop.
-            // * You can copy OpenNI.dll from version 2.0 to solve this problem.
-            // * Then you can uncomment above line of code and comment below ones.
-            // */
-            // while (this.IsHandleCreated)
-            // {
-            // uTracker_onNewData(uTracker);
-            // Application.DoEvents();
-            // }
+            userTracker = UserTracker.Create();
+            btn_start.Enabled = false;
+            userTracker.OnNewData += UserTrackerOnNewData;
         }
 
         private void FrmMainFormClosing(object sender, FormClosingEventArgs e)
         {
+            userTracker?.Dispose();
             NiTE.Shutdown();
             OpenNI.Shutdown();
         }
@@ -119,7 +109,7 @@
         {
             if (HandleError(NiTE.Initialize()))
             {
-                this.Text = @"Running by NiTE v" + NiTE.Version;
+                Text = @"Running by NiTE v" + NiTE.Version;
             }
             else
             {
@@ -135,131 +125,136 @@
                 return;
             }
 
-            UserTrackerFrameRef frame = userTracker.ReadFrame();
-
-            if (frame == null || !frame.IsValid)
+            using (var frame = userTracker.ReadFrame())
             {
-                return;
-            }
-
-            lock (this.image)
-            {
-                if (this.image.Width != frame.UserMap.FrameSize.Width
-                    || this.image.Height != frame.UserMap.FrameSize.Height)
+                if (frame == null || !frame.IsValid)
                 {
-                    this.image = new Bitmap(
-                        frame.UserMap.FrameSize.Width,
-                        frame.UserMap.FrameSize.Height,
-                        PixelFormat.Format24bppRgb);
+                    return;
                 }
 
-                using (Graphics g = Graphics.FromImage(this.image))
+                lock (this)
                 {
-                    g.FillRectangle(Brushes.Black, new Rectangle(new Point(0, 0), this.image.Size));
-                    foreach (UserData user in frame.Users)
+                    if (image?.Width != frame.UserMap.FrameSize.Width ||
+                        image?.Height != frame.UserMap.FrameSize.Height)
                     {
-                        if (user.IsNew && user.IsVisible)
-                        {
-                            userTracker.StartSkeletonTracking(user.UserId);
-                        }
-
-                        if (user.IsVisible && user.Skeleton.State == Skeleton.SkeletonState.Tracked)
-                        {
-                            this.DrawLineBetweenJoints(
-                                g,
-                                user.Skeleton,
-                                SkeletonJoint.JointType.RightHand,
-                                SkeletonJoint.JointType.RightElbow);
-                            this.DrawLineBetweenJoints(
-                                g,
-                                user.Skeleton,
-                                SkeletonJoint.JointType.LeftHand,
-                                SkeletonJoint.JointType.LeftElbow);
-
-                            this.DrawLineBetweenJoints(
-                                g,
-                                user.Skeleton,
-                                SkeletonJoint.JointType.RightElbow,
-                                SkeletonJoint.JointType.RightShoulder);
-                            this.DrawLineBetweenJoints(
-                                g,
-                                user.Skeleton,
-                                SkeletonJoint.JointType.LeftElbow,
-                                SkeletonJoint.JointType.LeftShoulder);
-
-                            this.DrawLineBetweenJoints(
-                                g,
-                                user.Skeleton,
-                                SkeletonJoint.JointType.RightFoot,
-                                SkeletonJoint.JointType.RightKnee);
-                            this.DrawLineBetweenJoints(
-                                g,
-                                user.Skeleton,
-                                SkeletonJoint.JointType.LeftFoot,
-                                SkeletonJoint.JointType.LeftKnee);
-
-                            this.DrawLineBetweenJoints(
-                                g,
-                                user.Skeleton,
-                                SkeletonJoint.JointType.RightKnee,
-                                SkeletonJoint.JointType.RightHip);
-                            this.DrawLineBetweenJoints(
-                                g,
-                                user.Skeleton,
-                                SkeletonJoint.JointType.LeftKnee,
-                                SkeletonJoint.JointType.LeftHip);
-
-                            this.DrawLineBetweenJoints(
-                                g,
-                                user.Skeleton,
-                                SkeletonJoint.JointType.RightShoulder,
-                                SkeletonJoint.JointType.LeftShoulder);
-                            this.DrawLineBetweenJoints(
-                                g,
-                                user.Skeleton,
-                                SkeletonJoint.JointType.RightHip,
-                                SkeletonJoint.JointType.LeftHip);
-
-                            this.DrawLineBetweenJoints(
-                                g,
-                                user.Skeleton,
-                                SkeletonJoint.JointType.RightShoulder,
-                                SkeletonJoint.JointType.RightHip);
-                            this.DrawLineBetweenJoints(
-                                g,
-                                user.Skeleton,
-                                SkeletonJoint.JointType.LeftShoulder,
-                                SkeletonJoint.JointType.LeftHip);
-
-                            this.DrawLineBetweenJoints(
-                                g,
-                                user.Skeleton,
-                                SkeletonJoint.JointType.Head,
-                                SkeletonJoint.JointType.Neck);
-                        }
+                        image = new Bitmap(
+                            frame.UserMap.FrameSize.Width,
+                            frame.UserMap.FrameSize.Height,
+                            PixelFormat.Format24bppRgb);
                     }
 
-                    g.Save();
-                }
-            }
+                    using (var g = Graphics.FromImage(image))
+                    {
+                        g.FillRectangle(Brushes.Black, new Rectangle(new Point(0, 0), image.Size));
 
-            this.Invoke(
-                new MethodInvoker(
-                    delegate
+                        foreach (var user in frame.Users)
                         {
-                            this.fps = ((1000000 / (frame.Timestamp - this.lastTime)) + (this.fps * 4)) / 5;
-                            this.lastTime = frame.Timestamp;
-                            this.Text = string.Format(
+                            if (user.IsNew && user.IsVisible)
+                            {
+                                userTracker.StartSkeletonTracking(user.UserId);
+                            }
+
+                            if (user.IsVisible && user.Skeleton.State == Skeleton.SkeletonState.Tracked)
+                            {
+                                DrawLineBetweenJoints(
+                                    g,
+                                    user.Skeleton,
+                                    SkeletonJoint.JointType.RightHand,
+                                    SkeletonJoint.JointType.RightElbow);
+                                DrawLineBetweenJoints(
+                                    g,
+                                    user.Skeleton,
+                                    SkeletonJoint.JointType.LeftHand,
+                                    SkeletonJoint.JointType.LeftElbow);
+
+                                DrawLineBetweenJoints(
+                                    g,
+                                    user.Skeleton,
+                                    SkeletonJoint.JointType.RightElbow,
+                                    SkeletonJoint.JointType.RightShoulder);
+                                DrawLineBetweenJoints(
+                                    g,
+                                    user.Skeleton,
+                                    SkeletonJoint.JointType.LeftElbow,
+                                    SkeletonJoint.JointType.LeftShoulder);
+
+                                DrawLineBetweenJoints(
+                                    g,
+                                    user.Skeleton,
+                                    SkeletonJoint.JointType.RightFoot,
+                                    SkeletonJoint.JointType.RightKnee);
+                                DrawLineBetweenJoints(
+                                    g,
+                                    user.Skeleton,
+                                    SkeletonJoint.JointType.LeftFoot,
+                                    SkeletonJoint.JointType.LeftKnee);
+
+                                DrawLineBetweenJoints(
+                                    g,
+                                    user.Skeleton,
+                                    SkeletonJoint.JointType.RightKnee,
+                                    SkeletonJoint.JointType.RightHip);
+                                DrawLineBetweenJoints(
+                                    g,
+                                    user.Skeleton,
+                                    SkeletonJoint.JointType.LeftKnee,
+                                    SkeletonJoint.JointType.LeftHip);
+
+                                DrawLineBetweenJoints(
+                                    g,
+                                    user.Skeleton,
+                                    SkeletonJoint.JointType.RightShoulder,
+                                    SkeletonJoint.JointType.LeftShoulder);
+                                DrawLineBetweenJoints(
+                                    g,
+                                    user.Skeleton,
+                                    SkeletonJoint.JointType.RightHip,
+                                    SkeletonJoint.JointType.LeftHip);
+
+                                DrawLineBetweenJoints(
+                                    g,
+                                    user.Skeleton,
+                                    SkeletonJoint.JointType.RightShoulder,
+                                    SkeletonJoint.JointType.RightHip);
+                                DrawLineBetweenJoints(
+                                    g,
+                                    user.Skeleton,
+                                    SkeletonJoint.JointType.LeftShoulder,
+                                    SkeletonJoint.JointType.LeftHip);
+
+                                DrawLineBetweenJoints(
+                                    g,
+                                    user.Skeleton,
+                                    SkeletonJoint.JointType.Head,
+                                    SkeletonJoint.JointType.Neck);
+                            }
+                        }
+
+                        g.Save();
+                    }
+                }
+
+                Invoke(
+                    new MethodInvoker(
+                        delegate
+                        {
+                            // ReSharper disable AccessToDisposedClosure
+                            fps = (1000000 / (frame.Timestamp - lastTime) + fps * 4) / 5;
+                            lastTime = frame.Timestamp;
+                            Text = string.Format(
                                 "Frame #{0} - Time: {1} - FPS: {2}",
                                 frame.FrameIndex,
                                 frame.Timestamp,
-                                this.fps);
-                            this.pb_preview.Image = this.image.Clone(
-                                new Rectangle(new Point(0, 0), this.image.Size),
+                                fps);
+                            // ReSharper restore AccessToDisposedClosure
+                            pb_preview.Image?.Dispose();
+                            pb_preview.Image = image.Clone(
+                                new Rectangle(new Point(0, 0), image.Size),
                                 PixelFormat.Format24bppRgb);
-                            frame.Release();
                         }));
+            }
         }
+
         #endregion
     }
 }

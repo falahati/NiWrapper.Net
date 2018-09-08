@@ -1,9 +1,9 @@
-﻿namespace NiTESkeletonTracker
+﻿using System;
+using System.Windows.Forms;
+
+namespace NiTESkeletonTracker
 {
     #region
-
-    using System;
-    using System.Windows.Forms;
 
     #endregion
 

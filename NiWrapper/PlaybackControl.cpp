@@ -16,45 +16,45 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 	*/
 
-#include <stdio.h>
 #include "Defines.h"
 #include "OpenNI.h"
 
 using namespace openni;
 
-extern "C"
+extern "C" {
+
+ONI_WRAPPER_API bool PlaybackControl_isValid(PlaybackControl* pbc)
 {
+	return pbc->isValid();
+}
 
-	ONI_WRAPPER_API bool PlaybackControl_isValid(PlaybackControl* pbc)
-	{
-		 return pbc->isValid();
-	}
+ONI_WRAPPER_API int PlaybackControl_getNumberOfFrames(PlaybackControl* pbc, VideoStream* vs)
+{
+	return pbc->getNumberOfFrames(*vs);
+}
 
-	ONI_WRAPPER_API int PlaybackControl_getNumberOfFrames(PlaybackControl* pbc, VideoStream* vs)
-	{
-		 return pbc->getNumberOfFrames(*vs);
-	}
+ONI_WRAPPER_API Status PlaybackControl_seek(PlaybackControl* pbc, VideoStream* vs, int frameIndex)
+{
+	return pbc->seek(*vs, frameIndex);
+}
 
-	ONI_WRAPPER_API Status PlaybackControl_seek(PlaybackControl* pbc, VideoStream* vs, int frameIndex)
-	{
-		 return pbc->seek(*vs, frameIndex);
-	}
+ONI_WRAPPER_API bool PlaybackControl_getRepeatEnabled(PlaybackControl* pbc)
+{
+	return pbc->getRepeatEnabled();
+}
 
-	ONI_WRAPPER_API bool PlaybackControl_getRepeatEnabled(PlaybackControl* pbc)
-	{
-		 return pbc->getRepeatEnabled();
-	}
-	ONI_WRAPPER_API Status PlaybackControl_setRepeatEnabled(PlaybackControl* pbc, bool repeat)
-	{
-		 return pbc->setRepeatEnabled(repeat);
-	}
+ONI_WRAPPER_API Status PlaybackControl_setRepeatEnabled(PlaybackControl* pbc, bool repeat)
+{
+	return pbc->setRepeatEnabled(repeat);
+}
 
-	ONI_WRAPPER_API float PlaybackControl_getSpeed(PlaybackControl* pbc)
-	{
-		 return pbc->getSpeed();
-	}
-	ONI_WRAPPER_API Status PlaybackControl_setSpeed(PlaybackControl* pbc, float speed)
-	{
-		 return pbc->setSpeed(speed);
-	}
+ONI_WRAPPER_API float PlaybackControl_getSpeed(PlaybackControl* pbc)
+{
+	return pbc->getSpeed();
+}
+
+ONI_WRAPPER_API Status PlaybackControl_setSpeed(PlaybackControl* pbc, float speed)
+{
+	return pbc->setSpeed(speed);
+}
 };

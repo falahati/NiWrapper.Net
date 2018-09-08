@@ -15,12 +15,13 @@
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
    */
+
+using System;
+using System.Runtime.InteropServices;
+
 namespace OpenNIWrapper
 {
     #region
-
-    using System;
-    using System.Runtime.InteropServices;
 
     #endregion
 
@@ -32,34 +33,31 @@ namespace OpenNIWrapper
 
         #endregion
 
+        #region Public Properties
+
+        public new bool IsValid
+        {
+            get => base.IsValid && Recorder_isValid(Handle);
+        }
+
+        #endregion
+
         #region Constructors and Destructors
 
         internal Recorder(IntPtr handle)
         {
-            this.Handle = handle;
+            Handle = handle;
         }
 
         ~Recorder()
         {
             try
             {
-                this.Destroy();
+                Destroy();
                 Common.DeleteObject(this);
             }
             catch (Exception)
             {
-            }
-        }
-
-        #endregion
-
-        #region Public Properties
-
-        public new bool IsValid
-        {
-            get
-            {
-                return base.IsValid && Recorder_isValid(this.Handle);
             }
         }
 
@@ -71,34 +69,35 @@ namespace OpenNIWrapper
         {
             IntPtr handle;
             OpenNI.ThrowIfError(Recorder_create(out handle, Marshal.StringToHGlobalAnsi(fileName)));
-            Recorder rec = new Recorder(handle);
+            var rec = new Recorder(handle);
+
             return rec;
         }
 
         public OpenNI.Status Attach(VideoStream stream, bool allowLossyCompression = false)
         {
-            return Recorder_attach(this.Handle, stream.Handle, allowLossyCompression);
+            return Recorder_attach(Handle, stream.Handle, allowLossyCompression);
         }
 
         public void Destroy()
         {
-            Recorder_destroy(this.Handle);
+            Recorder_destroy(Handle);
         }
 
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         public OpenNI.Status Start()
         {
-            return Recorder_start(this.Handle);
+            return Recorder_start(Handle);
         }
 
         public void Stop()
         {
-            Recorder_stop(this.Handle);
+            Recorder_stop(Handle);
         }
 
         #endregion
@@ -107,22 +106,22 @@ namespace OpenNIWrapper
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.isDisposed)
+            if (!isDisposed)
             {
-                if (disposing && this.IsValid)
+                if (disposing && IsValid)
                 {
-                    this.Destroy();
+                    Destroy();
                 }
 
-                this.Handle = IntPtr.Zero;
-                this.isDisposed = true;
+                Handle = IntPtr.Zero;
+                isDisposed = true;
             }
         }
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status Recorder_attach(
-            IntPtr objectHandler, 
-            IntPtr stream, 
+            IntPtr objectHandler,
+            IntPtr stream,
             bool allowLossyCompression = false);
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]

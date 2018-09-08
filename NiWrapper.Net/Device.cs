@@ -15,13 +15,14 @@
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
    */
+
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
 namespace OpenNIWrapper
 {
     #region
-
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.InteropServices;
 
     #endregion
 
@@ -33,6 +34,21 @@ namespace OpenNIWrapper
 
         #endregion
 
+        #region Constructors and Destructors
+
+        internal Device(IntPtr handle)
+        {
+            Handle = handle;
+        }
+
+        #endregion
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Close();
+        }
+
         #region Fields
 
         private readonly Dictionary<SensorType, VideoStream> videoStreamsCache =
@@ -42,30 +58,7 @@ namespace OpenNIWrapper
 
         private PlaybackControl playbackControl;
 
-        private bool isDisposed;
-
         private bool? isFile;
-
-        #endregion
-
-        #region Constructors and Destructors
-
-        internal Device(IntPtr handle)
-        {
-            this.Handle = handle;
-        }
-
-        ~Device()
-        {
-            try
-            {
-                this.Dispose();
-                Common.DeleteObject(this);
-            }
-            catch (Exception)
-            {
-            }
-        }
 
         #endregion
 
@@ -73,15 +66,15 @@ namespace OpenNIWrapper
 
         public enum ImageRegistrationMode
         {
-            Off = 0, 
-            DepthToColor = 1, 
+            Off = 0,
+            DepthToColor = 1
         }
 
         public enum SensorType
         {
-            Ir = 1, 
-            Color = 2, 
-            Depth = 3, 
+            Ir = 1,
+            Color = 2,
+            Depth = 3
         }
 
         #endregion
@@ -90,63 +83,50 @@ namespace OpenNIWrapper
 
         public bool DepthColorSyncEnabled
         {
-            get
-            {
-                return Device_getDepthColorSyncEnabled(this.Handle);
-            }
+            get => Device_getDepthColorSyncEnabled(Handle);
 
-            set
-            {
-                OpenNI.ThrowIfError(Device_setDepthColorSyncEnabled(this.Handle, value));
-            }
+            set => OpenNI.ThrowIfError(Device_setDepthColorSyncEnabled(Handle, value));
         }
 
         public DeviceInfo DeviceInfo
         {
             get
             {
-                if (this.deviceInfo != null)
+                if (deviceInfo != null)
                 {
-                    return this.deviceInfo;
+                    return deviceInfo;
                 }
 
-                this.deviceInfo = new DeviceInfo(Device_getDeviceInfo(this.Handle));
-                return this.deviceInfo;
+                deviceInfo = new DeviceInfo(Device_getDeviceInfo(Handle));
+
+                return deviceInfo;
             }
         }
 
         public ImageRegistrationMode ImageRegistration
         {
-            get
-            {
-                return Device_getImageRegistrationMode(this.Handle);
-            }
+            get => Device_getImageRegistrationMode(Handle);
 
-            set
-            {
-                OpenNI.ThrowIfError(Device_setImageRegistrationMode(this.Handle, value));
-            }
+            set => OpenNI.ThrowIfError(Device_setImageRegistrationMode(Handle, value));
         }
 
-        public new bool IsValid
+        public override bool IsValid
         {
-            get
-            {
-                return base.IsValid && Device_isValid(this.Handle);
-            }
+            get => base.IsValid && Device_isValid(Handle);
         }
 
         public PlaybackControl PlaybackControl
         {
             get
             {
-                if (this.playbackControl != null)
+                if (playbackControl != null)
                 {
-                    return this.playbackControl;
+                    return playbackControl;
                 }
 
-                this.playbackControl = new PlaybackControl(Device_getPlaybackControl(this.Handle));
-                return this.playbackControl;
+                playbackControl = new PlaybackControl(Device_getPlaybackControl(Handle));
+
+                return playbackControl;
             }
         }
 
@@ -154,13 +134,14 @@ namespace OpenNIWrapper
         {
             get
             {
-                if (this.isFile != null)
+                if (isFile != null)
                 {
-                    return this.isFile.Value;
+                    return isFile.Value;
                 }
 
-                this.isFile = Device_isFile(this.Handle);
-                return this.isFile.Value;
+                isFile = Device_isFile(Handle);
+
+                return isFile.Value;
             }
         }
 
@@ -181,103 +162,83 @@ namespace OpenNIWrapper
 
         public void Close()
         {
-            if (this.IsValid)
+            if (IsValid)
             {
-                foreach (VideoStream stream in this.videoStreamsCache.Values)
+                foreach (var stream in videoStreamsCache.Values)
                 {
-                    stream.Destroy();
+                    stream.Dispose();
                 }
-            }
 
-            Device_close(this.Handle);
-            this.Handle = IntPtr.Zero;
+                Device_close(Handle);
+                Common.DeleteObject(this);
+                Handle = IntPtr.Zero;
+            }
         }
 
         public VideoStream CreateVideoStream(SensorType sensorType)
         {
-            if (!this.IsValid)
+            if (!IsValid)
             {
                 return null;
             }
 
-            if (!this.videoStreamsCache.ContainsKey(sensorType))
+            if (!videoStreamsCache.ContainsKey(sensorType))
             {
-                this.videoStreamsCache[sensorType] = VideoStream.InternalCreate(this, sensorType);
+                videoStreamsCache[sensorType] = VideoStream.InternalCreate(this, sensorType);
             }
 
-            return this.videoStreamsCache[sensorType];
+            return videoStreamsCache[sensorType];
         }
 
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
 
         public OpenNI.Status GetProperty(int propertyId, IntPtr data, out int dataSize)
         {
-            return Device_getProperty(this.Handle, propertyId, data, out dataSize);
+            return Device_getProperty(Handle, propertyId, data, out dataSize);
         }
 
         public SensorInfo GetSensorInfo(SensorType sensorType)
         {
-            return new SensorInfo(Device_getSensorInfo(this.Handle, sensorType));
+            return new SensorInfo(Device_getSensorInfo(Handle, sensorType));
         }
 
         public bool HasSensor(SensorType sensorType)
         {
-            return Device_hasSensor(this.Handle, sensorType);
+            return Device_hasSensor(Handle, sensorType);
         }
 
         public OpenNI.Status Invoke(int commandId, IntPtr data, int dataSize)
         {
-            return Device_invoke(this.Handle, commandId, data, dataSize);
+            return Device_invoke(Handle, commandId, data, dataSize);
         }
 
         public bool IsCommandSupported(int commandId)
         {
-            return Device_isCommandSupported(this.Handle, commandId);
+            return Device_isCommandSupported(Handle, commandId);
         }
 
         public bool IsImageRegistrationModeSupported(ImageRegistrationMode mode)
         {
-            return Device_isImageRegistrationModeSupported(this.Handle, mode);
+            return Device_isImageRegistrationModeSupported(Handle, mode);
         }
 
         public bool IsPropertySupported(int propertyId)
         {
-            return Device_isPropertySupported(this.Handle, propertyId);
+            return Device_isPropertySupported(Handle, propertyId);
         }
 
         public OpenNI.Status SetProperty(int propertyId, IntPtr data, int dataSize)
         {
-            return Device_setProperty(this.Handle, propertyId, data, dataSize);
+            return Device_setProperty(Handle, propertyId, data, dataSize);
         }
 
         public override string ToString()
         {
-            return this.DeviceInfo.Name;
+            return DeviceInfo.Name;
         }
 
         #endregion
 
         #region Methods
-
-        protected virtual void Dispose(bool disposing)
-        {
-            lock (this)
-            {
-                if (!this.isDisposed)
-                {
-                    this.isDisposed = true;
-                    if (disposing && this.IsValid)
-                    {
-                        this.Close();
-                    }
-                    this.Handle = IntPtr.Zero;
-                }
-            }
-        }
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status Device__openEx(out IntPtr objectHandler, IntPtr uri, IntPtr mode);
@@ -299,9 +260,9 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status Device_getProperty(
-            IntPtr objectHandler, 
-            int propertyId, 
-            IntPtr data, 
+            IntPtr objectHandler,
+            int propertyId,
+            IntPtr data,
             out int dataSize);
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
@@ -312,9 +273,9 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status Device_invoke(
-            IntPtr objectHandler, 
-            int commandId, 
-            IntPtr data, 
+            IntPtr objectHandler,
+            int commandId,
+            IntPtr data,
             int dataSize);
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
@@ -325,7 +286,7 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool Device_isImageRegistrationModeSupported(
-            IntPtr objectHandler, 
+            IntPtr objectHandler,
             ImageRegistrationMode mode);
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
@@ -342,14 +303,14 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status Device_setImageRegistrationMode(
-            IntPtr objectHandler, 
+            IntPtr objectHandler,
             ImageRegistrationMode mode);
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status Device_setProperty(
-            IntPtr objectHandler, 
-            int propertyId, 
-            IntPtr data, 
+            IntPtr objectHandler,
+            int propertyId,
+            IntPtr data,
             int dataSize);
 
         #endregion

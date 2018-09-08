@@ -16,55 +16,53 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 	*/
 
-#include <stdio.h>
 #include "Defines.h"
 #include "OpenNI.h"
 using namespace openni;
 
-extern "C"
+extern "C" {
+ONI_WRAPPER_API bool CameraSettings_isValid(CameraSettings* cs)
 {
-	ONI_WRAPPER_API bool CameraSettings_isValid(CameraSettings* cs)
-	{
-		 return cs->isValid();
-	}
+	return cs->isValid();
+}
 
-	ONI_WRAPPER_API bool CameraSettings_getAutoExposureEnabled(CameraSettings* cs)
-	{
-		 return cs->getAutoExposureEnabled();
-	}
+ONI_WRAPPER_API bool CameraSettings_getAutoExposureEnabled(CameraSettings* cs)
+{
+	return cs->getAutoExposureEnabled();
+}
 
-	ONI_WRAPPER_API bool CameraSettings_getAutoWhiteBalanceEnabled(CameraSettings* cs)
-	{
-		 return cs->getAutoWhiteBalanceEnabled();
-	}
+ONI_WRAPPER_API bool CameraSettings_getAutoWhiteBalanceEnabled(CameraSettings* cs)
+{
+	return cs->getAutoWhiteBalanceEnabled();
+}
 
-	ONI_WRAPPER_API Status CameraSettings_setAutoExposureEnabled(CameraSettings* cs, bool isEnable)
-	{
-		 return cs->setAutoExposureEnabled(isEnable);
-	}
+ONI_WRAPPER_API Status CameraSettings_setAutoExposureEnabled(CameraSettings* cs, bool isEnable)
+{
+	return cs->setAutoExposureEnabled(isEnable);
+}
 
-	ONI_WRAPPER_API Status CameraSettings_setAutoWhiteBalanceEnabled(CameraSettings* cs, bool isEnable)
-	{
-		 return cs->setAutoWhiteBalanceEnabled(isEnable);
-	}
+ONI_WRAPPER_API Status CameraSettings_setAutoWhiteBalanceEnabled(CameraSettings* cs, bool isEnable)
+{
+	return cs->setAutoWhiteBalanceEnabled(isEnable);
+}
 
-	ONI_WRAPPER_API int CameraSettings_getExposure(CameraSettings* cs)
-	{
-		 return cs->getExposure();
-	}
+ONI_WRAPPER_API int CameraSettings_getExposure(CameraSettings* cs)
+{
+	return cs->getExposure();
+}
 
-	ONI_WRAPPER_API int CameraSettings_getGain(CameraSettings* cs)
-	{
-		 return cs->getGain();
-	}
+ONI_WRAPPER_API int CameraSettings_getGain(CameraSettings* cs)
+{
+	return cs->getGain();
+}
 
-	ONI_WRAPPER_API Status CameraSettings_setExposure(CameraSettings* cs, int value)
-	{
-		 return cs->setExposure(value);
-	}
+ONI_WRAPPER_API Status CameraSettings_setExposure(CameraSettings* cs, int value)
+{
+	return cs->setExposure(value);
+}
 
-	ONI_WRAPPER_API Status CameraSettings_setGain(CameraSettings* cs, int value)
-	{
-		 return cs->setGain(value);
-	}
+ONI_WRAPPER_API Status CameraSettings_setGain(CameraSettings* cs, int value)
+{
+	return cs->setGain(value);
+}
 };

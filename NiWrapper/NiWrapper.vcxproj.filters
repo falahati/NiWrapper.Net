@@ -65,6 +65,9 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NiWrapper.rc">
@@ -72,7 +75,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="CopyExcludeList.txt" />
-    <None Include="NiWrapper - LICENSE.txt" />
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
 </Project>

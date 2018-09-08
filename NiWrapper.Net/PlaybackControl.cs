@@ -15,12 +15,13 @@
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
    */
+
+using System;
+using System.Runtime.InteropServices;
+
 namespace OpenNIWrapper
 {
     #region
-
-    using System;
-    using System.Runtime.InteropServices;
 
     #endregion
 
@@ -30,7 +31,7 @@ namespace OpenNIWrapper
 
         internal PlaybackControl(IntPtr handle)
         {
-            this.Handle = handle;
+            Handle = handle;
         }
 
         #endregion
@@ -39,36 +40,21 @@ namespace OpenNIWrapper
 
         public new bool IsValid
         {
-            get
-            {
-                return base.IsValid && PlaybackControl_isValid(this.Handle);
-            }
+            get => base.IsValid && PlaybackControl_isValid(Handle);
         }
 
         public bool Repeat
         {
-            get
-            {
-                return PlaybackControl_getRepeatEnabled(this.Handle);
-            }
+            get => PlaybackControl_getRepeatEnabled(Handle);
 
-            set
-            {
-                OpenNI.ThrowIfError(PlaybackControl_setRepeatEnabled(this.Handle, value));
-            }
+            set => OpenNI.ThrowIfError(PlaybackControl_setRepeatEnabled(Handle, value));
         }
 
         public float Speed
         {
-            get
-            {
-                return PlaybackControl_getSpeed(this.Handle);
-            }
+            get => PlaybackControl_getSpeed(Handle);
 
-            set
-            {
-                OpenNI.ThrowIfError(PlaybackControl_setSpeed(this.Handle, value));
-            }
+            set => OpenNI.ThrowIfError(PlaybackControl_setSpeed(Handle, value));
         }
 
         #endregion
@@ -77,12 +63,12 @@ namespace OpenNIWrapper
 
         public int GetNumberOfFrames(VideoStream stream)
         {
-            return PlaybackControl_getNumberOfFrames(this.Handle, stream.Handle);
+            return PlaybackControl_getNumberOfFrames(Handle, stream.Handle);
         }
 
         public OpenNI.Status Seek(VideoStream stream, int frameIndex)
         {
-            return PlaybackControl_seek(this.Handle, stream.Handle, frameIndex);
+            return PlaybackControl_seek(Handle, stream.Handle, frameIndex);
         }
 
         #endregion
@@ -103,8 +89,8 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status PlaybackControl_seek(
-            IntPtr objectHandler, 
-            IntPtr videoStream, 
+            IntPtr objectHandler,
+            IntPtr videoStream,
             int frameIndex);
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]

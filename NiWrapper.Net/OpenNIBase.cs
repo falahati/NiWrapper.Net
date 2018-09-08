@@ -15,11 +15,12 @@
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
    */
+
+using System;
+
 namespace OpenNIWrapper
 {
     #region
-
-    using System;
 
     #endregion
 
@@ -30,12 +31,9 @@ namespace OpenNIWrapper
 
         public IntPtr Handle { get; protected set; }
 
-        public bool IsValid
+        public virtual bool IsValid
         {
-            get
-            {
-                return !this.Handle.Equals(IntPtr.Zero);
-            }
+            get => !Handle.Equals(IntPtr.Zero);
         }
 
         #endregion
@@ -44,12 +42,12 @@ namespace OpenNIWrapper
 
         public bool Equals(OpenNIBase obj)
         {
-            return this.Handle == obj.Handle;
+            return Handle == obj.Handle;
         }
 
         public bool Equals(IntPtr obj)
         {
-            return this.Handle == obj;
+            return Handle == obj;
         }
 
         #endregion

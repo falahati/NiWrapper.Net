@@ -16,38 +16,38 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 	*/
 
-#include <stdio.h>
 #include "Defines.h"
 #include "OpenNI.h"
 #include "Array.cpp"
 
 using namespace openni;
 
-extern "C"
+extern "C" {
+
+ONI_WRAPPER_API SensorType SensorInfo_getSensorType(SensorInfo* si)
 {
+	return si->getSensorType();
+}
 
-	ONI_WRAPPER_API SensorType SensorInfo_getSensorType(SensorInfo* si)
-	{
-		 return si->getSensorType();
-	}
+ONI_WRAPPER_API WrapperArray SensorInfo_getSupportedVideoModes(SensorInfo* si)
+{
+	WrapperArray csarray;
+	const Array<VideoMode>& modes = si->getSupportedVideoModes();
+	Array<VideoMode>* dIArray = new Array<VideoMode>(&modes[0], modes.getSize());
+	csarray.Handle = dIArray;
+	csarray.Size = dIArray->getSize();
+	VideoMode** dP = new VideoMode*[255];
+	for (int i = 0; i < dIArray->getSize(); i++)
+		dP[i] = const_cast<VideoMode*>(&((*dIArray)[i]));
+	csarray.Data = dP;
+	return csarray;
+}
 
-	ONI_WRAPPER_API WrapperArray SensorInfo_getSupportedVideoModes(SensorInfo* si){
-                WrapperArray csarray;
-                const Array<VideoMode>& modes = si->getSupportedVideoModes();
-		Array<VideoMode>* dIArray = new Array<VideoMode>(&modes[0], modes.getSize());
-                csarray.Handle = dIArray;
-		csarray.Size = dIArray->getSize();
-		VideoMode** dP = new VideoMode*[255];
-		for (int i = 0; i < dIArray->getSize(); i++)
-                        dP[i] = const_cast<VideoMode*>(&((*dIArray)[i]));
-		csarray.Data = dP;
-		return csarray;
-	}
-
-	ONI_WRAPPER_API void SensorInfo_destroyVideoModesArray(WrapperArray p){
-		VideoMode** array = reinterpret_cast<VideoMode**>(p.Data);
-                delete [] array;
-                Array<VideoMode>* handle = reinterpret_cast<Array<VideoMode>*>(p.Handle);
-		delete handle;
-	}
+ONI_WRAPPER_API void SensorInfo_destroyVideoModesArray(WrapperArray p)
+{
+	VideoMode** array = reinterpret_cast<VideoMode**>(p.Data);
+	delete [] array;
+	Array<VideoMode>* handle = reinterpret_cast<Array<VideoMode>*>(p.Handle);
+	delete handle;
+}
 };

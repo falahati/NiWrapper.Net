@@ -16,18 +16,16 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 	*/
 
-#include <stdio.h>
 #include "Defines.h"
 
-extern "C"
+extern "C" {
+ONI_WRAPPER_API void Common_Delete(void* vf)
 {
-	ONI_WRAPPER_API void Common_Delete(void* vf)
-	{
-                delete vf;
-	}
+	delete vf;
+}
 
-	ONI_WRAPPER_API void Common_DeleteArray(void* vf)
-	{
-		delete [] vf;
-	}
+ONI_WRAPPER_API void Common_DeleteArray(void* vf)
+{
+	delete [] vf;
+}
 };

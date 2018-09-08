@@ -69,19 +69,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)\bin\x86_$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)bin\x86_$(Configuration)\</OutDir>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)\bin\x64_$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)bin\x64_$(Configuration)\</OutDir>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\bin\x86_$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)bin\x86_$(Configuration)\</OutDir>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\bin\x64_$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)bin\x64_$(Configuration)\</OutDir>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -99,7 +103,7 @@
       <AdditionalDependencies>OpenNI2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "%OPENNI2_REDIST%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt</Command>
+      <Command>xcopy "%OPENNI2_REDIST%*" "$(OutDir)" /y /s /e /i /d</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -118,7 +122,7 @@
       <AdditionalDependencies>OpenNI2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "%OPENNI2_REDIST64%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt</Command>
+      <Command>xcopy "%OPENNI2_REDIST64%*" "$(OutDir)" /y /s /e /i /d</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -141,7 +145,7 @@
       <AdditionalDependencies>OpenNI2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "%OPENNI2_REDIST%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt</Command>
+      <Command>xcopy "%OPENNI2_REDIST%*" "$(OutDir)" /y /s /e /i /d</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -164,7 +168,7 @@
       <AdditionalDependencies>OpenNI2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "%OPENNI2_REDIST64%*" "$(OutDir)" /y /s /e /i /d /exclude:CopyExcludelist.txt</Command>
+      <Command>xcopy "%OPENNI2_REDIST64%*" "$(OutDir)" /y /s /e /i /d</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -185,19 +189,14 @@
     <ClCompile Include="VideoStream_Listener.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Defines.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NiWrapper.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="CopyExcludeList.txt" />
-    <None Include="NiWrapper - LICENSE.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="NiWrapper - LICENSE.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

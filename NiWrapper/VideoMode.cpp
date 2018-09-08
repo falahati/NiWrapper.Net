@@ -16,47 +16,49 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 	*/
 
-#include <stdio.h>
 #include "Defines.h"
 #include "OpenNI.h"
 using namespace openni;
 
-extern "C"
+extern "C" {
+ONI_WRAPPER_API VideoMode* VideoMode_new()
 {
-	ONI_WRAPPER_API VideoMode* VideoMode_new()
-	{
-		 VideoMode* vml = new VideoMode();
-		 return vml;
-	}
+	VideoMode* vml = new VideoMode();
+	return vml;
+}
 
-	ONI_WRAPPER_API PixelFormat VideoMode_getPixelFormat(VideoMode* vm)
-	{
-		 return vm->getPixelFormat();
-	}
-	ONI_WRAPPER_API void VideoMode_setPixelFormat(VideoMode* vm, PixelFormat pf)
-	{
-		 vm->setPixelFormat(pf);
-	}
+ONI_WRAPPER_API PixelFormat VideoMode_getPixelFormat(VideoMode* vm)
+{
+	return vm->getPixelFormat();
+}
 
-	ONI_WRAPPER_API int VideoMode_getFps(VideoMode* vm)
-	{
-		 return vm->getFps();
-	}
-	ONI_WRAPPER_API void VideoMode_setFps(VideoMode* vm, int fps)
-	{
-		 vm->setFps(fps);
-	}
+ONI_WRAPPER_API void VideoMode_setPixelFormat(VideoMode* vm, PixelFormat pf)
+{
+	vm->setPixelFormat(pf);
+}
 
-	ONI_WRAPPER_API int VideoMode_getResolutionX(VideoMode* vm)
-	{
-		 return vm->getResolutionX();
-	}
-	ONI_WRAPPER_API int VideoMode_getResolutionY(VideoMode* vm)
-	{
-		 return vm->getResolutionY();
-	}
-	ONI_WRAPPER_API void VideoMode_setResolution(VideoMode* vm, int resolutionX, int resolutionY)
-	{
-		 vm->setResolution(resolutionX, resolutionY);
-	}
+ONI_WRAPPER_API int VideoMode_getFps(VideoMode* vm)
+{
+	return vm->getFps();
+}
+
+ONI_WRAPPER_API void VideoMode_setFps(VideoMode* vm, int fps)
+{
+	vm->setFps(fps);
+}
+
+ONI_WRAPPER_API int VideoMode_getResolutionX(VideoMode* vm)
+{
+	return vm->getResolutionX();
+}
+
+ONI_WRAPPER_API int VideoMode_getResolutionY(VideoMode* vm)
+{
+	return vm->getResolutionY();
+}
+
+ONI_WRAPPER_API void VideoMode_setResolution(VideoMode* vm, int resolutionX, int resolutionY)
+{
+	vm->setResolution(resolutionX, resolutionY);
+}
 };

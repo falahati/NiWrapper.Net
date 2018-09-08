@@ -15,13 +15,14 @@
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
    */
+
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
 namespace OpenNIWrapper
 {
     #region
-
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.InteropServices;
 
     #endregion
 
@@ -31,7 +32,7 @@ namespace OpenNIWrapper
 
         internal SensorInfo(IntPtr handle)
         {
-            this.Handle = handle;
+            Handle = handle;
         }
 
         #endregion
@@ -40,27 +41,29 @@ namespace OpenNIWrapper
 
         public Device.SensorType GetSensorType()
         {
-            return SensorInfo_getSensorType(this.Handle);
+            return SensorInfo_getSensorType(Handle);
         }
 
         public IEnumerable<VideoMode> GetSupportedVideoModes()
         {
-            WrapperArray csa = SensorInfo_getSupportedVideoModes(this.Handle);
-            IntPtr[] array = new IntPtr[csa.Size];
+            var csa = SensorInfo_getSupportedVideoModes(Handle);
+            var array = new IntPtr[csa.Size];
             Marshal.Copy(csa.Data, array, 0, csa.Size);
-            VideoMode[] arrayObjects = new VideoMode[csa.Size];
-            for (int i = 0; i < csa.Size; i++)
+            var arrayObjects = new VideoMode[csa.Size];
+
+            for (var i = 0; i < csa.Size; i++)
             {
                 arrayObjects[i] = new VideoMode(array[i], true);
             }
 
             SensorInfo_destroyVideoModesArray(csa);
+
             return arrayObjects;
         }
 
         public override string ToString()
         {
-            return this.GetSensorType().ToString();
+            return GetSensorType().ToString();
         }
 
         #endregion

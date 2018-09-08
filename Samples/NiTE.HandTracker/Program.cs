@@ -1,9 +1,9 @@
-﻿namespace NiTEHandTracker
+﻿using System;
+using System.Windows.Forms;
+
+namespace NiTEHandTracker
 {
     #region
-
-    using System;
-    using System.Windows.Forms;
 
     #endregion
 

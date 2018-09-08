@@ -1,9 +1,9 @@
-﻿namespace NiViewer.Net
+﻿using System;
+using System.Windows.Forms;
+
+namespace NiViewer.Net
 {
     #region
-
-    using System;
-    using System.Windows.Forms;
 
     #endregion
 

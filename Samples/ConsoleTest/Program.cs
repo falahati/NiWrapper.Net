@@ -1,30 +1,15 @@
-﻿namespace ConsoleTest
+﻿using System;
+using System.Threading;
+using OpenNIWrapper;
+
+namespace ConsoleTest
 {
     #region
-
-    using System;
-    using System.Threading;
-
-    using OpenNIWrapper;
 
     #endregion
 
     public static class Program
     {
-        #region Static Fields
-
-        private static int eventColor;
-
-        private static int eventDepth;
-
-        private static int inlineColor;
-
-        private static int inlineDepth;
-
-        private static long lastUpdate = 0;
-
-        #endregion
-
         #region Public Methods and Operators
 
         public static bool HandleError(OpenNI.Status status)
@@ -36,8 +21,23 @@
 
             Console.WriteLine("Error: " + status + " - " + OpenNI.LastError);
             Console.ReadLine();
+
             return false;
         }
+
+        #endregion
+
+        #region Static Fields
+
+        private static int eventColor;
+
+        private static int eventDepth;
+
+        private static int inlineColor;
+
+        private static int inlineDepth;
+
+        private static long lastUpdate;
 
         #endregion
 
@@ -50,6 +50,7 @@
                 if (lastUpdate == 0)
                 {
                     lastUpdate = DateTime.Now.Ticks;
+
                     continue;
                 }
 
@@ -58,8 +59,14 @@
                     lastUpdate = Environment.TickCount;
                     //Console.Clear();
                     Console.WriteLine(
-                        "Inline Depth: " + inlineDepth + " - Inline Color: " + inlineColor + " - Event Depth: "
-                        + eventDepth + " - Event Color: " + eventColor);
+                        "Inline Depth: " +
+                        inlineDepth +
+                        " - Inline Color: " +
+                        inlineColor +
+                        " - Event Depth: " +
+                        eventDepth +
+                        " - Event Color: " +
+                        eventColor);
                     inlineDepth = inlineColor = eventDepth = eventColor = 0;
                 }
                 else
@@ -74,7 +81,8 @@
         private static void Main()
         {
             Console.WriteLine(OpenNI.Version.ToString());
-            OpenNI.Status status = OpenNI.Initialize();
+            var status = OpenNI.Initialize();
+
             if (!HandleError(status))
             {
                 Environment.Exit(0);
@@ -82,7 +90,8 @@
 
             OpenNI.OnDeviceConnected += OpenNiOnDeviceConnected;
             OpenNI.OnDeviceDisconnected += OpenNiOnDeviceDisconnected;
-            DeviceInfo[] devices = OpenNI.EnumerateDevices();
+            var devices = OpenNI.EnumerateDevices();
+
             if (devices.Length == 0)
             {
                 return;
@@ -95,30 +104,35 @@
             {
                 if (device.HasSensor(Device.SensorType.Depth) && device.HasSensor(Device.SensorType.Color))
                 {
-                    VideoStream depthStream = device.CreateVideoStream(Device.SensorType.Depth);
-                    VideoStream colorStream = device.CreateVideoStream(Device.SensorType.Color);
+                    var depthStream = device.CreateVideoStream(Device.SensorType.Depth);
+                    var colorStream = device.CreateVideoStream(Device.SensorType.Color);
+
                     if (depthStream.IsValid && colorStream.IsValid)
                     {
                         if (!HandleError(depthStream.Start()))
                         {
                             OpenNI.Shutdown();
+
                             return;
                         }
 
                         if (!HandleError(colorStream.Start()))
                         {
                             OpenNI.Shutdown();
+
                             return;
                         }
 
-                        Thread workThread = new Thread(DisplayInfo);
+                        var workThread = new Thread(DisplayInfo);
                         workThread.Start();
                         depthStream.OnNewFrame += DepthStreamOnNewFrame;
                         colorStream.OnNewFrame += ColorStreamOnNewFrame;
-                        VideoStream[] array = { depthStream, colorStream };
+                        VideoStream[] array = {depthStream, colorStream};
+
                         while (!Console.KeyAvailable)
                         {
                             VideoStream aS;
+
                             if (OpenNI.WaitForAnyStream(array, out aS) == OpenNI.Status.Ok)
                             {
                                 if (aS.Equals(colorStream))
@@ -130,7 +144,7 @@
                                     inlineDepth++;
                                 }
 
-                                aS.ReadFrame().Release();
+                                aS.ReadFrame().Dispose();
                             }
                         }
                     }

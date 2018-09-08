@@ -16,8 +16,6 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 	*/
 
-#include <stdio.h>
-#include <stdint.h>
 #include "Defines.h"
 #include "OpenNI.h"
 using namespace openni;
@@ -26,26 +24,29 @@ using namespace openni;
 typedef uint16_t UINT16;
 #endif
 
-extern "C"
+extern "C" {
+ONI_WRAPPER_API const char* DeviceInfo_getName(DeviceInfo* di)
 {
-	ONI_WRAPPER_API const char* DeviceInfo_getName(DeviceInfo* di)
-	{
-		 return di->getName();
-	}
-	ONI_WRAPPER_API const char* DeviceInfo_getUri(DeviceInfo* di)
-	{
-		 return di->getUri();
-	}
-	ONI_WRAPPER_API UINT16 DeviceInfo_getUsbProductId(DeviceInfo* di)
-	{
-		 return di->getUsbProductId();
-	}
-	ONI_WRAPPER_API UINT16 DeviceInfo_getUsbVendorId(DeviceInfo* di)
-	{
-		 return di->getUsbVendorId();
-	}
-	ONI_WRAPPER_API const char* DeviceInfo_getVendor(DeviceInfo* di)
-	{
-		 return di->getVendor();
-	}
+	return di->getName();
+}
+
+ONI_WRAPPER_API const char* DeviceInfo_getUri(DeviceInfo* di)
+{
+	return di->getUri();
+}
+
+ONI_WRAPPER_API UINT16 DeviceInfo_getUsbProductId(DeviceInfo* di)
+{
+	return di->getUsbProductId();
+}
+
+ONI_WRAPPER_API UINT16 DeviceInfo_getUsbVendorId(DeviceInfo* di)
+{
+	return di->getUsbVendorId();
+}
+
+ONI_WRAPPER_API const char* DeviceInfo_getVendor(DeviceInfo* di)
+{
+	return di->getVendor();
+}
 };

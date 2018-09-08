@@ -16,74 +16,78 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 	*/
 
-#include <stdio.h>
 #include "Defines.h"
 #include "OpenNI.h"
 #include "OpenNI_Listener.cpp"
 #include "Array.cpp"
 using namespace openni;
 
-extern "C"
+extern "C" {
+ONI_WRAPPER_API Version OpenNI_getVersion()
 {
-	ONI_WRAPPER_API Version OpenNI_getVersion()
-	{
-		 return OpenNI::getVersion();
-		 
-	}
+	return OpenNI::getVersion();
+}
 
-	ONI_WRAPPER_API const char* OpenNI_getExtendedError(){
-		return OpenNI::getExtendedError();
-	}
+ONI_WRAPPER_API const char* OpenNI_getExtendedError()
+{
+	return OpenNI::getExtendedError();
+}
 
-	ONI_WRAPPER_API Status OpenNI_initialize(){
-		return OpenNI::initialize();
-	}
+ONI_WRAPPER_API Status OpenNI_initialize()
+{
+	return OpenNI::initialize();
+}
 
-	ONI_WRAPPER_API void OpenNI_shutdown(){
-		OpenNI::shutdown();
-	}
+ONI_WRAPPER_API void OpenNI_shutdown()
+{
+	OpenNI::shutdown();
+}
 
-	ONI_WRAPPER_API Status OpenNI_waitForAnyStream(VideoStream** vsArray, int vsArraySize, int* selectedStream, int timeOut){
-		return OpenNI::waitForAnyStream(vsArray, vsArraySize, selectedStream, timeOut);
-	}
+ONI_WRAPPER_API Status OpenNI_waitForAnyStream(VideoStream** vsArray, int vsArraySize, int* selectedStream, int timeOut)
+{
+	return OpenNI::waitForAnyStream(vsArray, vsArraySize, selectedStream, timeOut);
+}
 
-	ONI_WRAPPER_API OpenNI_Listener* OpenNI_RegisterListener(
-		void (*connect)(DeviceInfo*),
-		void (*disconnect)(DeviceInfo*),
-		void (*statechanged)(DeviceInfo*, DeviceState)){
-		OpenNI_Listener* lis = new OpenNI_Listener();
-		lis->SetConnectCallback(connect);
-		lis->SetDisconnectCallback(disconnect);
-		lis->SetStateChangedCallback(statechanged);
-		Status ret = OpenNI::addDeviceConnectedListener(lis);
-		if (ret != STATUS_OK)
-			return NULL;
-		ret = OpenNI::addDeviceDisconnectedListener(lis);
-		if (ret != STATUS_OK)
-			return NULL;
-		ret = OpenNI::addDeviceStateChangedListener(lis);
-		if (ret != STATUS_OK)
-			return NULL;
-		return lis;
-	}
+ONI_WRAPPER_API OpenNI_Listener* OpenNI_RegisterListener(
+	void (*connect)(DeviceInfo*),
+	void (*disconnect)(DeviceInfo*),
+	void (*statechanged)(DeviceInfo*, DeviceState))
+{
+	OpenNI_Listener* lis = new OpenNI_Listener();
+	lis->SetConnectCallback(connect);
+	lis->SetDisconnectCallback(disconnect);
+	lis->SetStateChangedCallback(statechanged);
+	Status ret = OpenNI::addDeviceConnectedListener(lis);
+	if (ret != STATUS_OK)
+		return nullptr;
+	ret = OpenNI::addDeviceDisconnectedListener(lis);
+	if (ret != STATUS_OK)
+		return nullptr;
+	ret = OpenNI::addDeviceStateChangedListener(lis);
+	if (ret != STATUS_OK)
+		return nullptr;
+	return lis;
+}
 
-	ONI_WRAPPER_API WrapperArray OpenNI_enumerateDevices(){
-                WrapperArray csarray;
-		Array<DeviceInfo>* dIArray = new Array<DeviceInfo>();
-		OpenNI::enumerateDevices(dIArray);
-		csarray.Handle = dIArray;
-		csarray.Size = dIArray->getSize();
-		DeviceInfo** dP = new DeviceInfo*[255];
-		for (int i = 0; i < dIArray->getSize(); i++)
-			dP[i] = const_cast<DeviceInfo*>(&((*dIArray)[i]));
-		csarray.Data = dP;
-		return csarray;
-	}
+ONI_WRAPPER_API WrapperArray OpenNI_enumerateDevices()
+{
+	WrapperArray csarray;
+	Array<DeviceInfo>* dIArray = new Array<DeviceInfo>();
+	OpenNI::enumerateDevices(dIArray);
+	csarray.Handle = dIArray;
+	csarray.Size = dIArray->getSize();
+	DeviceInfo** dP = new DeviceInfo*[255];
+	for (int i = 0; i < dIArray->getSize(); i++)
+		dP[i] = const_cast<DeviceInfo*>(&((*dIArray)[i]));
+	csarray.Data = dP;
+	return csarray;
+}
 
-	ONI_WRAPPER_API void OpenNI_destroyDevicesArray(WrapperArray p){
-                DeviceInfo** array = reinterpret_cast<DeviceInfo**>(p.Data);
-                delete [] array;
-                Array<DeviceInfo>* handle = reinterpret_cast<Array<DeviceInfo>*>(p.Handle);
-		delete handle;
-	}
+ONI_WRAPPER_API void OpenNI_destroyDevicesArray(WrapperArray p)
+{
+	DeviceInfo** array = reinterpret_cast<DeviceInfo**>(p.Data);
+	delete [] array;
+	//Array<DeviceInfo>* handle = reinterpret_cast<Array<DeviceInfo>*>(p.Handle);
+	//delete handle;
+}
 };

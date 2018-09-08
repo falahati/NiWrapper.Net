@@ -1,5 +1,5 @@
-﻿Imports System.Runtime.InteropServices
-Imports System.Drawing.Imaging
+﻿Imports System.Drawing.Imaging
+Imports System.Runtime.InteropServices
 Imports OpenNIWrapper
 
 ' ReSharper disable once InconsistentNaming
@@ -32,11 +32,11 @@ Public Class frm_Main
         If (devices.Length = 0) Then Environment.Exit(0)
         Dim device As Device = devices(0).OpenDevice()
         Using (device)
-            If (device.HasSensor(device.SensorType.Depth) AndAlso device.HasSensor(device.SensorType.Color)) Then
-                _depthStream = device.CreateVideoStream(device.SensorType.Depth)
-                _colorStream = device.CreateVideoStream(device.SensorType.Color)
+            If (device.HasSensor(Device.SensorType.Depth) AndAlso device.HasSensor(Device.SensorType.Color)) Then
+                _depthStream = device.CreateVideoStream(Device.SensorType.Depth)
+                _colorStream = device.CreateVideoStream(Device.SensorType.Color)
                 Try
-                    device.ImageRegistration = device.ImageRegistrationMode.DepthToColor
+                    device.ImageRegistration = Device.ImageRegistrationMode.DepthToColor
                     device.DepthColorSyncEnabled = True
                 Catch ex As Exception
                     MessageBox.Show(
@@ -50,12 +50,12 @@ Public Class frm_Main
                     End If
                     While (Not _canceled)
                         If (_depthStream.IsFrameAvailable() AndAlso _colorStream.IsFrameAvailable()) Then
-                            Dim depthFrame As VideoFrameRef = _depthStream.ReadFrame()
-                            Dim colorFrame As VideoFrameRef = _colorStream.ReadFrame()
                             If (Not (pictureBox1.Image Is Nothing)) Then pictureBox1.Image.Dispose()
-                            pictureBox1.Image = ToBitmap(depthFrame, colorFrame)
-                            depthFrame.Release()
-                            colorFrame.Release()
+                            Using depthFrame As VideoFrameRef = _depthStream.ReadFrame()
+                                Using colorFrame As VideoFrameRef = _colorStream.ReadFrame()
+                                    pictureBox1.Image = ToBitmap(depthFrame, colorFrame)
+                                End Using
+                            End Using
                         End If
                         Application.DoEvents()
                     End While
@@ -69,7 +69,7 @@ Public Class frm_Main
     Dim _bit As Bitmap
 
     Private Function ToBitmap(depthFrame As VideoFrameRef, colorFrame As VideoFrameRef) As Bitmap
-        Dim imageBytes(depthFrame.FrameSize.Width * depthFrame.FrameSize.Height * 3 - 1) As Byte
+        Dim imageBytes(depthFrame.FrameSize.Width*depthFrame.FrameSize.Height*3 - 1) As Byte
         If _
             (_bit Is Nothing OrElse _bit.Width <> depthFrame.FrameSize.Width OrElse
              _bit.Height <> depthFrame.FrameSize.Height OrElse _bit.PixelFormat <> PixelFormat.Format24bppRgb) Then
@@ -78,24 +78,24 @@ Public Class frm_Main
         Dim maxDepth As UInt16 = 0
         Dim minDepth As UInt16 = UInt16.MaxValue
         Dim dataPosition As IntPtr = depthFrame.Data
-        For p = 0 To (depthFrame.DataSize / 2) - 1
+        For p = 0 To (depthFrame.DataSize/2) - 1
             Dim depth As UInt16 = Marshal.ReadInt16(dataPosition)
             If (depth > maxDepth) Then maxDepth = depth
             If (depth < minDepth) Then minDepth = depth
             dataPosition += 2
         Next
-        Dim i As Integer = 0
-        For y As Integer = 0 To depthFrame.FrameSize.Height - 1
-            Dim depthPixelPosition As IntPtr = New IntPtr((y * depthFrame.DataStrideBytes) + depthFrame.Data.ToInt64())
-            Dim colorPixelPosition As IntPtr = New IntPtr((y * colorFrame.DataStrideBytes) + colorFrame.Data.ToInt64())
-            For x As Integer = 0 To depthFrame.FrameSize.Width - 1
+        Dim i = 0
+        For y = 0 To depthFrame.FrameSize.Height - 1
+            Dim depthPixelPosition = New IntPtr((y*depthFrame.DataStrideBytes) + depthFrame.Data.ToInt64())
+            Dim colorPixelPosition = New IntPtr((y*colorFrame.DataStrideBytes) + colorFrame.Data.ToInt64())
+            For x = 0 To depthFrame.FrameSize.Width - 1
                 Dim depth As UInt16 = Marshal.ReadInt16(depthPixelPosition)
                 Dim color As Rgb = Marshal.PtrToStructure(colorPixelPosition, GetType(Rgb))
                 If (depth > 0) Then
                     If (IsThisSpecialDepth(depth, x, y)) Then
                         ' Special GREEN
                         imageBytes(i) = 0 ' Red
-                        imageBytes(i + 1) = (CType(color.G, Integer) + color.R + color.B) \ 3 ' Geen
+                        imageBytes(i + 1) = (CType(color.G, Integer) + color.R + color.B)\3 ' Geen
                         imageBytes(i + 2) = 0 ' Blue
                     Else
                         ' Normal Color

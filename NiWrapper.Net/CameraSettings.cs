@@ -15,12 +15,13 @@
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
    */
+
+using System;
+using System.Runtime.InteropServices;
+
 namespace OpenNIWrapper
 {
     #region
-
-    using System;
-    using System.Runtime.InteropServices;
 
     #endregion
 
@@ -30,7 +31,7 @@ namespace OpenNIWrapper
 
         internal CameraSettings(IntPtr handle)
         {
-            this.Handle = handle;
+            Handle = handle;
         }
 
         #endregion
@@ -39,62 +40,35 @@ namespace OpenNIWrapper
 
         public bool AutoExposure
         {
-            get
-            {
-                return CameraSettings_getAutoExposureEnabled(this.Handle);
-            }
+            get => CameraSettings_getAutoExposureEnabled(Handle);
 
-            set
-            {
-                OpenNI.ThrowIfError(CameraSettings_setAutoExposureEnabled(this.Handle, value));
-            }
+            set => OpenNI.ThrowIfError(CameraSettings_setAutoExposureEnabled(Handle, value));
         }
 
         public bool AutoWhiteBalance
         {
-            get
-            {
-                return CameraSettings_getAutoWhiteBalanceEnabled(this.Handle);
-            }
+            get => CameraSettings_getAutoWhiteBalanceEnabled(Handle);
 
-            set
-            {
-                OpenNI.ThrowIfError(CameraSettings_setAutoWhiteBalanceEnabled(this.Handle, value));
-            }
+            set => OpenNI.ThrowIfError(CameraSettings_setAutoWhiteBalanceEnabled(Handle, value));
         }
 
         public int Exposure
         {
-            get
-            {
-                return CameraSettings_getExposure(this.Handle);
-            }
+            get => CameraSettings_getExposure(Handle);
 
-            set
-            {
-                OpenNI.ThrowIfError(CameraSettings_setExposure(this.Handle, value));
-            }
+            set => OpenNI.ThrowIfError(CameraSettings_setExposure(Handle, value));
         }
 
         public int Gain
         {
-            get
-            {
-                return CameraSettings_getGain(this.Handle);
-            }
+            get => CameraSettings_getGain(Handle);
 
-            set
-            {
-                OpenNI.ThrowIfError(CameraSettings_setGain(this.Handle, value));
-            }
+            set => OpenNI.ThrowIfError(CameraSettings_setGain(Handle, value));
         }
 
         public new bool IsValid
         {
-            get
-            {
-                return base.IsValid && CameraSettings_isValid(this.Handle);
-            }
+            get => base.IsValid && CameraSettings_isValid(Handle);
         }
 
         #endregion
@@ -121,7 +95,7 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern OpenNI.Status CameraSettings_setAutoWhiteBalanceEnabled(
-            IntPtr objectHandler, 
+            IntPtr objectHandler,
             bool isEnable);
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]

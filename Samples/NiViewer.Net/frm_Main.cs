@@ -1,21 +1,30 @@
-﻿namespace NiViewer.Net
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
+using System.Windows.Forms;
+using OpenNIWrapper;
+
+namespace NiViewer.Net
 {
     #region
 
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Drawing;
-    using System.Windows.Forms;
-
-    using OpenNIWrapper;
-
     #endregion
 
-    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Reviewed. Suppression is OK here.")]
+    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification =
+        "Reviewed. Suppression is OK here.")]
     // ReSharper disable once InconsistentNaming
     public partial class frm_Main : Form
     {
+        #region Constructors and Destructors
+
+        public frm_Main()
+        {
+            InitializeComponent();
+            bitmap = new Bitmap(1, 1);
+        }
+
+        #endregion
+
         #region Fields
 
         private Bitmap bitmap;
@@ -26,47 +35,37 @@
 
         #endregion
 
-        #region Constructors and Destructors
-
-        public frm_Main()
-        {
-            this.InitializeComponent();
-            this.bitmap = new Bitmap(1, 1);
-        }
-
-        #endregion
-
         #region Methods
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (this.pb_image.Visible)
+            if (pb_image.Visible)
             {
-                this.pb_image.Visible = false;
+                pb_image.Visible = false;
             }
 
-            if (this.bitmap == null)
+            if (bitmap == null)
             {
                 return;
             }
 
-            lock (this.bitmap)
+            lock (bitmap)
             {
                 // OnPaint happens on UI Thread so it is better to always keep this lock in place
-                Size canvasSize = this.pb_image.Size; // Even though we dont use PictureBox, we use it as a placeholder
-                Point canvasPosition = this.pb_image.Location;
+                var canvasSize = pb_image.Size; // Even though we dont use PictureBox, we use it as a placeholder
+                var canvasPosition = pb_image.Location;
 
-                double ratioX = canvasSize.Width / (double)this.bitmap.Width;
-                double ratioY = canvasSize.Height / (double)this.bitmap.Height;
-                double ratio = Math.Min(ratioX, ratioY);
+                var ratioX = canvasSize.Width / (double) bitmap.Width;
+                var ratioY = canvasSize.Height / (double) bitmap.Height;
+                var ratio = Math.Min(ratioX, ratioY);
 
-                int drawWidth = Convert.ToInt32(this.bitmap.Width * ratio);
-                int drawHeight = Convert.ToInt32(this.bitmap.Height * ratio);
+                var drawWidth = Convert.ToInt32(bitmap.Width * ratio);
+                var drawHeight = Convert.ToInt32(bitmap.Height * ratio);
 
-                int drawX = canvasPosition.X + Convert.ToInt32((canvasSize.Width - drawWidth) / 2);
-                int drawY = canvasPosition.Y + Convert.ToInt32((canvasSize.Height - drawHeight) / 2);
+                var drawX = canvasPosition.X + Convert.ToInt32((canvasSize.Width - drawWidth) / 2);
+                var drawY = canvasPosition.Y + Convert.ToInt32((canvasSize.Height - drawHeight) / 2);
 
-                e.Graphics.DrawImage(this.bitmap, drawX, drawY, drawWidth, drawHeight);
+                e.Graphics.DrawImage(bitmap, drawX, drawY, drawWidth, drawHeight);
 
                 /////////////////////// If we do create a new Bitmap object per each frame we must
                 /////////////////////// make sure to DISPOSE it after using.
@@ -83,47 +82,51 @@
             }
 
             MessageBox.Show(
-                string.Format(@"Error: {0} - {1}", status, OpenNI.LastError), 
-                @"Error", 
-                MessageBoxButtons.OK, 
+                string.Format(@"Error: {0} - {1}", status, OpenNI.LastError),
+                @"Error",
+                MessageBoxButtons.OK,
                 MessageBoxIcon.Asterisk);
         }
 
         private void OpenNiOnDeviceConnectionStateChanged(DeviceInfo device)
         {
-            this.BeginInvoke(new MethodInvoker(this.UpdateDevicesList));
+            BeginInvoke(new MethodInvoker(UpdateDevicesList));
         }
 
         private void UpdateDevicesList()
         {
-            DeviceInfo[] devices = OpenNI.EnumerateDevices();
-            this.cb_devices.Items.Clear();
-            foreach (DeviceInfo device in devices)
+            var devices = OpenNI.EnumerateDevices();
+            cb_devices.Items.Clear();
+
+            foreach (var device in devices)
             {
-                this.cb_devices.Items.Add(device);
+                cb_devices.Items.Add(device);
             }
         }
 
         private void BtnSubmitClick(object sender, EventArgs e)
         {
-            if (this.currentSensor != null && this.currentSensor.IsValid && this.cb_videomode.SelectedItem != null)
+            if (currentSensor != null && currentSensor.IsValid && cb_videomode.SelectedItem != null)
             {
-                this.currentSensor.Stop();
-                this.currentSensor.OnNewFrame -= this.CurrentSensorOnNewFrame;
-                this.currentSensor.VideoMode = (VideoMode)this.cb_videomode.SelectedItem;
+                currentSensor.Stop();
+                currentSensor.OnNewFrame -= CurrentSensorOnNewFrame;
+                currentSensor.VideoMode = (VideoMode) cb_videomode.SelectedItem;
+
                 try
                 {
                     // Not supported by Kinect yet
-                    this.currentSensor.Mirroring = this.cb_mirrorHard.Checked;
-                    this.currentDevice.ImageRegistration = this.cb_tir.Checked ? Device.ImageRegistrationMode.DepthToColor : Device.ImageRegistrationMode.Off;
+                    currentSensor.Mirroring = cb_mirrorHard.Checked;
+                    currentDevice.ImageRegistration = cb_tir.Checked
+                        ? Device.ImageRegistrationMode.DepthToColor
+                        : Device.ImageRegistrationMode.Off;
                 }
                 catch (Exception)
                 {
                 }
 
-                if (this.currentSensor.Start() == OpenNI.Status.Ok)
+                if (currentSensor.Start() == OpenNI.Status.Ok)
                 {
-                    this.currentSensor.OnNewFrame += this.CurrentSensorOnNewFrame;
+                    currentSensor.OnNewFrame += CurrentSensorOnNewFrame;
                 }
                 else
                 {
@@ -134,66 +137,73 @@
 
         private void CbDevicesSelectedIndexChanged(object sender, EventArgs e)
         {
-            this.cb_sensor.Items.Clear();
-            if (this.cb_devices.SelectedItem != null)
+            cb_sensor.Items.Clear();
+
+            if (cb_devices.SelectedItem != null)
             {
-                if (this.currentDevice != null)
+                if (currentDevice != null)
                 {
-                    this.currentDevice.Dispose();
+                    currentDevice.Dispose();
                 }
 
-                this.currentDevice = ((DeviceInfo)this.cb_devices.SelectedItem).OpenDevice();
-                if (this.currentDevice.HasSensor(Device.SensorType.Color))
+                currentDevice = ((DeviceInfo) cb_devices.SelectedItem).OpenDevice();
+
+                if (currentDevice.HasSensor(Device.SensorType.Color))
                 {
-                    this.cb_sensor.Items.Add("Color");
+                    cb_sensor.Items.Add("Color");
                 }
 
-                if (this.currentDevice.HasSensor(Device.SensorType.Depth))
+                if (currentDevice.HasSensor(Device.SensorType.Depth))
                 {
-                    this.cb_sensor.Items.Add("Depth");
+                    cb_sensor.Items.Add("Depth");
                 }
 
-                if (this.currentDevice.HasSensor(Device.SensorType.Ir))
+                if (currentDevice.HasSensor(Device.SensorType.Ir))
                 {
-                    this.cb_sensor.Items.Add("IR");
+                    cb_sensor.Items.Add("IR");
                 }
             }
         }
 
         private void CbSensorSelectedIndexChanged(object sender, EventArgs e)
         {
-            this.cb_videomode.Items.Clear();
-            if (this.cb_sensor.SelectedItem != null && this.currentDevice != null)
+            cb_videomode.Items.Clear();
+
+            if (cb_sensor.SelectedItem != null && currentDevice != null)
             {
-                if (this.currentSensor != null && this.currentSensor.IsValid)
+                if (currentSensor != null && currentSensor.IsValid)
                 {
-                    this.currentSensor.Stop();
+                    currentSensor.Stop();
                 }
 
-                switch ((string)this.cb_sensor.SelectedItem)
+                switch ((string) cb_sensor.SelectedItem)
                 {
                     case "Color":
-                        this.currentSensor = this.currentDevice.CreateVideoStream(Device.SensorType.Color);
+                        currentSensor = currentDevice.CreateVideoStream(Device.SensorType.Color);
+
                         break;
                     case "Depth":
-                        this.currentSensor = this.currentDevice.CreateVideoStream(Device.SensorType.Depth);
+                        currentSensor = currentDevice.CreateVideoStream(Device.SensorType.Depth);
+
                         break;
                     case "IR":
-                        this.currentSensor = this.currentDevice.CreateVideoStream(Device.SensorType.Ir);
+                        currentSensor = currentDevice.CreateVideoStream(Device.SensorType.Ir);
+
                         break;
                 }
 
-                if (this.currentSensor != null)
+                if (currentSensor != null)
                 {
-                    IEnumerable<VideoMode> videoModes = this.currentSensor.SensorInfo.GetSupportedVideoModes();
-                    foreach (VideoMode mode in videoModes)
+                    var videoModes = currentSensor.SensorInfo.GetSupportedVideoModes();
+
+                    foreach (var mode in videoModes)
                     {
-                        if (mode.DataPixelFormat == VideoMode.PixelFormat.Gray16
-                            || mode.DataPixelFormat == VideoMode.PixelFormat.Gray8
-                            || mode.DataPixelFormat == VideoMode.PixelFormat.Rgb888
-                            || mode.DataPixelFormat == VideoMode.PixelFormat.Depth1Mm)
+                        if (mode.DataPixelFormat == VideoMode.PixelFormat.Gray16 ||
+                            mode.DataPixelFormat == VideoMode.PixelFormat.Gray8 ||
+                            mode.DataPixelFormat == VideoMode.PixelFormat.Rgb888 ||
+                            mode.DataPixelFormat == VideoMode.PixelFormat.Depth1Mm)
                         {
-                            this.cb_videomode.Items.Add(mode);
+                            cb_videomode.Items.Add(mode);
                         }
                     }
                 }
@@ -204,42 +214,43 @@
         {
             if (videoStream.IsValid && videoStream.IsFrameAvailable())
             {
-                using (VideoFrameRef frame = videoStream.ReadFrame())
+                using (var frame = videoStream.ReadFrame())
                 {
                     if (frame.IsValid)
                     {
-                        VideoFrameRef.CopyBitmapOptions options = VideoFrameRef.CopyBitmapOptions.Force24BitRgb
-                                                                  | VideoFrameRef.CopyBitmapOptions.DepthFillShadow;
-                        if (this.cb_invert.Checked)
+                        var options = VideoFrameRef.CopyBitmapOptions.Force24BitRgb |
+                                      VideoFrameRef.CopyBitmapOptions.DepthFillShadow;
+
+                        if (cb_invert.Checked)
                         {
                             options |= VideoFrameRef.CopyBitmapOptions.DepthInvert;
                         }
 
-                        if (this.cb_equal.Checked)
+                        if (cb_equal.Checked)
                         {
                             options |= VideoFrameRef.CopyBitmapOptions.DepthHistogramEqualize;
                         }
 
-                        if (this.cb_fill.Checked)
+                        if (cb_fill.Checked)
                         {
                             options |= videoStream.Mirroring
-                                           ? VideoFrameRef.CopyBitmapOptions.DepthFillRigthBlack
-                                           : VideoFrameRef.CopyBitmapOptions.DepthFillLeftBlack;
+                                ? VideoFrameRef.CopyBitmapOptions.DepthFillRigthBlack
+                                : VideoFrameRef.CopyBitmapOptions.DepthFillLeftBlack;
                         }
 
-                        lock (this.bitmap)
+                        lock (bitmap)
                         {
                             /////////////////////// Instead of creating a bitmap object for each frame, you can simply
                             /////////////////////// update one you have. Please note that you must be very careful 
                             /////////////////////// with multi-thread situations.
                             try
                             {
-                                frame.UpdateBitmap(this.bitmap, options);
+                                frame.UpdateBitmap(bitmap, options);
                             }
                             catch (Exception)
                             {
                                 // Happens when our Bitmap object is not compatible with returned Frame
-                                this.bitmap = frame.ToBitmap(options);
+                                bitmap = frame.ToBitmap(options);
                             }
 
                             /////////////////////// END NOTE
@@ -249,9 +260,9 @@
                             /////////////////////// This is little slower, but easier to handle
                             // bitmap = frame.toBitmap(options);
                             /////////////////////// END NOTE
-                            if (this.cb_mirrorSoft.Checked)
+                            if (cb_mirrorSoft.Checked)
                             {
-                                this.bitmap.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                                bitmap.RotateFlip(RotateFlipType.RotateNoneFlipX);
                             }
                         }
 
@@ -283,9 +294,9 @@
                         // }
                         // }));
                         ///////////////////// END NOTE
-                        if (!this.pb_image.Visible)
+                        if (!pb_image.Visible)
                         {
-                            this.Invalidate();
+                            Invalidate();
                         }
                     }
                 }
@@ -306,10 +317,10 @@
 
         private void FrmMainLoad(object sender, EventArgs e)
         {
-            this.HandleError(OpenNI.Initialize());
-            OpenNI.OnDeviceConnected += this.OpenNiOnDeviceConnectionStateChanged;
-            OpenNI.OnDeviceDisconnected += this.OpenNiOnDeviceConnectionStateChanged;
-            this.UpdateDevicesList();
+            HandleError(OpenNI.Initialize());
+            OpenNI.OnDeviceConnected += OpenNiOnDeviceConnectionStateChanged;
+            OpenNI.OnDeviceDisconnected += OpenNiOnDeviceConnectionStateChanged;
+            UpdateDevicesList();
         }
 
         #endregion

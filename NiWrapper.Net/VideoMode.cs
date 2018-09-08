@@ -15,20 +15,59 @@
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
    */
+
+using System;
+using System.Runtime.InteropServices;
+
 namespace OpenNIWrapper
 {
     #region
-
-    using System;
-    using System.Runtime.InteropServices;
 
     #endregion
 
     public class VideoMode : OpenNIBase
     {
+        #region Enums
+
+        public enum PixelFormat
+        {
+            // Depth
+            Depth1Mm = 100,
+
+            Depth100Um = 101,
+
+            Shift92 = 102,
+
+            Shift93 = 103,
+
+            // Color
+            Rgb888 = 200,
+
+            Yuv422 = 201,
+
+            Gray8 = 202,
+
+            Gray16 = 203,
+
+            Jpeg = 204,
+
+            Yuyv = 205
+        }
+
+        #endregion
+
         #region Fields
 
         private readonly bool isConst;
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        public override string ToString()
+        {
+            return Resolution.Width + "x" + Resolution.Height + "@" + Fps + " " + DataPixelFormat;
+        }
 
         #endregion
 
@@ -36,12 +75,12 @@ namespace OpenNIWrapper
 
         public VideoMode()
         {
-            this.Handle = VideoMode_new();
+            Handle = VideoMode_new();
         }
 
         internal VideoMode(IntPtr handle, bool isConst)
         {
-            this.Handle = handle;
+            Handle = handle;
             this.isConst = isConst;
         }
 
@@ -49,7 +88,7 @@ namespace OpenNIWrapper
         {
             try
             {
-                if (!this.isConst)
+                if (!isConst)
                 {
                     Common.DeleteObject(this);
                 }
@@ -61,83 +100,27 @@ namespace OpenNIWrapper
 
         #endregion
 
-        #region Enums
-
-        public enum PixelFormat
-        {
-            // Depth
-            Depth1Mm = 100, 
-
-            Depth100Um = 101, 
-
-            Shift92 = 102, 
-
-            Shift93 = 103, 
-
-            // Color
-            Rgb888 = 200, 
-
-            Yuv422 = 201, 
-
-            Gray8 = 202, 
-
-            Gray16 = 203, 
-
-            Jpeg = 204, 
-
-            Yuyv = 205, 
-        }
-
-        #endregion
-
         #region Public Properties
 
         public PixelFormat DataPixelFormat
         {
-            get
-            {
-                return VideoMode_getPixelFormat(this.Handle);
-            }
+            get => VideoMode_getPixelFormat(Handle);
 
-            set
-            {
-                VideoMode_setPixelFormat(this.Handle, value);
-            }
+            set => VideoMode_setPixelFormat(Handle, value);
         }
 
         public int Fps
         {
-            get
-            {
-                return VideoMode_getFps(this.Handle);
-            }
+            get => VideoMode_getFps(Handle);
 
-            set
-            {
-                VideoMode_setFps(this.Handle, value);
-            }
+            set => VideoMode_setFps(Handle, value);
         }
 
         public Size Resolution
         {
-            get
-            {
-                return new Size(VideoMode_getResolutionX(this.Handle), VideoMode_getResolutionY(this.Handle));
-            }
+            get => new Size(VideoMode_getResolutionX(Handle), VideoMode_getResolutionY(Handle));
 
-            set
-            {
-                VideoMode_setResolution(this.Handle, value.Width, value.Height);
-            }
-        }
-
-        #endregion
-
-        #region Public Methods and Operators
-
-        public override string ToString()
-        {
-            return this.Resolution.Width + "x" + this.Resolution.Height + "@" + this.Fps + " " + this.DataPixelFormat;
+            set => VideoMode_setResolution(Handle, value.Width, value.Height);
         }
 
         #endregion

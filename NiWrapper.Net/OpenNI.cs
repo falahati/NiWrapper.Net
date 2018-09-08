@@ -15,14 +15,15 @@
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
    */
+
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.InteropServices;
+
 namespace OpenNIWrapper
 {
     #region
-
-    using System;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Runtime.InteropServices;
 
     #endregion
 
@@ -47,9 +48,9 @@ namespace OpenNIWrapper
 
         // ReSharper disable once NotAccessedField.Local
 
-        #pragma warning disable 414
+#pragma warning disable 414
         private static IntPtr handlerEvents;
-        #pragma warning restore 414
+#pragma warning restore 414
 
         #endregion
 
@@ -81,32 +82,32 @@ namespace OpenNIWrapper
 
         public enum DeviceState
         {
-            Ok = 0, 
+            Ok = 0,
 
-            Error = 1, 
+            Error = 1,
 
-            NotReady = 2, 
+            NotReady = 2,
 
-            Eof = 3, 
+            Eof = 3
         }
 
         public enum Status
         {
-            Ok = 0, 
+            Ok = 0,
 
-            Error = 1, 
+            Error = 1,
 
-            NotImplemented = 2, 
+            NotImplemented = 2,
 
-            NotSupported = 3, 
+            NotSupported = 3,
 
-            BadParameter = 4, 
+            BadParameter = 4,
 
-            OutOfFlow = 5, 
+            OutOfFlow = 5,
 
-            NoDevice = 6, 
+            NoDevice = 6,
 
-            TimeOut = 102, 
+            TimeOut = 102
         }
 
         #endregion
@@ -117,12 +118,16 @@ namespace OpenNIWrapper
         {
             get
             {
-                IntPtr e = OpenNI_getExtendedError();
-                string errorString = Marshal.PtrToStringAnsi(e);
-                if (errorString == null)
-                    return null;
+                var e = OpenNI_getExtendedError();
+                var errorString = Marshal.PtrToStringAnsi(e);
 
-                string r = (string)errorString.Clone();
+                if (errorString == null)
+                {
+                    return null;
+                }
+
+                var r = (string) errorString.Clone();
+
                 return r;
             }
         }
@@ -131,7 +136,8 @@ namespace OpenNIWrapper
         {
             get
             {
-                OniVersion ver = OpenNI_getVersion();
+                var ver = OpenNI_getVersion();
+
                 return new Version(ver.Major, ver.Minor, ver.Maintenance, ver.Build);
             }
         }
@@ -142,27 +148,30 @@ namespace OpenNIWrapper
 
         public static DeviceInfo[] EnumerateDevices()
         {
-            WrapperArray csa = OpenNI_enumerateDevices();
-            IntPtr[] array = new IntPtr[csa.Size];
+            var csa = OpenNI_enumerateDevices();
+            var array = new IntPtr[csa.Size];
             Marshal.Copy(csa.Data, array, 0, csa.Size);
-            DeviceInfo[] arrayObjects = new DeviceInfo[csa.Size];
-            for (int i = 0; i < csa.Size; i++)
+            var arrayObjects = new DeviceInfo[csa.Size];
+
+            for (var i = 0; i < csa.Size; i++)
             {
                 arrayObjects[i] = new DeviceInfo(array[i]);
             }
 
             OpenNI_destroyDevicesArray(csa);
+
             return arrayObjects;
         }
 
         public static Status Initialize()
         {
-            Status ret = OpenNI_initialize();
+            var ret = OpenNI_initialize();
+
             if (ret == Status.Ok)
             {
                 handlerEvents = OpenNI_RegisterListener(
-                    InternalDeviceConnect, 
-                    InternalDeviceDisconnect, 
+                    InternalDeviceConnect,
+                    InternalDeviceDisconnect,
                     InternalDeviceStateChanged);
             }
 
@@ -175,23 +184,25 @@ namespace OpenNIWrapper
         }
 
         public static Status WaitForAnyStream(
-            VideoStream[] streams, 
-            out VideoStream readyStream, 
+            VideoStream[] streams,
+            out VideoStream readyStream,
             int timeout = TimeoutForever)
         {
             readyStream = null;
-            IntPtr[] streamArray = new IntPtr[streams.Length];
+            var streamArray = new IntPtr[streams.Length];
 
-            int i = 0;
-            foreach (VideoStream vs in streams)
+            var i = 0;
+
+            foreach (var vs in streams)
             {
                 streamArray[i] = vs.Handle;
                 i++;
             }
 
-            int selectedId = -1;
+            var selectedId = -1;
             Status returnValue;
-            IntPtr arrayPointer = Marshal.AllocHGlobal(IntPtr.Size * streamArray.Length);
+            var arrayPointer = Marshal.AllocHGlobal(IntPtr.Size * streamArray.Length);
+
             try
             {
                 Marshal.Copy(streamArray, 0, arrayPointer, streamArray.Length);
@@ -204,7 +215,7 @@ namespace OpenNIWrapper
 
             if (returnValue == Status.Ok)
             {
-                foreach (VideoStream vs in streams)
+                foreach (var vs in streams)
                 {
                     if (vs.Equals(streamArray[selectedId]))
                     {
@@ -219,7 +230,8 @@ namespace OpenNIWrapper
         public static Status WaitForStream(VideoStream streams, int timeout = TimeoutForever)
         {
             VideoStream vs;
-            Status returnValue = WaitForAnyStream(new[] { streams }, out vs, timeout);
+            var returnValue = WaitForAnyStream(new[] {streams}, out vs, timeout);
+
             if (returnValue == Status.Ok && !vs.Equals(streams))
             {
                 return Status.Error;
@@ -238,27 +250,36 @@ namespace OpenNIWrapper
             switch (status)
             {
                 case Status.Error:
+
                     throw new OpenNIException(LastError);
                 case Status.NotImplemented:
+
                     throw new NotImplementedException(LastError);
                 case Status.NotSupported:
+
                     throw new NotSupportedException(LastError);
                 case Status.BadParameter:
+
                     throw new ArgumentException(LastError);
                 case Status.OutOfFlow:
+
                     throw new OverflowException(LastError);
                 case Status.NoDevice:
+
                     throw new IOException(LastError);
                 case Status.TimeOut:
+
                     throw new TimeoutException(LastError);
                 default:
+
                     return;
             }
         }
 
         private static void PrivateDeviceConnect(IntPtr device)
         {
-            DeviceConnectionStateChanged ev = OnDeviceConnected;
+            var ev = OnDeviceConnected;
+
             if (ev != null)
             {
                 ev(new DeviceInfo(device));
@@ -267,7 +288,8 @@ namespace OpenNIWrapper
 
         private static void PrivateDeviceDisconnect(IntPtr device)
         {
-            DeviceConnectionStateChanged ev = OnDeviceDisconnected;
+            var ev = OnDeviceDisconnected;
+
             if (ev != null)
             {
                 ev(new DeviceInfo(device));
@@ -276,7 +298,8 @@ namespace OpenNIWrapper
 
         private static void PrivateDeviceStateChanged(IntPtr device, DeviceState state)
         {
-            DeviceStateChanged ev = OnDeviceStateChanged;
+            var ev = OnDeviceStateChanged;
+
             if (ev != null)
             {
                 ev(new DeviceInfo(device), state);
@@ -285,8 +308,8 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr OpenNI_RegisterListener(
-            [MarshalAs(UnmanagedType.FunctionPtr)] DeviceConnectionStateChangedDelegate connect, 
-            [MarshalAs(UnmanagedType.FunctionPtr)] DeviceConnectionStateChangedDelegate disconnect, 
+            [MarshalAs(UnmanagedType.FunctionPtr)] DeviceConnectionStateChangedDelegate connect,
+            [MarshalAs(UnmanagedType.FunctionPtr)] DeviceConnectionStateChangedDelegate disconnect,
             [MarshalAs(UnmanagedType.FunctionPtr)] DeviceStateChangedDelegate statechanged);
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
@@ -309,9 +332,9 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern Status OpenNI_waitForAnyStream(
-            IntPtr streams, 
-            int streamCount, 
-            ref int readyStreamIndex, 
+            IntPtr streams,
+            int streamCount,
+            ref int readyStreamIndex,
             int timeout);
 
         #endregion

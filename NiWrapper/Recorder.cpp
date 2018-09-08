@@ -16,45 +16,44 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 	*/
 
-#include <stdio.h>
 #include "Defines.h"
 #include "OpenNI.h"
 using namespace openni;
 
-extern "C"
+extern "C" {
+ONI_WRAPPER_API void Recorder_destroy(Recorder* rec)
 {
-	ONI_WRAPPER_API void Recorder_destroy(Recorder* rec)
-	{
-		 rec->destroy();
-	}
+	rec->destroy();
+}
 
-	ONI_WRAPPER_API Status Recorder_create(Recorder*& rec, const char* fileName)
-	{
-		 Recorder* vsl = new Recorder();
-		 Status status = vsl->create(fileName);
-		 if (status == STATUS_OK)
-			 rec = vsl;
-		 else
-			 Recorder_destroy(vsl);
-		 return status;
-	}
+ONI_WRAPPER_API Status Recorder_create(Recorder*& rec, const char* fileName)
+{
+	Recorder* vsl = new Recorder();
+	Status status = vsl->create(fileName);
+	if (status == STATUS_OK)
+		rec = vsl;
+	else
+		Recorder_destroy(vsl);
+	return status;
+}
 
-	ONI_WRAPPER_API Status Recorder_attach(Recorder* rec, VideoStream* vs, bool allowLossyCompression = false)
-	{
-		 return rec->attach(*vs, allowLossyCompression);
-	}
+ONI_WRAPPER_API Status Recorder_attach(Recorder* rec, VideoStream* vs, bool allowLossyCompression = false)
+{
+	return rec->attach(*vs, allowLossyCompression);
+}
 
-	ONI_WRAPPER_API bool Recorder_isValid(Recorder* rec)
-	{
-		 return rec->isValid();
-	}
+ONI_WRAPPER_API bool Recorder_isValid(Recorder* rec)
+{
+	return rec->isValid();
+}
 
-	ONI_WRAPPER_API Status Recorder_start(Recorder* rec)
-	{
-		 return rec->start();
-	}
-	ONI_WRAPPER_API void Recorder_stop(Recorder* rec)
-	{
-		 rec->stop();
-	}
+ONI_WRAPPER_API Status Recorder_start(Recorder* rec)
+{
+	return rec->start();
+}
+
+ONI_WRAPPER_API void Recorder_stop(Recorder* rec)
+{
+	rec->stop();
+}
 };

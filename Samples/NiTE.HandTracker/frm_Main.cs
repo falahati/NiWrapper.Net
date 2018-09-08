@@ -1,41 +1,41 @@
-﻿namespace NiTEHandTracker
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Windows.Forms;
+using NiTEWrapper;
+using OpenNIWrapper;
+using Size = System.Drawing.Size;
+
+namespace NiTEHandTracker
 {
     #region
-
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using System.Windows.Forms;
-
-    using NiTEWrapper;
-
-    using OpenNIWrapper;
 
     #endregion
 
     // ReSharper disable once InconsistentNaming
-    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Reviewed. Suppression is OK here.")]
+    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification =
+        "Reviewed. Suppression is OK here.")]
     public partial class frm_Main : Form
     {
+        #region Constructors and Destructors
+
+        public frm_Main()
+        {
+            InitializeComponent();
+        }
+
+        #endregion
+
         #region Fields
 
         private ulong fps;
 
         private HandTracker handTracker;
 
-        private Bitmap image = new Bitmap(640, 480);
+        private Bitmap image;
 
         private ulong lastTime;
-
-        #endregion
-
-        #region Constructors and Destructors
-
-        public frm_Main()
-        {
-            this.InitializeComponent();
-        }
 
         #endregion
 
@@ -49,31 +49,22 @@
             }
 
             MessageBox.Show(@"Error: " + status);
+
             return false;
         }
 
         private void ButtonClick(object sender, EventArgs e)
         {
-            this.handTracker = HandTracker.Create();
-            this.btn_start.Enabled = false;
-            HandleError(this.handTracker.StartGestureDetection(GestureData.GestureType.HandRaise));
-            this.handTracker.OnNewData += this.HandTrackerOnNewData;
-
-            // FIXED Jun 2013
-            // * Because of incompatibility between current version of OpenNI and NiTE,
-            // * we can't use event based reading. So we put our sample in a loop.
-            // * You can copy OpenNI.dll from version 2.0 to solve this problem.
-            // * Then you can uncomment above line of code and comment below ones.
-            // */
-            // while (this.IsHandleCreated)
-            // {
-            // hTracker_onNewData(hTracker);
-            // Application.DoEvents();
-            // }
+            handTracker = HandTracker.Create();
+            btn_start.Enabled = false;
+            HandleError(handTracker.StartGestureDetection(GestureData.GestureType.HandRaise));
+            handTracker.OnNewData += HandTrackerOnNewData;
         }
 
         private void FrmMainFormClosing(object sender, FormClosingEventArgs e)
         {
+            handTracker?.StopGestureDetection(GestureData.GestureType.HandRaise);
+            handTracker?.Dispose();
             NiTE.Shutdown();
             OpenNI.Shutdown();
         }
@@ -82,7 +73,7 @@
         {
             if (HandleError(NiTE.Initialize()))
             {
-                this.Text = @"Running by NiTE v" + NiTE.Version;
+                Text = @"Running by NiTE v" + NiTE.Version;
             }
             else
             {
@@ -98,74 +89,94 @@
                 return;
             }
 
-            HandTrackerFrameRef frame = handTracker.ReadFrame();
-
-            if (frame == null || !frame.IsValid)
+            using (var frame = handTracker.ReadFrame())
             {
-                return;
-            }
-
-            lock (this.image)
-            {
-                using (VideoFrameRef depthFrame = frame.DepthFrame)
+                if (frame == null || !frame.IsValid)
                 {
-                    if (this.image.Width != depthFrame.FrameSize.Width
-                        || this.image.Height != depthFrame.FrameSize.Height)
-                    {
-                        this.image = new Bitmap(
-                            depthFrame.FrameSize.Width,
-                            depthFrame.FrameSize.Height,
-                            PixelFormat.Format24bppRgb);
-                    }
+                    return;
                 }
 
-                using (Graphics g = Graphics.FromImage(this.image))
+                lock (this)
                 {
-                    g.FillRectangle(Brushes.Black, new Rectangle(new Point(0, 0), this.image.Size));
-                    foreach (GestureData gesture in frame.Gestures)
+                    using (var depthFrame = frame.DepthFrame)
                     {
-                        if (gesture.IsComplete)
+                        if (image?.Width != depthFrame.FrameSize.Width ||
+                            image?.Height != depthFrame.FrameSize.Height)
                         {
-                            handTracker.StartHandTracking(gesture.CurrentPosition);
+                            image?.Dispose();
+                            image = new Bitmap(
+                                depthFrame.FrameSize.Width,
+                                depthFrame.FrameSize.Height,
+                                PixelFormat.Format24bppRgb);
                         }
                     }
 
-                    if (frame.Hands.Length == 0)
+                    using (var g = Graphics.FromImage(image))
                     {
-                        g.DrawString("Raise your hand", SystemFonts.DefaultFont, Brushes.White, 10, 10);
-                    }
-                    else
-                    {
-                        foreach (HandData hand in frame.Hands)
+                        g.FillRectangle(Brushes.Black, new Rectangle(new Point(0, 0), image.Size));
+
+                        foreach (var gesture in frame.Gestures)
                         {
-                            if (hand.IsTracking)
+                            if (gesture.IsComplete)
                             {
-                                Point handPosEllipse = new Point();
-                                PointF handPos = handTracker.ConvertHandCoordinatesToDepth(hand.Position);
-                                handPosEllipse.X = (int)handPos.X - 5;
-                                handPosEllipse.Y = (int)handPos.Y - 5;
-                                g.DrawEllipse(new Pen(Brushes.White, 5), new Rectangle(handPosEllipse, new Size(5, 5)));
+                                handTracker.StartHandTracking(gesture.CurrentPosition);
                             }
                         }
-                    }
 
-                    g.Save();
-                }
-            }
-
-            this.Invoke(
-                new MethodInvoker(
-                    delegate
+                        if (frame.Hands.Length == 0)
                         {
-                            this.fps = ((1000000 / (frame.Timestamp - this.lastTime)) + (this.fps * 4)) / 5;
-                            this.lastTime = frame.Timestamp;
-                            this.Text = @"Frame #" + frame.FrameIndex + @" - Time: " + frame.Timestamp + @" - FPS: "
-                                        + this.fps;
-                            this.pb_preview.Image = this.image.Clone(
-                                new Rectangle(new Point(0, 0), this.image.Size),
-                                PixelFormat.Format24bppRgb);
-                            frame.Release();
+                            g.DrawString("Raise your hand", SystemFonts.DefaultFont, Brushes.White, 10, 10);
+                        }
+                        else
+                        {
+                            foreach (var hand in frame.Hands)
+                            {
+                                if (hand.IsTracking)
+                                {
+                                    var handPosEllipse = new Point();
+                                    var handPos = handTracker.ConvertHandCoordinatesToDepth(hand.Position);
+
+                                    if (!handPos.IsEmpty && !float.IsNaN(handPos.X) && !float.IsNaN(handPos.Y))
+                                    {
+                                        handPosEllipse.X = (int) handPos.X - 5;
+                                        handPosEllipse.Y = (int) handPos.Y - 5;
+                                        g.DrawEllipse(new Pen(Brushes.White, 5),
+                                            new Rectangle(handPosEllipse, new Size(5, 5)));
+                                    }
+                                }
+                            }
+                        }
+
+                        g.Save();
+                    }
+                }
+
+                Invoke(
+                    new MethodInvoker(
+                        delegate
+                        {
+                            try
+                            {
+                                // ReSharper disable AccessToDisposedClosure
+                                fps = (1000000 / (frame.Timestamp - lastTime) + fps * 4) / 5;
+                                lastTime = frame.Timestamp;
+                                Text = @"Frame #" +
+                                       frame.FrameIndex +
+                                       @" - Time: " +
+                                       frame.Timestamp +
+                                       @" - FPS: " +
+                                       fps;
+                                // ReSharper restore AccessToDisposedClosure
+                                pb_preview.Image?.Dispose();
+                                pb_preview.Image = image.Clone(
+                                    new Rectangle(new Point(0, 0), image.Size),
+                                    PixelFormat.Format24bppRgb);
+                            }
+                            catch
+                            {
+                            }
                         }));
+            }
         }
 
         #endregion

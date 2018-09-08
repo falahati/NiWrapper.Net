@@ -1,23 +1,32 @@
-﻿namespace NiTEUserColor
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Windows.Forms;
+using NiTEWrapper;
+using OpenNIWrapper;
+using Size = System.Drawing.Size;
+
+namespace NiTEUserColor
 {
     #region
-
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using System.Windows.Forms;
-
-    using NiTEWrapper;
-
-    using OpenNIWrapper;
 
     #endregion
 
     // ReSharper disable once InconsistentNaming
-    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Reviewed. Suppression is OK here.")]
+    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification =
+        "Reviewed. Suppression is OK here.")]
     public partial class frm_Main : Form
     {
+        #region Constructors and Destructors
+
+        public frm_Main()
+        {
+            InitializeComponent();
+        }
+
+        #endregion
+
         #region Fields
 
         private ulong fps;
@@ -27,15 +36,6 @@
         private ulong lastTime;
 
         private UserTracker userTracker;
-
-        #endregion
-
-        #region Constructors and Destructors
-
-        public frm_Main()
-        {
-            this.InitializeComponent();
-        }
 
         #endregion
 
@@ -49,62 +49,55 @@
             }
 
             MessageBox.Show(string.Format(@"Error: {0}{1}{2}", status, Environment.NewLine, OpenNI.LastError));
+
             return false;
         }
 
         private unsafe void FillImageFromUserMap(UserMap um)
         {
-            int[] colors = { 16777215, 14565387, 32255, 7996159, 16530175, 8373026, 14590399, 7062435, 13951499, 55807 };
-            if (this.image == null || this.image.Width != um.FrameSize.Width || this.image.Height != um.FrameSize.Height)
+            int[] colors = {16777215, 14565387, 32255, 7996159, 16530175, 8373026, 14590399, 7062435, 13951499, 55807};
+
+            if (image == null || image.Width != um.FrameSize.Width || image.Height != um.FrameSize.Height)
             {
-                this.image = new Bitmap(um.FrameSize.Width, um.FrameSize.Height, PixelFormat.Format24bppRgb);
+                image = new Bitmap(um.FrameSize.Width, um.FrameSize.Height, PixelFormat.Format24bppRgb);
             }
 
-            BitmapData bd = this.image.LockBits(
-                new Rectangle(new Point(0, 0), this.image.Size), 
-                ImageLockMode.WriteOnly, 
+            var bd = image.LockBits(
+                new Rectangle(new Point(0, 0), image.Size),
+                ImageLockMode.WriteOnly,
                 PixelFormat.Format24bppRgb);
-            for (int y = 0; y < um.FrameSize.Height; y++)
+
+            for (var y = 0; y < um.FrameSize.Height; y++)
             {
-                ushort* dataPos = (ushort*)((byte*)um.Pixels.ToPointer() + (y * um.DataStrideBytes));
-                byte* imagePos = (byte*)bd.Scan0.ToPointer() + (y * bd.Stride);
-                for (int x = 0; x < um.FrameSize.Width; x++)
+                var dataPos = (ushort*) ((byte*) um.Pixels.ToPointer() + y * um.DataStrideBytes);
+                var imagePos = (byte*) bd.Scan0.ToPointer() + y * bd.Stride;
+
+                for (var x = 0; x < um.FrameSize.Width; x++)
                 {
-                    int color = colors[*dataPos % colors.Length];
-                    *imagePos = (byte)(((color / 1) % 256) * *dataPos); // R
+                    var color = colors[*dataPos % colors.Length];
+                    *imagePos = (byte) (color / 1 % 256 * *dataPos); // R
                     imagePos++;
-                    *imagePos = (byte)(((color / 256) % 256) * *dataPos); // G
+                    *imagePos = (byte) (color / 256 % 256 * *dataPos); // G
                     imagePos++;
-                    *imagePos = (byte)(((color / 65536) % 256) * *dataPos); // B
+                    *imagePos = (byte) (color / 65536 % 256 * *dataPos); // B
                     imagePos++;
                     dataPos++;
                 }
             }
 
-            this.image.UnlockBits(bd);
+            image.UnlockBits(bd);
         }
 
         private void BtnStartClick(object sender, EventArgs e)
         {
-            this.userTracker = UserTracker.Create();
-            this.btn_start.Enabled = false;
-            this.userTracker.OnNewData += this.UserTrackerOnNewData;
-
-            // FIXED Jun 2013
-            // * Because of incompatibility between current version of OpenNI and NiTE,
-            // * we can't use event based reading. So we put our sample in a loop.
-            // * You can copy OpenNI.dll from version 2.0 to solve this problem.
-            // * Then you can uncomment above line of code and comment below ones.
-            // */
-            // while (this.IsHandleCreated)
-            // {
-            // uTracker_onNewData(uTracker);
-            // Application.DoEvents();
-            // }
+            userTracker = UserTracker.Create();
+            btn_start.Enabled = false;
+            userTracker.OnNewData += UserTrackerOnNewData;
         }
 
         private void FrmMainFormClosing(object sender, FormClosingEventArgs e)
         {
+            userTracker.Dispose();
             NiTE.Shutdown();
             OpenNI.Shutdown();
         }
@@ -113,7 +106,7 @@
         {
             if (HandleError(NiTE.Initialize()))
             {
-                this.Text = @"Running by NiTE v" + NiTE.Version;
+                Text = @"Running by NiTE v" + NiTE.Version;
             }
             else
             {
@@ -129,49 +122,52 @@
                 return;
             }
 
-            UserTrackerFrameRef frame = userTracker.ReadFrame();
-
-            if (frame == null || !frame.IsValid)
+            using (var frame = userTracker.ReadFrame())
             {
-                return;
-            }
-
-            this.FillImageFromUserMap(frame.UserMap);
-
-            using (Graphics g = Graphics.FromImage(this.image))
-            {
-                foreach (UserData user in frame.Users)
+                if (frame == null || !frame.IsValid)
                 {
-                    if (user.CenterOfMass.Z > 0)
-                    {
-                        Point p = new Point();
-                        PointF pf = userTracker.ConvertJointCoordinatesToDepth(user.CenterOfMass);
-                        p.X = (int)pf.X - 5;
-                        p.Y = (int)pf.Y - 5;
-                        g.DrawEllipse(new Pen(Brushes.White, 5), new Rectangle(p, new Size(5, 5)));
-                        g.DrawString("Center Of Mass", SystemFonts.DefaultFont, Brushes.White, p.X - 40, p.Y - 20);
-                    }
+                    return;
                 }
 
-                g.Save();
-            }
+                FillImageFromUserMap(frame.UserMap);
 
-            this.Invoke(
-                new MethodInvoker(
-                    delegate
+                using (var g = Graphics.FromImage(image))
+                {
+                    foreach (var user in frame.Users)
+                    {
+                        if (user.CenterOfMass.Z > 0)
                         {
-                            this.fps = ((1000000 / (frame.Timestamp - this.lastTime)) + (this.fps * 4)) / 5;
-                            this.lastTime = frame.Timestamp;
-                            this.Text = string.Format(
+                            var p = new Point();
+                            var pf = userTracker.ConvertJointCoordinatesToDepth(user.CenterOfMass);
+                            p.X = (int) pf.X - 5;
+                            p.Y = (int) pf.Y - 5;
+                            g.DrawEllipse(new Pen(Brushes.White, 5), new Rectangle(p, new Size(5, 5)));
+                            g.DrawString("Center Of Mass", SystemFonts.DefaultFont, Brushes.White, p.X - 40, p.Y - 20);
+                        }
+                    }
+
+                    g.Save();
+                }
+
+                Invoke(
+                    new MethodInvoker(
+                        delegate
+                        {
+                            // ReSharper disable AccessToDisposedClosure
+                            fps = (1000000 / (frame.Timestamp - lastTime) + fps * 4) / 5;
+                            lastTime = frame.Timestamp;
+                            Text = string.Format(
                                 "Frame #{0} - Time: {1} - FPS: {2}",
                                 frame.FrameIndex,
                                 frame.Timestamp,
-                                this.fps);
-                            this.pb_preview.Image = this.image.Clone(
-                                new Rectangle(new Point(0, 0), this.image.Size),
+                                fps);
+                            // ReSharper restore AccessToDisposedClosure
+                            pb_preview.Image?.Dispose();
+                            pb_preview.Image = image.Clone(
+                                new Rectangle(new Point(0, 0), image.Size),
                                 PixelFormat.Format24bppRgb);
-                            frame.Release();
                         }));
+            }
         }
 
         #endregion

@@ -1,9 +1,9 @@
-﻿namespace NiTEUserColor
+﻿using System;
+using System.Windows.Forms;
+
+namespace NiTEUserColor
 {
     #region
-
-    using System;
-    using System.Windows.Forms;
 
     #endregion
 

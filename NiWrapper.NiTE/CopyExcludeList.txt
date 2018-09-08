@@ -1,3 +1,0 @@
-.jar
-.jni.dll
-.jni.pdb

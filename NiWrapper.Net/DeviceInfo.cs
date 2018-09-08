@@ -15,17 +15,27 @@
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
    */
+
+using System;
+using System.Runtime.InteropServices;
+
 namespace OpenNIWrapper
 {
     #region
-
-    using System;
-    using System.Runtime.InteropServices;
 
     #endregion
 
     public class DeviceInfo : OpenNIBase
     {
+        #region Constructors and Destructors
+
+        internal DeviceInfo(IntPtr handle)
+        {
+            Handle = handle;
+        }
+
+        #endregion
+
         #region Fields
 
         private string name;
@@ -40,34 +50,26 @@ namespace OpenNIWrapper
 
         #endregion
 
-        #region Constructors and Destructors
-
-        internal DeviceInfo(IntPtr handle)
-        {
-            this.Handle = handle;
-        }
-
-        #endregion
-
         #region Public Properties
 
         public string Name
         {
             get
             {
-                if (this.name != null)
+                if (name != null)
                 {
-                    return this.name;
+                    return name;
                 }
 
-                IntPtr e = DeviceInfo_getName(this.Handle);
-                string nameString = Marshal.PtrToStringAnsi(e);
+                var e = DeviceInfo_getName(Handle);
+                var nameString = Marshal.PtrToStringAnsi(e);
+
                 if (nameString != null)
                 {
-                    this.name = (string)nameString.Clone();
+                    name = (string) nameString.Clone();
                 }
 
-                return this.name;
+                return name;
             }
         }
 
@@ -75,19 +77,20 @@ namespace OpenNIWrapper
         {
             get
             {
-                if (this.uri != null)
+                if (uri != null)
                 {
-                    return this.uri;
+                    return uri;
                 }
 
-                IntPtr e = DeviceInfo_getUri(this.Handle);
-                string uriString = Marshal.PtrToStringAnsi(e);
+                var e = DeviceInfo_getUri(Handle);
+                var uriString = Marshal.PtrToStringAnsi(e);
+
                 if (uriString != null)
                 {
-                    this.uri = (string)uriString.Clone();
+                    uri = (string) uriString.Clone();
                 }
 
-                return this.uri;
+                return uri;
             }
         }
 
@@ -95,13 +98,14 @@ namespace OpenNIWrapper
         {
             get
             {
-                if (this.usbProductId != null)
+                if (usbProductId != null)
                 {
-                    return this.usbProductId.Value;
+                    return usbProductId.Value;
                 }
 
-                this.usbProductId = DeviceInfo_getUsbProductId(this.Handle);
-                return this.usbProductId.Value;
+                usbProductId = DeviceInfo_getUsbProductId(Handle);
+
+                return usbProductId.Value;
             }
         }
 
@@ -109,13 +113,14 @@ namespace OpenNIWrapper
         {
             get
             {
-                if (this.usbVendorId != null)
+                if (usbVendorId != null)
                 {
-                    return this.usbVendorId.Value;
+                    return usbVendorId.Value;
                 }
 
-                this.usbVendorId = DeviceInfo_getUsbVendorId(this.Handle);
-                return this.usbVendorId.Value;
+                usbVendorId = DeviceInfo_getUsbVendorId(Handle);
+
+                return usbVendorId.Value;
             }
         }
 
@@ -123,19 +128,20 @@ namespace OpenNIWrapper
         {
             get
             {
-                if (this.vendor != null)
+                if (vendor != null)
                 {
-                    return this.vendor;
+                    return vendor;
                 }
 
-                IntPtr e = DeviceInfo_getVendor(this.Handle);
-                string vendorString = Marshal.PtrToStringAnsi(e);
+                var e = DeviceInfo_getVendor(Handle);
+                var vendorString = Marshal.PtrToStringAnsi(e);
+
                 if (vendorString != null)
                 {
-                    this.vendor = (string)vendorString.Clone();
+                    vendor = (string) vendorString.Clone();
                 }
 
-                return this.vendor;
+                return vendor;
             }
         }
 
@@ -145,17 +151,17 @@ namespace OpenNIWrapper
 
         public Device OpenDevice()
         {
-            if (!this.IsValid)
+            if (!IsValid)
             {
                 return null;
             }
 
-            return Device.Open(this.Uri);
+            return Device.Open(Uri);
         }
 
         public override string ToString()
         {
-            return this.Name;
+            return Name;
         }
 
         #endregion

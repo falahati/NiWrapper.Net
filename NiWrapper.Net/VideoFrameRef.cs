@@ -15,19 +15,42 @@
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
    */
+
+using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
+
 namespace OpenNIWrapper
 {
     #region
-
-    using System;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using System.Runtime.InteropServices;
 
     #endregion
 
     public sealed class VideoFrameRef : OpenNIBase, IDisposable
     {
+        #region Enums
+
+        [Flags]
+        public enum CopyBitmapOptions
+        {
+            None = 0,
+
+            Force24BitRgb = 1,
+
+            DepthFillLeftBlack = 2,
+
+            DepthFillRigthBlack = 4,
+
+            DepthHistogramEqualize = 8,
+
+            DepthInvert = 16,
+
+            DepthFillShadow = 32
+        }
+
+        #endregion
+
         #region Fields
 
         private Point? croppingOrigin;
@@ -44,8 +67,6 @@ namespace OpenNIWrapper
 
         private Size? frameSize;
 
-        private bool isDisposed;
-
         private Device.SensorType? sensorType;
 
         private ulong? timestamp;
@@ -58,41 +79,12 @@ namespace OpenNIWrapper
 
         public VideoFrameRef(IntPtr handle)
         {
-            this.Handle = handle;
+            Handle = handle;
         }
 
         ~VideoFrameRef()
         {
-            try
-            {
-                this.Dispose();
-                Common.DeleteObject(this);
-            }
-            catch (Exception)
-            {
-            }
-        }
-
-        #endregion
-
-        #region Enums
-
-        [Flags]
-        public enum CopyBitmapOptions
-        {
-            None = 0, 
-
-            Force24BitRgb = 1, 
-
-            DepthFillLeftBlack = 2, 
-
-            DepthFillRigthBlack = 4, 
-
-            DepthHistogramEqualize = 8, 
-
-            DepthInvert = 16, 
-
-            DepthFillShadow = 32, 
+            ReleaseUnmanagedResources();
         }
 
         #endregion
@@ -103,22 +95,23 @@ namespace OpenNIWrapper
         {
             get
             {
-                if (this.croppingOriginIsChached)
+                if (croppingOriginIsChached)
                 {
-                    return this.croppingOrigin;
+                    return croppingOrigin;
                 }
 
-                this.croppingOriginIsChached = true;
+                croppingOriginIsChached = true;
 
-                this.croppingOrigin = null;
+                croppingOrigin = null;
                 int originX = 0, originY = 0;
-                bool isEnable = VideoFrameRef_getCroppingOrigin(this.Handle, ref originX, ref originY);
+                var isEnable = VideoFrameRef_getCroppingOrigin(Handle, ref originX, ref originY);
+
                 if (isEnable)
                 {
-                    this.croppingOrigin = new Point(originX, originY);
+                    croppingOrigin = new Point(originX, originY);
                 }
 
-                return this.croppingOrigin;
+                return croppingOrigin;
             }
         }
 
@@ -126,13 +119,14 @@ namespace OpenNIWrapper
         {
             get
             {
-                if (this.data != null)
+                if (data != null)
                 {
-                    return this.data.Value;
+                    return data.Value;
                 }
 
-                this.data = VideoFrameRef_getData(this.Handle);
-                return this.data.Value;
+                data = VideoFrameRef_getData(Handle);
+
+                return data.Value;
             }
         }
 
@@ -140,13 +134,14 @@ namespace OpenNIWrapper
         {
             get
             {
-                if (this.dataSize != null)
+                if (dataSize != null)
                 {
-                    return this.dataSize.Value;
+                    return dataSize.Value;
                 }
 
-                this.dataSize = VideoFrameRef_getDataSize(this.Handle);
-                return this.dataSize.Value;
+                dataSize = VideoFrameRef_getDataSize(Handle);
+
+                return dataSize.Value;
             }
         }
 
@@ -154,13 +149,14 @@ namespace OpenNIWrapper
         {
             get
             {
-                if (this.dataStrideBytes != null)
+                if (dataStrideBytes != null)
                 {
-                    return this.dataStrideBytes.Value;
+                    return dataStrideBytes.Value;
                 }
 
-                this.dataStrideBytes = VideoFrameRef_getStrideInBytes(this.Handle);
-                return this.dataStrideBytes.Value;
+                dataStrideBytes = VideoFrameRef_getStrideInBytes(Handle);
+
+                return dataStrideBytes.Value;
             }
         }
 
@@ -168,13 +164,14 @@ namespace OpenNIWrapper
         {
             get
             {
-                if (this.frameIndex != null)
+                if (frameIndex != null)
                 {
-                    return this.frameIndex.Value;
+                    return frameIndex.Value;
                 }
 
-                this.frameIndex = VideoFrameRef_getFrameIndex(this.Handle);
-                return this.frameIndex.Value;
+                frameIndex = VideoFrameRef_getFrameIndex(Handle);
+
+                return frameIndex.Value;
             }
         }
 
@@ -182,15 +179,16 @@ namespace OpenNIWrapper
         {
             get
             {
-                if (this.frameSize != null)
+                if (frameSize != null)
                 {
-                    return this.frameSize.Value;
+                    return frameSize.Value;
                 }
 
                 int w = 0, h = 0;
-                VideoFrameRef_getSize(this.Handle, ref w, ref h);
-                this.frameSize = new Size(w, h);
-                return this.frameSize.Value;
+                VideoFrameRef_getSize(Handle, ref w, ref h);
+                frameSize = new Size(w, h);
+
+                return frameSize.Value;
             }
         }
 
@@ -198,13 +196,14 @@ namespace OpenNIWrapper
         {
             get
             {
-                if (this.sensorType != null)
+                if (sensorType != null)
                 {
-                    return this.sensorType.Value;
+                    return sensorType.Value;
                 }
 
-                this.sensorType = VideoFrameRef_getSensorType(this.Handle);
-                return this.sensorType.Value;
+                sensorType = VideoFrameRef_getSensorType(Handle);
+
+                return sensorType.Value;
             }
         }
 
@@ -212,13 +211,14 @@ namespace OpenNIWrapper
         {
             get
             {
-                if (this.timestamp != null)
+                if (timestamp != null)
                 {
-                    return this.timestamp.Value;
+                    return timestamp.Value;
                 }
 
-                this.timestamp = VideoFrameRef_getTimestamp(this.Handle);
-                return this.timestamp.Value;
+                timestamp = VideoFrameRef_getTimestamp(Handle);
+
+                return timestamp.Value;
             }
         }
 
@@ -226,13 +226,14 @@ namespace OpenNIWrapper
         {
             get
             {
-                if (this.videoMode != null)
+                if (videoMode != null)
                 {
-                    return this.videoMode;
+                    return videoMode;
                 }
 
-                this.videoMode = new VideoMode(VideoFrameRef_getVideoMode(this.Handle), true);
-                return this.videoMode;
+                videoMode = new VideoMode(VideoFrameRef_getVideoMode(Handle), true);
+
+                return videoMode;
             }
         }
 
@@ -240,34 +241,28 @@ namespace OpenNIWrapper
 
         #region Public Methods and Operators
 
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        public void Release()
-        {
-            VideoFrameRef_release(this.Handle);
-        }
-
         public Bitmap ToBitmap(CopyBitmapOptions options = CopyBitmapOptions.None)
         {
             PixelFormat format;
-            switch (this.VideoMode.DataPixelFormat)
+
+            switch (VideoMode.DataPixelFormat)
             {
                 case VideoMode.PixelFormat.Rgb888:
                     format = PixelFormat.Format24bppRgb;
+
                     break;
                 case VideoMode.PixelFormat.Gray8:
                     format = PixelFormat.Format8bppIndexed;
+
                     break;
                 case VideoMode.PixelFormat.Depth1Mm:
                 case VideoMode.PixelFormat.Depth100Um:
                 case VideoMode.PixelFormat.Gray16:
                     format = PixelFormat.Format16bppGrayScale;
+
                     break;
                 default:
+
                     throw new InvalidOperationException("Pixel format is not acceptable for bitmap converting.");
             }
 
@@ -276,22 +271,24 @@ namespace OpenNIWrapper
                 format = PixelFormat.Format24bppRgb;
             }
 
-            Bitmap destination = new Bitmap(this.FrameSize.Width, this.FrameSize.Height, format);
+            var destination = new Bitmap(FrameSize.Width, FrameSize.Height, format);
+
             if (format == PixelFormat.Format8bppIndexed)
             {
-                for (int i = 0; i < 256; i++)
+                for (var i = 0; i < 256; i++)
                 {
                     destination.Palette.Entries[i] = Color.FromArgb(i, i, i);
                 }
             }
 
-            this.UpdateBitmap(destination, options);
+            UpdateBitmap(destination, options);
+
             return destination;
         }
 
         public void UpdateBitmap(Bitmap image, CopyBitmapOptions options = CopyBitmapOptions.None)
         {
-            if (image.Width != this.FrameSize.Width || image.Height != this.FrameSize.Height)
+            if (image.Width != FrameSize.Width || image.Height != FrameSize.Height)
             {
                 throw new ArgumentException("Bitmap size if not acceptable.");
             }
@@ -306,35 +303,56 @@ namespace OpenNIWrapper
             }
 
             PixelFormat desiredFormat;
-            switch (this.VideoMode.DataPixelFormat)
+
+            switch (VideoMode.DataPixelFormat)
             {
                 case VideoMode.PixelFormat.Rgb888:
                     desiredFormat = PixelFormat.Format24bppRgb;
+
                     break;
                 case VideoMode.PixelFormat.Gray8:
                     desiredFormat = PixelFormat.Format8bppIndexed;
+
                     break;
                 case VideoMode.PixelFormat.Depth1Mm:
                 case VideoMode.PixelFormat.Depth100Um:
                 case VideoMode.PixelFormat.Gray16:
                     desiredFormat = PixelFormat.Format16bppGrayScale;
+
                     break;
                 default:
+
                     throw new InvalidOperationException("Pixel format is not acceptable for bitmap converting.");
             }
 
-            if ((options & CopyBitmapOptions.Force24BitRgb) != CopyBitmapOptions.Force24BitRgb
-                && desiredFormat != image.PixelFormat)
+            if ((options & CopyBitmapOptions.Force24BitRgb) != CopyBitmapOptions.Force24BitRgb &&
+                desiredFormat != image.PixelFormat)
             {
                 throw new ArgumentException("Requested bitmap pixel format is not suitable for this data.");
             }
 
-            BitmapData destBits = image.LockBits(
-                new Rectangle(new Point(0, 0), image.Size), 
-                ImageLockMode.WriteOnly, 
+            var destBits = image.LockBits(
+                new Rectangle(new Point(0, 0), image.Size),
+                ImageLockMode.WriteOnly,
                 image.PixelFormat);
-            VideoFrameRef_copyDataTo(this.Handle, destBits.Scan0, destBits.Stride, options);
+            VideoFrameRef_copyDataTo(Handle, destBits.Scan0, destBits.Stride, options);
             image.UnlockBits(destBits);
+        }
+
+        private void ReleaseUnmanagedResources()
+        {
+            if (IsValid)
+            {
+                VideoFrameRef_release(Handle);
+                Handle = IntPtr.Zero;
+            }
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            ReleaseUnmanagedResources();
+            GC.SuppressFinalize(this);
         }
 
         #endregion
@@ -343,15 +361,15 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern void VideoFrameRef_copyDataTo(
-            IntPtr objectHandler, 
-            IntPtr dstData, 
-            int dstStride, 
+            IntPtr objectHandler,
+            IntPtr dstData,
+            int dstStride,
             CopyBitmapOptions options);
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool VideoFrameRef_getCroppingOrigin(
-            IntPtr objectHandler, 
-            ref int originX, 
+            IntPtr objectHandler,
+            ref int originX,
             ref int originY);
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
@@ -380,20 +398,6 @@ namespace OpenNIWrapper
 
         [DllImport("NiWrapper", CallingConvention = CallingConvention.Cdecl)]
         private static extern void VideoFrameRef_release(IntPtr objectHandler);
-
-        private void Dispose(bool disposing)
-        {
-            if (!this.isDisposed)
-            {
-                if (disposing && this.IsValid)
-                {
-                    this.Release();
-                }
-
-                this.Handle = IntPtr.Zero;
-                this.isDisposed = true;
-            }
-        }
 
         #endregion
     }
