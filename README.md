@@ -1,26 +1,20 @@
 NiWrapper.Net
 =============
 
-OpenNI 2.2 and NiTE 2.2 .Net Wrapper
-Using .Net 4.0 CP
+OpenNI 2.2.0.33 and NiTE 2.2.0.11 .Net Wrapper (Includes redistribution files)
 
-For using it in your project you can download it from "Package" folder.
+Available on Nuget:
 
-OpenNI 2.2.0.33 redist files included.
-
-NiTE 2.2.0.11 redist files included.
-
-
+NiWrapper.Net ([x86](https://www.nuget.org/packages/NiWrapper.Net.x86), [x64](https://www.nuget.org/packages/NiWrapper.Net.x64))
+NiWrapper_NiTE.Net ([x86](https://www.nuget.org/packages/NiWrapper.NiTE.Net.x86), [x64](https://www.nuget.org/packages/NiWrapper.NiTE.Net.x64))
 
 x86 version works with both 32 and 64 bits versions of Windows.
 
 For building it your-self, you need to have OpenNI 2.2 and NiTE 2.2 installed. Both 32bit and 64bit versions.
 
-NiTE wrapper is now completely supported. Check "samples" in Samples folder.
-
 License
 =============
-Copyright (C) 2013 Soroush Falahati - soroush@falahati.net
+Copyright (C) 2018 Soroush Falahati - soroush@falahati.net
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
