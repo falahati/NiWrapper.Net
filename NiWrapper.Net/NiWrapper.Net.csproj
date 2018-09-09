@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <Version>2.2.0.33</Version>
+    <Version>2.2.0.35</Version>
     <Company>falahati.net</Company>
     <Description>.Net Wrapper for OpenNI 2</Description>
     <Authors>Soroush Falahati</Authors>
@@ -13,6 +13,8 @@
     <PackageLicenseUrl>https://github.com/falahati/NiWrapper.Net/blob/master/LICENSE.txt</PackageLicenseUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <IncludeSource>true</IncludeSource>
+    <AssemblyVersion>2.2.0.33</AssemblyVersion>
+    <FileVersion>2.2.0.33</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <Title>NiWrapper.Net x86</Title>
