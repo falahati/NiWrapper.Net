@@ -1,5 +1,4 @@
-NiWrapper.Net
-=============
+## NiWrapper.Net
 
 OpenNI 2.2.0.33 and NiTE 2.2.0.11 .Net Wrapper (Includes redistribution files)
 
@@ -12,8 +11,10 @@ x86 version works with both 32 and 64 bits versions of Windows.
 
 For building it your-self, you need to have OpenNI 2.2 and NiTE 2.2 installed. Both 32bit and 64bit versions.
 
-License
-=============
+## Donation
+[<img width="24" height="24" src="http://icons.iconarchive.com/icons/sonya/swarm/256/Coffee-icon.png"/>**Every coffee counts! :)**](https://www.coinpayments.net/index.php?cmd=_donate&reset=1&merchant=820707aded07845511b841f9c4c335cd&item_name=Donate&currency=USD&amountf=10.00000000&allow_amount=1&want_shipping=0&allow_extra=1)
+
+## License
 Copyright (C) 2018 Soroush Falahati - soroush@falahati.net
 
 This library is free software; you can redistribute it and/or
